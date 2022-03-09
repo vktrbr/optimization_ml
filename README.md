@@ -1,4 +1,4 @@
-# optimization-ml
+# Optimization 
 
 ### Table of Contents  
 - [One-dimensional optimization](#one-dimensional-optimization)
