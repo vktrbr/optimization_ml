@@ -25,6 +25,7 @@ def golden_section_search(function: sp.core.expr.Expr,
             x2 = a + (b - a) / phi
         3. if `f(x1) > f(x2)` (for `min`) | if `f(x1) > f(x2)` (for `max`) then a = x1 else b = x2
         4. Repeat 2, 3 steps while `|a - b| > e`
+
     :param function: a sympy expression that depends on a one variable
     :param bounds: tuple with two numbers. This is left and right bound optimization. [a, b]
     :param epsilon: optimization accuracy
@@ -34,8 +35,8 @@ def golden_section_search(function: sp.core.expr.Expr,
     :param keep_history: flag of return history
     :returns: tuple with dot and history.
 
-
     """
+
     assert isinstance(function, sp.core.expr.Expr), 'Function is not sympy'
     phi: Real = (1 + 5 ** 0.5) / 2
 
