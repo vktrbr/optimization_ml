@@ -11,21 +11,20 @@ def golden_section_search(function: sp.core.expr.Expr,
                           type_optimization: Literal['min', 'max'] = 'min',
                           max_iter: int = 500,
                           verbose: bool = False,
-                          keep_history: bool = False) -> Tuple[Dot, History]:
+                          keep_history: bool = False) -> Tuple[Point, History]:
     """
     Golden-section search
-    **If optimize will fail golden_section_search will return last point**
+
+    **If optimization fails golden_section_search will return the last point**
 
     Algorithm::
         phi = (1 + 5 ** 0.5) / 2
-
         1. a, b = bounds
         2. Calculate:
             x1 = b - (b - a) / phi,
             x2 = a + (b - a) / phi
         3. if `f(x1) > f(x2)` (for `min`) | if `f(x1) > f(x2)` (for `max`) then a = x1 else b = x2
         4. Repeat 2, 3 steps while `|a - b| > e`
-
     :param function: a sympy expression that depends on a one variable
     :param bounds: tuple with two numbers. This is left and right bound optimization. [a, b]
     :param epsilon: optimization accuracy
@@ -33,7 +32,7 @@ def golden_section_search(function: sp.core.expr.Expr,
     :param max_iter: maximum number of iterations
     :param verbose: flag of printing iteration logs
     :param keep_history: flag of return history
-    :returns: tuple with dot and history.
+    :returns: tuple with point and history.
 
     """
 
@@ -97,12 +96,16 @@ def golden_section_search(function: sp.core.expr.Expr,
 
 
 class History(TypedDict):
+    """
+    Class with an optimization history
+    : iteration:
+    """
     iteration: List[int]
     point: List[Real]
     f_value: List[Real]
 
 
-class Dot(TypedDict):
+class Point(TypedDict):
     point: Real
     f_value: Real
 
