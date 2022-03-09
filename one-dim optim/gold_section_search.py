@@ -78,7 +78,7 @@ def golden_section_search(function: sp.core.expr.Expr,
 
             if keep_history:
                 history['iteration'].append(i)
-                history['point'].append(function(middle_point))
+                history['point'].append(middle_point)
                 history['f_value'].append(function(middle_point))
 
             if abs(x1 - x2) < epsilon:
