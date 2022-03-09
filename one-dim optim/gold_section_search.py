@@ -1,4 +1,6 @@
-from typing import Tuple, Dict
+from __future__ import annotations
+
+from typing import List, Literal, Tuple, Dict, TypedDict
 from numbers import Real
 import sympy as sp
 
@@ -6,10 +8,10 @@ import sympy as sp
 def golden_section_search(function: sp.core.expr.Expr,
                           bounds: Tuple[Real, Real],
                           epsilon: Real = 1e-5,
-                          type_optimization: str = 'min',
+                          type_optimization: Literal['min','max'] = 'min',
                           max_iter: int = 500,
                           verbose: bool = False,
-                          history: bool = False) -> Tuple[Dict, Dict]:
+                          keep_history: bool = False) -> Tuple[Dot, History]:
     """
     Golden-section search
     **If optimize will fail golden_section_search will return last point**
@@ -35,7 +37,7 @@ def golden_section_search(function: sp.core.expr.Expr,
 
     """
     assert isinstance(function, sp.core.expr.Expr), 'Function is not sympy'
-    phi = (1 + 5 ** 0.5) / 2
+    phi:Real = (1 + 5 ** 0.5) / 2
 
     type_optimization = type_optimization.lower().strip()
     assert type_optimization in ['min', 'max'], 'Invalid type optimization. Enter "min" or "max"'
@@ -44,13 +46,12 @@ def golden_section_search(function: sp.core.expr.Expr,
 
     a, b = bounds
 
-    if history:
-        history = {'iteration': [], 'point': [], 'f_value': []}
+    history:History = {'iteration': [], 'point': [], 'f_value': []}
 
     if len(function.free_symbols) == 0:
         print('Function independent on variables. code 0')
-        var = (a + b) / 2
-        return {'point': var, 'f_value': float(function)}, history
+        middle_point = (a + b) / 2
+        return {'point': middle_point, 'f_value': float(function)}, history
 
     name_var = str(list(function.free_symbols)[0])
 
@@ -58,8 +59,8 @@ def golden_section_search(function: sp.core.expr.Expr,
 
     try:
         for i in range(max_iter):
-            x1 = b - (b - a) / phi
-            x2 = a + (b - a) / phi
+            x1:Real= b - (b - a) / phi
+            x2:Real= a + (b - a) / phi
             if type_optimization == 'min':
                 if function(x1) > function(x2):
                     a = x1
@@ -71,27 +72,35 @@ def golden_section_search(function: sp.core.expr.Expr,
                 else:
                     b = x2
 
+            middle_point = (a + b) / 2
             if verbose:
-                var = (a + b) / 2
-                print(f'Iteration: {i} \t|\t {name_var} = {var :0.3f} \t|\t f({name_var}) = {function(var): 0.3f}')
+                print(f'Iteration: {i} \t|\t {name_var} = {middle_point :0.3f} \t|\t f({name_var}) = {function(middle_point): 0.3f}')
 
-            if history:
+            if keep_history:
                 history['iteration'].append(i)
-                history['point'].append(function((a + b) / 2))
-                history['f_value'].append(function((a + b) / 2))
+                history['point'].append(middle_point)
+                history['f_value'].append(function(middle_point))
 
             if abs(x1 - x2) < epsilon:
-                var = (a + b) / 2
                 print('Searching finished. Successfully. code 0')
-                return {'point': var, 'f_value': function(var)}, history
+                return {'point': middle_point, 'f_value': function(middle_point)}, history
         else:
+            middle_point = (a + b) / 2
             print('Searching finished. Max iterations have been reached. code 1')
-            return (a + b) / 2, history
+            return  {'point': middle_point, 'f_value': function(middle_point)}, history
 
     except Exception as e:
         print('Error with optimization. code 2')
         raise e
 
+class History(TypedDict):
+    iteration:List[int]
+    point:List[Real]
+    f_value:List[Real]
+
+class Dot(TypedDict):
+    point: Real
+    f_value: Real
 
 if __name__ == '__main__':
 
