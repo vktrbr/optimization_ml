@@ -1,0 +1,102 @@
+from typing import Tuple, Dict
+from numbers import Real
+import sympy as sp
+
+
+def golden_section_search(function: sp.core.expr.Expr,
+                          bounds: Tuple[Real, Real],
+                          epsilon: Real = 1e-5,
+                          type_optimization: str = 'min',
+                          max_iter: int = 500,
+                          verbose: bool = False,
+                          history: bool = False) -> Tuple[Dict, Dict]:
+    """
+    Golden-section search
+    **If optimize will fail golden_section_search will return last point**
+
+    Algorithm::
+        phi = (1 + 5 ** 0.5) / 2
+
+        1. a, b = bounds
+        2. Calculate:
+            x1 = b - (b - a) / phi,
+            x2 = a + (b - a) / phi
+        3. if `f(x1) > f(x2)` (for `min`) | if `f(x1) > f(x2)` (for `max`) then a = x1 else b = x2
+        4. Repeat 2, 3 steps while `|a - b| > e`
+    :param function: a sympy expression that depends on a one variable
+    :param bounds: tuple with two numbers. This is left and right bound optimization. [a, b]
+    :param epsilon: optimization accuracy
+    :param type_optimization: 'min' / 'max' - type of required value
+    :param max_iter: maximum number of iterations
+    :param verbose: flag of printing iteration logs
+    :param history: flag of return history
+    :returns: tuple with dot and history.
+
+
+    """
+    assert isinstance(function, sp.core.expr.Expr), 'Function is not sympy'
+    phi = (1 + 5 ** 0.5) / 2
+
+    type_optimization = type_optimization.lower().strip()
+    assert type_optimization in ['min', 'max'], 'Invalid type optimization. Enter "min" or "max"'
+
+    assert len(function.free_symbols) <= 1, 'Function depend on more than 1 variables'
+
+    a, b = bounds
+
+    if history:
+        history = {'iteration': [], 'point': [], 'f_value': []}
+
+    if len(function.free_symbols) == 0:
+        print('Function independent on variables. code 0')
+        var = (a + b) / 2
+        return {'point': var, 'f_value': float(function)}, history
+
+    name_var = str(list(function.free_symbols)[0])
+
+    function = sp.lambdify(list(function.free_symbols), function, 'numpy')
+
+    try:
+        for i in range(max_iter):
+            x1 = b - (b - a) / phi
+            x2 = a + (b - a) / phi
+            if type_optimization == 'min':
+                if function(x1) > function(x2):
+                    a = x1
+                else:
+                    b = x2
+            else:
+                if function(x1) < function(x2):
+                    a = x1
+                else:
+                    b = x2
+
+            if verbose:
+                var = (a + b) / 2
+                print(f'Iteration: {i} \t|\t {name_var} = {var :0.3f} \t|\t f({name_var}) = {function(var): 0.3f}')
+
+            if history:
+                history['iteration'].append(i)
+                history['point'].append(function((a + b) / 2))
+                history['f_value'].append(function((a + b) / 2))
+
+            if abs(x1 - x2) < epsilon:
+                var = (a + b) / 2
+                print('Searching finished. Successfully. code 0')
+                return {'point': var, 'f_value': function(var)}, history
+        else:
+            print('Searching finished. Max iterations have been reached. code 1')
+            return (a + b) / 2, history
+
+    except Exception as e:
+        print('Error with optimization. code 2')
+        raise e
+
+
+if __name__ == '__main__':
+
+    x = sp.symbols('x')
+    func = sp.exp(3 * x) + 5 * sp.exp(-2 * x)
+    point, data = golden_section_search(x ** 2, (0, 1), type_optimization='min')
+    print(data['f_value'][:3])
+    print(point)
