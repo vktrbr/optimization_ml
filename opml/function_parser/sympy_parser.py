@@ -1,6 +1,5 @@
 from __future__ import annotations
 import sympy as sp
-from sympy.parsing.sympy_parser import standard_transformations
 from sympy.parsing.sympy_parser import parse_expr
 from typing import AnyStr
 
@@ -23,24 +22,5 @@ class Text2Sympy:
         :param function_string: a string with function that is written by python rules
         :return: function as sympy Expression
         """
-        try:
-            transformations = standard_transformations
-            transformations += (logarithm_notation, )
-            function_string = parse_expr(function_string,
-                                         transformations=transformations)
-            check_var = function_string.free_symbols
-            if len(check_var) > 1:
-                print('Too many variables. Please enter function that depend on the one variable')
-
-        except Exception as e:
-            raise e
-        return function_string
-
-
-def logarithm_notation(tokens, local_dict, global_dict):
-    for toknum, tokval in tokens:
-        print(toknum, tokval)
-
-
-if __name__ == '__main__':
-    print(Text2Sympy.parse_func('log3(x) + x'))
+        function_sympy = parse_expr(function_string)
+        return function_sympy
