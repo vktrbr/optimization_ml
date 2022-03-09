@@ -1,4 +1,6 @@
-from typing import Tuple, Dict
+from __future__ import annotations
+
+from typing import List, Literal, Tuple, Dict, TypedDict
 from numbers import Real
 import sympy as sp
 
@@ -6,10 +8,10 @@ import sympy as sp
 def golden_section_search(function: sp.core.expr.Expr,
                           bounds: Tuple[Real, Real],
                           epsilon: Real = 1e-5,
-                          type_optimization: str = 'min',
+                          type_optimization: Literal['min','max'] = 'min',
                           max_iter: int = 500,
                           verbose: bool = False,
-                          history: bool = False) -> Tuple[Dict, Dict]:
+                          history: bool = False) -> Tuple[Dot, History]:
     """
     Golden-section search
     **If optimize will fail golden_section_search will return last point**
@@ -35,7 +37,7 @@ def golden_section_search(function: sp.core.expr.Expr,
 
     """
     assert isinstance(function, sp.core.expr.Expr), 'Function is not sympy'
-    phi = (1 + 5 ** 0.5) / 2
+    phi:Real = (1 + 5 ** 0.5) / 2
 
     type_optimization = type_optimization.lower().strip()
     assert type_optimization in ['min', 'max'], 'Invalid type optimization. Enter "min" or "max"'
@@ -45,7 +47,7 @@ def golden_section_search(function: sp.core.expr.Expr,
     a, b = bounds
 
     if history:
-        history = {'iteration': [], 'point': [], 'f_value': []}
+        history:History = {'iteration': [], 'point': [], 'f_value': []}
 
     if len(function.free_symbols) == 0:
         print('Function independent on variables. code 0')
@@ -58,8 +60,8 @@ def golden_section_search(function: sp.core.expr.Expr,
 
     try:
         for i in range(max_iter):
-            x1 = b - (b - a) / phi
-            x2 = a + (b - a) / phi
+            x1:Real= b - (b - a) / phi
+            x2:Real= a + (b - a) / phi
             if type_optimization == 'min':
                 if function(x1) > function(x2):
                     a = x1
@@ -92,6 +94,14 @@ def golden_section_search(function: sp.core.expr.Expr,
         print('Error with optimization. code 2')
         raise e
 
+class History(TypedDict):
+    iteration:List[int]
+    point:List[Real]
+    f_value:List[Real]
+
+class Dot(TypedDict):
+    point: Real
+    f_value: Real
 
 if __name__ == '__main__':
 
