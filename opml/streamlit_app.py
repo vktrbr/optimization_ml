@@ -15,11 +15,12 @@ st.set_page_config(
 )
 st.title(r"$ \text{1-D optimization} $")
 
+
 algorithms_list = ["Golden-section search", "Successive parabolic interpolation",
                    "Brent's method", "BFGS algorithm"]
 
 with st.sidebar.form('input_data'):
-    st.markdown('## Task conditions:')
+    st.markdown('# Conditions:')
     function = st.text_input('Enter the function here', 'e ** (-x**2)')
     function_latex = sympy.latex(sympy.sympify(function))
 
@@ -54,8 +55,9 @@ else:
     problem_latex += rf' x \in [{bounds_a}, {bounds_b}]'
     problem_latex += '$'
 
-    method_latex = r'$ \text{Using the ``' + type_alg + '" to solve: }'
-    method_latex += rf'\quad f \longrightarrow \{type_opt}'
+    method_latex = r'$ \displaystyle \text{Using the } \textbf{``'
+    method_latex += type_alg + r'"} \text{ to solve: }'
+    method_latex += rf'\quad f \longrightarrow \{type_opt}' + r'_{x}'
     method_latex += '$'
 
     st.write(problem_latex)
