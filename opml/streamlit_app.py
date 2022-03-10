@@ -1,11 +1,17 @@
 """
 For local running streamlit app : streamlit run opml/streamlit_app.py
 """
+import timeit
 from tokenize import TokenError
+
+import pandas as pd
 import sympy
 import streamlit as st
+
 from sympy import SympifyError
-from function_parser.sympy_parser import Text2Sympy
+from com_func import solve_task
+from plot_funcs.simple_plot import gen_lineplot
+from function_parser.sympy_parser import Text2Sympy, sympy_to_callable
 import re
 
 
@@ -19,9 +25,19 @@ st.title(r"$ \text{1-D optimization} $")
 algorithms_list = ["Golden-section search", "Successive parabolic interpolation",
                    "Brent's method", "BFGS algorithm"]
 
+help_function_string = r'''$
+\textbf{Available functions:} \\ 
+\log(u, v) \ (v - \text{base}), \ \exp(u),\ \operatorname{abs}(u), \ \tan(u), \ \cot(u), \\
+\sin(u), \ \cos(u), \ \operatorname{asin}(u), \ \operatorname{sec}(u) \ \operatorname{csc}(u),
+\ \operatorname{sinc}(u), \\ \ \operatorname{asin}(u), \ \operatorname{acos}(u), 
+\ \operatorname{atan}(u), \ \operatorname{acot}(u), \ \operatorname{asec}(u), 
+\ \operatorname{acsc}(u), u!, \operatorname{sqrt}(u)$
+'''
+
 with st.sidebar.form('input_data'):
     st.markdown('# Conditions:')
-    function = st.text_input('Enter the function here', 'e ** (-x**2)')
+    function = st.text_input('Enter the function here', '10 + x ** 2 - 10 * cos(2 * pi * x)',
+                             help=help_function_string)
     function_latex = sympy.latex(sympy.sympify(function))
 
     if re.sub(r'\s', '', function) != '':
@@ -39,8 +55,10 @@ with st.sidebar.form('input_data'):
 
         type_opt = st.radio('Optimization aim', ['min', 'max'])
 
-        bounds_a = st.number_input('Left bound', value=0)
-        bounds_b = st.number_input('Right bound', value=1)
+        bounds_a = st.number_input('Left bound', value=-5.12)
+        bounds_b = st.number_input('Right bound', value=5.12)
+        bounds_a, bounds_b = sorted([bounds_a, bounds_b])
+
         type_alg = st.selectbox('Algorithm of optimization', algorithms_list)
         verbose = st.checkbox('Verbose', True)
 
@@ -50,15 +68,41 @@ if not submit_button:
     st.stop()
 
 else:
+    # Generate first raw
     problem_latex = r'$ \text{Function:} \qquad'
     problem_latex += rf' \displaystyle f(x) = {function_latex}, \quad'
     problem_latex += rf' x \in [{bounds_a}, {bounds_b}]'
     problem_latex += '$'
 
+    # Generate second row
     method_latex = r'$ \displaystyle \text{Using the } \textbf{``'
     method_latex += type_alg + r'"} \text{ to solve: }'
     method_latex += rf'\quad f \longrightarrow \{type_opt}' + r'_{x}'
     method_latex += '$'
 
+    # Write input data of task
     st.write(problem_latex)
     st.write(method_latex)
+
+    # Drawing function
+    bounds = [bounds_a, bounds_b]
+    function_callable = sympy_to_callable(function_sympy)
+    plotly_figure = gen_lineplot(function_callable, [bounds_a, bounds_b])
+    figure = st.columns(2)
+    figure[0] = st.write(r'#### $\text{Function plot}$')
+    figure[1] = st.write(plotly_figure)
+
+    time_start = timeit.timeit()
+    point, history = solve_task(type_alg, function=function_callable, bounds=bounds, keep_history=True)
+    total_time = time_start - timeit.timeit()
+    information_cols = st.columns(2)
+
+    history = pd.DataFrame(history).set_index('iteration')
+    information_cols[0].latex(history.to_latex())
+
+    info_df = pd.DataFrame({'': [point['point'], point['f_value'], history.index.max(), total_time]},
+                           index=[f'x_{type_opt}', 'f(x)', r'\text{n of iter}', r'\text{time}'])
+
+    info_df = r'$$' + info_df.style.to_latex() + r'$$'
+    print(info_df)
+    information_cols[1].latex(info_df)

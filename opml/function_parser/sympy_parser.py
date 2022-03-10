@@ -1,7 +1,7 @@
 from __future__ import annotations
 import sympy
 from sympy.parsing.sympy_parser import parse_expr
-from typing import AnyStr
+from typing import AnyStr, Callable
 from numbers import Integral
 
 
@@ -79,6 +79,17 @@ def ru_names_to_sympy(string: AnyStr) -> AnyStr:
         string = string.replace(ru_f, dictionary_ru_func[ru_f])
 
     return string
+
+
+def sympy_to_callable(function_sympy: sympy.core.expr.Expr) -> Callable:
+    """
+    Conver sympy expression to callable function
+    :param function_sympy: sympy expression
+    :return: callable function from one argument
+    """
+    assert len(function_sympy.free_symbols) <= 1, 'Too many arguments in function'
+    var = function_sympy.free_symbols
+    return sympy.lambdify(var, function_sympy)
 
 
 if __name__ == '__main__':

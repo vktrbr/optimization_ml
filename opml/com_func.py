@@ -1,6 +1,6 @@
-from golden_section_search import golden_section_search
+from one_dim_optim.golden_section_search import golden_section_search
 from typing import Literal, Tuple
-from auxiliary_objects import *
+from one_dim_optim.auxiliary_objects import *
 
 
 def solve_task(algorithm: Literal["Golden-section search",
@@ -16,3 +16,8 @@ def solve_task(algorithm: Literal["Golden-section search",
     """
     if algorithm == 'Golden-section search':
         return golden_section_search(**kwargs)
+
+
+if __name__ == '__main__':
+    def f(x): return x ** 2
+    solve_task('Golden-section search', function=f, bounds=[-1, 1])

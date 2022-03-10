@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import Literal, Tuple, Callable, Any
-from auxiliary_objects import *
+from .auxiliary_objects import *
 
 
 def golden_section_search(function: Callable[[Real, Any], Real],
