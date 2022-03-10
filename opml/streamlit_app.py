@@ -1,10 +1,12 @@
 """
 For local running streamlit app : streamlit run opml/streamlit_app.py
 """
-from typing import AnyStr
+from tokenize import TokenError
 
 import sympy
 import streamlit as st
+from sympy import SympifyError
+
 from function_parser.sympy_parser import Text2Sympy
 import re
 
@@ -19,7 +21,7 @@ algorithms_list = ["Golden-section search", "Successive parabolic interpolation"
 st.title('1-D Optimization')
 
 st.sidebar.markdown('## Task conditions:')
-function = st.sidebar.text_input('Enter the function here', 'log3(x) + e ** (x + pi) + 1 / x + x ** 2', )
+function = st.sidebar.text_input('Enter the function here', 'log3(x) * e ** (x + pi) + x ** 2 + sin(x)', )
 
 if re.sub(r'\s', '', function) != '':
 
@@ -29,4 +31,6 @@ if re.sub(r'\s', '', function) != '':
         flag_empty_func = False
     except (SyntaxError, TypeError):
         st.sidebar.write('Check syntax. Wrong input :(')
-
+    except (TokenError, SympifyError):
+        st.sidebar.write('Error')
+        st.sidebar.write('Try to write logarithms as: `log(x**2, x+1)`')
