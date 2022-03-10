@@ -11,10 +11,10 @@ import re
 
 st.set_page_config(
     page_title=r"OneD optimization",
-    page_icon=":balloon:",
+    page_icon=":two:",
 )
-st.title(r"$ \text{1-D optimization} $")
 
+st.title(r"$ \text{1-D optimization} $")
 
 algorithms_list = ["Golden-section search", "Successive parabolic interpolation",
                    "Brent's method", "BFGS algorithm"]
