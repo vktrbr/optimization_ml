@@ -21,19 +21,18 @@ algorithms_list = ["Golden-section search", "Successive parabolic interpolation"
 st.title('1-D Optimization')
 
 st.sidebar.markdown('## Task conditions:')
-function = st.sidebar.text_input('Enter the function here', 'log3(x) * e ** (x + pi) + x ** 2 + ctg(x)', )
+function = st.sidebar.text_input('Enter the function here', 'e ** (-x**2)')
 
 if re.sub(r'\s', '', function) != '':
-
-    try:
-        function_sympy = Text2Sympy.parse_func(function)
-        st.sidebar.write(r'> $ \displaystyle f(x) = ', rf'\ {sympy.latex(sympy.sympify(function))} $')
-        flag_empty_func = False
-    except (SyntaxError, TypeError):
-        st.sidebar.write('Check syntax. Wrong input :(')
-    except (TokenError, SympifyError):
-        st.sidebar.write('Error')
-        st.sidebar.write('Try to write logarithms as: `log(x**2, x+1)`')
-
-# print(function_sympy)
-# print(function_sympy.subs({sympy.symbols('x'): 5}))
+    if '|' in function:
+        st.sidebar.write('Use abs(h) instead of |h|')
+    else:
+        try:
+            function_sympy = Text2Sympy.parse_func(function)
+            st.sidebar.write(r'> $ \displaystyle f(x) = ', rf'\ {sympy.latex(sympy.sympify(function))} $')
+            flag_empty_func = False
+        except (SyntaxError, TypeError):
+            st.sidebar.write('Check syntax. Wrong input :(')
+        except (TokenError, SympifyError):
+            st.sidebar.write('Error')
+            st.sidebar.write('Try to write logarithms as: `log(x**2, x+1)`')
