@@ -15,6 +15,7 @@ class Text2Sympy:
         :return: function as sympy Expression
         """
         function_string = logarithm_replace(function_string)
+        function_string = ru_names_to_sympy(function_string)
         function_sympy = parse_expr(function_string)
         function_sympy = function_sympy.subs({sympy.symbols('e'): sympy.exp(1)})
         return function_sympy
@@ -64,6 +65,18 @@ def logarithm_replace(string: AnyStr) -> AnyStr:
 
     for pattern in dict_replaces.keys():
         string = string.replace(pattern, dict_replaces[pattern])
+
+    return string
+
+
+def ru_names_to_sympy(string: AnyStr) -> AnyStr:
+    """
+    Replace russian names of function like tg to tan
+    """
+    dictionary_ru_func = {'tg': 'tan', 'ctg': 'cot', 'arcsin': 'asin',
+                          'arccos': 'acos', 'arctg': 'atan', 'arcctg': 'acot'}
+    for ru_f in dictionary_ru_func.keys():
+        string = string.replace(ru_f, dictionary_ru_func[ru_f])
 
     return string
 
