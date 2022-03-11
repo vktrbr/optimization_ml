@@ -33,5 +33,6 @@ def gen_lineplot(func: Callable,
     fig.add_scatter(x=found_point[0], y=found_point[1],
                     name='found <br>point', mode='markers',
                     hovertemplate='x: %{x}<br><extra></extra>'
-                                  'f(x): %{y}<br>')
+                                  'f(x): %{y}<br>',
+                    marker=dict(size=10))
     return fig
