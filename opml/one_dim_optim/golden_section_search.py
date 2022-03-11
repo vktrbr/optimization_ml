@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import Tuple, Callable, Any
-from opml.one_dim_optim.auxiliary_objects import *
+from .auxiliary_objects import *
 try:
     from typing import Literal
 except ImportError:
