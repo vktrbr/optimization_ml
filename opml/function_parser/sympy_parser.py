@@ -88,7 +88,7 @@ def sympy_to_callable(function_sympy: sympy.core.expr.Expr) -> Callable:
     :return: callable function from one argument
     """
     assert len(function_sympy.free_symbols) <= 1, 'Too many arguments in function'
-    var = function_sympy.free_symbols
+    var = list(function_sympy.free_symbols)
     return sympy.lambdify(var, function_sympy)
 
 
