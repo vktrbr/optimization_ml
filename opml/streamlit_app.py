@@ -20,13 +20,11 @@ st.set_page_config(
     page_icon=":two:",
 )
 
-st.title(r"$ \text{1-D optimization} $")
-
 algorithms_list = ["Golden-section search", "Successive parabolic interpolation",
                    "Brent's method", "BFGS algorithm"]
 
-help_function_string = r'''$
-\textbf{Available functions:} \\ 
+help_function_string = r'''
+Available functions: $ \\ 
 \log(u, v) \ (v - \text{base}), \ \exp(u),\ \operatorname{abs}(u), \ \tan(u), \ \cot(u), \\
 \sin(u), \ \cos(u), \ \operatorname{asin}(u), \ \operatorname{sec}(u) \ \operatorname{csc}(u),
 \ \operatorname{sinc}(u), \\ \ \operatorname{asin}(u), \ \operatorname{acos}(u), 
@@ -34,75 +32,74 @@ help_function_string = r'''$
 \ \operatorname{acsc}(u), u!, \operatorname{sqrt}(u)$
 '''
 
+
 with st.sidebar.form('input_data'):
+    flag_empty_func = True
     st.markdown('# Conditions:')
     function = st.text_input('Enter the function here', '10 + x ** 2 - 10 * cos(2 * pi * x)',
                              help=help_function_string)
-    function_latex = sympy.latex(sympy.sympify(function))
 
     if re.sub(r'\s', '', function) != '':
         if '|' in function:
             st.write('Use abs(h) instead of |h|')
         else:
             try:
+                function_latex = sympy.latex(sympy.sympify(function))
                 function_sympy = Text2Sympy.parse_func(function)
                 flag_empty_func = False
             except (SyntaxError, TypeError):
                 st.write('Check syntax. Wrong input :(')
             except (TokenError, SympifyError):
-                st.write('Error')
-                st.write('Try to write logarithms as: `log(x**2, x+1)`')
+                st.write('**Error**')
+                st.write('Write logarithms as: `log(x**2, x+1)` '
+                         'variables as `pi * x` instead of `pi x`')
 
         type_opt = st.radio('Optimization aim', ['min', 'max'])
 
-        bounds_a = st.number_input('Left bound', value=-5.12)
-        bounds_b = st.number_input('Right bound', value=5.12)
-        bounds_a, bounds_b = sorted([bounds_a, bounds_b])
+        bounds_a = st.number_input('Left bound', value=-5.12, format='%.3f')
+        bounds_b = st.number_input('Right bound', value=5.12, format='%.3f')
+        bounds = sorted([bounds_a, bounds_b])
 
         type_alg = st.selectbox('Algorithm of optimization', algorithms_list)
-        verbose = st.checkbox('Verbose', True)
 
     submit_button = st.form_submit_button(label='Solve!')
 
-if not submit_button:
+if not submit_button or flag_empty_func:
+    title = st.title(r"1-D optimization")
+    st.write('**Hello!** \n\n'
+             'This app demonstrates 1d optimization algorithms \n\n '
+             'You can specify **function**, **bounds** and **method**')
+    st.write('### Available methods: ')
+    for alg in algorithms_list:
+        st.write(f'- **{alg}**')
     st.stop()
 
 else:
     # Generate first raw
-    problem_latex = r'$ \text{Function:} \qquad'
-    problem_latex += rf' \displaystyle f(x) = {function_latex}, \quad'
-    problem_latex += rf' x \in [{bounds_a}, {bounds_b}]'
-    problem_latex += '$'
+    st.write('### Problem:')
+    problem_latex = rf'$ \displaystyle f(x) = {function_latex}, \quad'
+    problem_latex += rf' x \in [{bounds_a: 0.3f}, {bounds_b :0.3f}] $'
+    st.write(problem_latex)
 
     # Generate second row
-    method_latex = r'$ \displaystyle \text{Using the } \textbf{``'
-    method_latex += type_alg + r'"} \text{ to solve: }'
-    method_latex += rf'\quad f \longrightarrow \{type_opt}' + r'_{x}'
-    method_latex += '$'
-
-    # Write input data of task
-    st.write(problem_latex)
-    st.write(method_latex)
+    st.write(f'Using the **{type_alg}** to solve:'
+             rf'$\displaystyle \quad f \longrightarrow \{type_opt}' + r'_{x} $')
 
     # Drawing function
-    bounds = [bounds_a, bounds_b]
     function_callable = sympy_to_callable(function_sympy)
-    plotly_figure = gen_lineplot(function_callable, [bounds_a, bounds_b])
-    figure = st.columns(2)
-    figure[0] = st.write(r'#### $\text{Function plot}$')
-    figure[1] = st.write(plotly_figure)
 
     time_start = timeit.timeit()
     point, history = solve_task(type_alg, function=function_callable, bounds=bounds, keep_history=True)
-    total_time = time_start - timeit.timeit()
-    information_cols = st.columns(2)
+    total_time = timeit.timeit() - time_start
 
+    plotly_figure = gen_lineplot(function_callable,
+                                 [bounds_a, bounds_b],
+                                 [[point['point']], [point['f_value']]])
+    figure = st.write(plotly_figure)
+
+    information_cols = st.columns([1, 4, 4])
     history = pd.DataFrame(history).set_index('iteration')
-    information_cols[0].latex(history.to_latex())
+    history = history.rename_axis('iteration', axis=0)
 
     info_df = pd.DataFrame({'': [point['point'], point['f_value'], history.index.max(), total_time]},
-                           index=[f'x_{type_opt}', 'f(x)', r'\text{n of iter}', r'\text{time}'])
-
-    info_df = r'$$' + info_df.style.to_latex() + r'$$'
-    print(info_df)
-    information_cols[1].latex(info_df)
+                           index=[f'x_{type_opt}', 'f(x)', r'n of iter', r'time'])
