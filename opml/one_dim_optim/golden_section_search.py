@@ -1,7 +1,11 @@
 from __future__ import annotations
 
-from typing import Literal, Tuple, Callable, Any
-from .auxiliary_objects import *
+from typing import Tuple, Callable, Any
+from opml.one_dim_optim.auxiliary_objects import *
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 
 
 def golden_section_search(function: Callable[[Real, Any], Real],
@@ -83,6 +87,12 @@ def golden_section_search(function: Callable[[Real, Any], Real],
     except Exception as e:
         print('Error with optimization. code 2')
         raise e
+
+
+def visualize_gss(function: Callable[[Real, Any], Real],
+                  bounds: Tuple[Real, Real],
+                  history: History) -> None:
+    pass
 
 
 if __name__ == '__main__':
