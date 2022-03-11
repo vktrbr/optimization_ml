@@ -59,8 +59,8 @@ with st.sidebar.form('input_data'):
         bounds_a = st.number_input('Left bound', value=-5.12, format='%.3f')
         bounds_b = st.number_input('Right bound', value=5.12, format='%.3f')
         bounds = sorted([bounds_a, bounds_b])
-
         type_alg = st.selectbox('Algorithm of optimization', algorithms_list)
+        cnt_iterations = int(st.number_input('Maximum number of iterations', value=500, min_value=0), )
 
     submit_button = st.form_submit_button(label='Solve!')
 
@@ -89,8 +89,15 @@ else:
     function_callable = sympy_to_callable(function_sympy)
 
     time_start = timeit.timeit()
-    point, history = solve_task(type_alg, function=function_callable, bounds=bounds, keep_history=True)
+    point, history = solve_task(type_alg, function=function_callable, bounds=bounds, keep_history=True,
+                                type_optimization=type_opt, max_iter=cnt_iterations)
     total_time = timeit.timeit() - time_start
+
+    point_screen, f_value_screen, time_screen, iteration_screen = st.columns(4)
+    point_screen.write(r'$ x_{\ ' + f'{type_opt}' + '} = ' + f'{point["point"]: 0.4f} $')
+    f_value_screen.write(r'$ f_{\ ' + f'{type_opt}' + '} = ' + f'{function_callable(point["point"]): 0.4f} $' )
+    time_screen.write(f'**Time** = {abs(total_time): 0.6f} s.')
+    iteration_screen.write(f'**Iterations**: {len(history["iteration"])}')
 
     plotly_figure = gen_lineplot(function_callable,
                                  [bounds_a, bounds_b],
