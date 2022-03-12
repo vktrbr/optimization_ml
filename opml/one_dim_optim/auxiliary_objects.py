@@ -16,8 +16,10 @@ class History(TypedDict):
     Class with an optimization history
     """
     iteration: List[int]
-    point: List[Real]
+    middle_point: List[Real]
     f_value: List[Real]
+    left_point: List[Real]
+    right_point: List[Real]
 
 
 class Point(TypedDict):

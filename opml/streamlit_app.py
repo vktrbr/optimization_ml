@@ -4,13 +4,12 @@ For local running streamlit app : streamlit run opml/streamlit_app.py
 import timeit
 from tokenize import TokenError
 
-import pandas as pd
 import sympy
 import streamlit as st
 
 from sympy import SympifyError
 from com_func import solve_task
-from plot_funcs.simple_plot import gen_lineplot
+from plot_funcs.gss_visualizer import gen_animation
 from function_parser.sympy_parser import Text2Sympy, sympy_to_callable
 import re
 
@@ -95,18 +94,14 @@ else:
 
     point_screen, f_value_screen, time_screen, iteration_screen = st.columns(4)
     point_screen.write(r'$ x_{\ ' + f'{type_opt}' + '} = ' + f'{point["point"]: 0.4f} $')
-    f_value_screen.write(r'$ f_{\ ' + f'{type_opt}' + '} = ' + f'{function_callable(point["point"]): 0.4f} $' )
+    f_value_screen.write(r'$ f_{\ ' + f'{type_opt}' + '} = ' + f'{function_callable(point["point"]): 0.4f} $')
     time_screen.write(f'**Time** = {abs(total_time): 0.6f} s.')
     iteration_screen.write(f'**Iterations**: {len(history["iteration"])}')
 
-    plotly_figure = gen_lineplot(function_callable,
-                                 [bounds_a, bounds_b],
-                                 [[point['point']], [point['f_value']]])
+    # plotly_figure = gen_lineplot(function_callable,
+    #                              [bounds_a, bounds_b],
+    #                              [[point['point']], [point['f_value']]])
+    #
+    plotly_figure = gen_animation(function_callable, bounds, history)
+
     figure = st.write(plotly_figure)
-
-    information_cols = st.columns([1, 4, 4])
-    history = pd.DataFrame(history).set_index('iteration')
-    history = history.rename_axis('iteration', axis=0)
-
-    info_df = pd.DataFrame({'': [point['point'], point['f_value'], history.index.max(), total_time]},
-                           index=[f'x_{type_opt}', 'f(x)', r'n of iter', r'time'])
