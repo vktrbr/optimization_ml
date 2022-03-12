@@ -1,11 +1,7 @@
 from __future__ import annotations
 
-from typing import Tuple, Callable, Any
+from typing import Tuple, Callable, Any, Literal
 from .auxiliary_objects import *
-try:
-    from typing import Literal
-except ImportError:
-    from typing_extensions import Literal
 
 
 def golden_section_search(function: Callable[[Real, Any], Real],
@@ -46,9 +42,14 @@ def golden_section_search(function: Callable[[Real, Any], Real],
     type_optimization = type_optimization.lower().strip()
     assert type_optimization in ['min', 'max'], 'Invalid type optimization. Enter "min" or "max"'
 
-    a, b = bounds
+    a: Real = bounds[0]
+    b: Real = bounds[1]
 
-    history: History = {'iteration': [], 'point': [], 'f_value': []}
+    history: History = {'iteration': [0],
+                        'middle_point': [(a + b) / 2],
+                        'f_value': [function((a + b) / 2, **kwargs)],
+                        'left_point': [a],
+                        'right_point': [b]}
 
     try:
         for i in range(max_iter):
@@ -73,8 +74,10 @@ def golden_section_search(function: Callable[[Real, Any], Real],
 
             if keep_history:
                 history['iteration'].append(i)
-                history['point'].append(middle_point)
+                history['middle_point'].append(middle_point)
                 history['f_value'].append(function(middle_point, **kwargs))
+                history['left_point'].append(a)
+                history['right_point'].append(b)
 
             if abs(x1 - x2) < epsilon:
                 print('Searching finished. Successfully. code 0')
@@ -89,15 +92,10 @@ def golden_section_search(function: Callable[[Real, Any], Real],
         raise e
 
 
-def visualize_gss(function: Callable[[Real, Any], Real],
-                  bounds: Tuple[Real, Real],
-                  history: History) -> None:
-    pass
-
-
 if __name__ == '__main__':
 
     def func(x): return 2.71828 ** (3 * x) + 5 * 2.71828 ** (-2 * x)
-    point, data = golden_section_search(func, (-10, 10), type_optimization='min', verbose=True)
+    point, data = golden_section_search(func, (-10, 10), type_optimization='min', verbose=True, keep_history=True)
+
     print(data['f_value'][:3])
     print(point)
