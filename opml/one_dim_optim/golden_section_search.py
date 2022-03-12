@@ -52,7 +52,7 @@ def golden_section_search(function: Callable[[Real, Any], Real],
                         'right_point': [b]}
 
     try:
-        for i in range(max_iter):
+        for i in range(1, max_iter):
             x1: Real = b - (b - a) / phi
             x2: Real = a + (b - a) / phi
 
