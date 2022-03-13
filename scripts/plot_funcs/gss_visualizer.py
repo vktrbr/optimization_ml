@@ -3,7 +3,8 @@ from __future__ import annotations
 from typing import Callable, Tuple, Any
 import pandas as pd
 import plotly.graph_objects as go
-from opml.one_dim_optim.auxiliary_objects import History
+
+from scripts.one_dim_optim.auxiliary_objects import History
 import numpy as np
 import plotly.express as px
 from numbers import Real

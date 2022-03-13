@@ -1,5 +1,5 @@
 """
-For local running streamlit app : streamlit run opml/streamlit_app.py
+For local running streamlit app : streamlit run scripts/streamlit_app.py
 """
 import timeit
 from tokenize import TokenError
@@ -8,11 +8,12 @@ import sympy
 import streamlit as st
 
 from sympy import SympifyError
-from com_func import solve_task
-from plot_funcs.gss_visualizer import gen_animation
-from function_parser.sympy_parser import Text2Sympy, sympy_to_callable
+from scripts.com_func import solve_task
+from scripts.plot_funcs.gss_visualizer import gen_animation
+from scripts.function_parser.sympy_parser import Text2Sympy, sympy_to_callable
 import re
 
+from scripts.plot_funcs.simple_plot import gen_lineplot
 
 st.set_page_config(
     page_title=r"OneD optimization",
@@ -60,6 +61,8 @@ with st.sidebar.form('input_data'):
         bounds = sorted([bounds_a, bounds_b])
         type_alg = st.selectbox('Algorithm of optimization', algorithms_list)
         cnt_iterations = int(st.number_input('Maximum number of iterations', value=500, min_value=0), )
+        epsilon = float(st.number_input('epsilon', value=1e-5, min_value=1e-6, max_value=1., step=1e-6, format='%.6f'))
+        type_plot = st.radio('Type visualization', ['step-by-step', 'static'])
 
     submit_button = st.form_submit_button(label='Solve!')
 
@@ -89,7 +92,7 @@ else:
 
     time_start = timeit.timeit()
     point, history = solve_task(type_alg, function=function_callable, bounds=bounds, keep_history=True,
-                                type_optimization=type_opt, max_iter=cnt_iterations)
+                                type_optimization=type_opt, max_iter=cnt_iterations, epsilon=epsilon)
     total_time = timeit.timeit() - time_start
 
     point_screen, f_value_screen, time_screen, iteration_screen = st.columns(4)
@@ -98,10 +101,16 @@ else:
     time_screen.write(f'**Time** = {abs(total_time): 0.6f} s.')
     iteration_screen.write(f'**Iterations**: {len(history["iteration"])}')
 
-    # plotly_figure = gen_lineplot(function_callable,
-    #                              [bounds_a, bounds_b],
-    #                              [[point['point']], [point['f_value']]])
-    #
-    plotly_figure = gen_animation(function_callable, bounds, history)
+    if type_plot == 'static':
+        plotly_figure = gen_lineplot(function_callable,
+                                     [bounds_a, bounds_b],
+                                     [[point['point']], [point['f_value']]])
 
+    elif type_plot == 'step-by-step' and type_alg == 'Golden-section search':
+        plotly_figure = gen_animation(function_callable, bounds, history)
+
+    else:
+        plotly_figure = gen_lineplot(function_callable,
+                                     [bounds_a, bounds_b],
+                                     [[point['point']], [point['f_value']]])
     figure = st.write(plotly_figure)
