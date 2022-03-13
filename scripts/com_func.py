@@ -1,6 +1,6 @@
-from one_dim_optim.golden_section_search import golden_section_search
+from scripts.one_dim_optim.golden_section_search import golden_section_search
 from typing import Literal, Tuple
-from one_dim_optim.auxiliary_objects import *
+from scripts.one_dim_optim.auxiliary_objects import *
 
 
 def solve_task(algorithm: Literal["Golden-section search",

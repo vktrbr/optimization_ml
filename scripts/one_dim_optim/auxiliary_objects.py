@@ -10,7 +10,6 @@ else:
     from typing_extensions import TypedDict
 
 
-
 class History(TypedDict):
     """
     Class with an optimization history

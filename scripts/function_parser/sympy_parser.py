@@ -83,7 +83,7 @@ def ru_names_to_sympy(string: AnyStr) -> AnyStr:
 
 def sympy_to_callable(function_sympy: sympy.core.expr.Expr) -> Callable:
     """
-    Conver sympy expression to callable function
+    Convert sympy expression to callable function
     :param function_sympy: sympy expression
     :return: callable function from one argument
     """
