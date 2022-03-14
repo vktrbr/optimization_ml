@@ -11,6 +11,7 @@ import streamlit as st
 st.write(sys.path[0])
 st.write(sys.path[1])
 st.write(sys.path[2])
+st.write(sys)
 
 """
 import timeit
