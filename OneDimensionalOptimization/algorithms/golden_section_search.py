@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import Tuple, Callable, Any, Literal
-from .auxiliary_objects import *
+from .support import *
 
 
 def golden_section_search(function: Callable[[Real, Any], Real],
@@ -15,17 +15,23 @@ def golden_section_search(function: Callable[[Real, Any], Real],
     """
     Golden-section search
 
+    **Algorithm:**
+
+        :math:`\\displaystyle \\phi = \\frac{(1 + \\sqrt{5})}{2}`
+
+        1. :math:`a, b` - left and right bounds
+
+        2. | :math:`\\displaystyle x_1 = \\frac{b - (b - a)}{\\phi}`
+           | :math:`\\displaystyle x_2 = \\frac{a + (b - a)}{\\phi}`
+
+        3. | if :math:`\\displaystyle f(x_1) > f(x_2)` (for min)
+            :math:`\\displaystyle [ f(x_1) < f(x_2)` (for max) :math:`]`
+           | then :math:`a = x_1` else  :math:`b = x_2`
+
+        4. Repeat  :math:`2, 3` steps while :math:`|a - b| > e`
+
     **If optimization fails golden_section_search will return the last point**
 
-    Algorithm::
-        phi = (1 + 5 ** 0.5) / 2
-
-        1. a, b = bounds
-        2. Calculate:
-            x1 = b - (b - a) / phi,
-            x2 = a + (b - a) / phi
-        3. if `f(x1) > f(x2)` (for `min`) | if `f(x1) > f(x2)` (for `max`) then a = x1 else b = x2
-        4. Repeat 2, 3 steps while `|a - b| > e`
     :param function: callable that depends on the first positional argument. Other arguments are passed through kwargs
     :param bounds: tuple with two numbers. This is left and right bound optimization. [a, b]
     :param epsilon: optimization accuracy
@@ -33,7 +39,7 @@ def golden_section_search(function: Callable[[Real, Any], Real],
     :param max_iter: maximum number of iterations
     :param verbose: flag of printing iteration logs
     :param keep_history: flag of return history
-    :returns: tuple with point and history.
+    :return: tuple with point and history.
 
     """
 
@@ -44,12 +50,14 @@ def golden_section_search(function: Callable[[Real, Any], Real],
 
     a: Real = bounds[0]
     b: Real = bounds[1]
-
-    history: History = {'iteration': [0],
-                        'middle_point': [(a + b) / 2],
-                        'f_value': [function((a + b) / 2, **kwargs)],
-                        'left_point': [a],
-                        'right_point': [b]}
+    if keep_history:
+        history: History = {'iteration': [0],
+                            'middle_point': [(a + b) / 2],
+                            'f_value': [function((a + b) / 2, **kwargs)],
+                            'left_point': [a],
+                            'right_point': [b]}
+    else:
+        history: History = {'iteration': [], 'middle_point': [], 'f_value': [], 'left_point': [], 'right_point': []}
 
     try:
         for i in range(1, max_iter):
