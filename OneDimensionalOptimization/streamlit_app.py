@@ -6,6 +6,13 @@ import sys
 
 sys.path.insert(0, os.path.abspath('..'))
 
+import streamlit as st
+
+st.write(sys.path[0])
+st.write(sys.path[1])
+st.write(sys.path[2])
+
+"""
 import timeit
 from tokenize import TokenError
 import sympy
@@ -117,3 +124,5 @@ else:
                                      [bounds_a, bounds_b],
                                      [[point['point']], [point['f_value']]])
     figure = st.write(plotly_figure)
+
+"""
