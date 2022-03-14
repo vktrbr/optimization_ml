@@ -84,6 +84,9 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
             f0, f1, f2 = list(map(lambda x: type_opt_const * function(x, **kwargs), [x0, x1, x2]))
             x_new = x2 + 0.5 * ((x1 - x2) ** 2 * (f2 - f0) + (x0 - x2) ** 2 * (f1 - f2)) / ((x1 - x2) * (f2 - f0) +
                                                                                             (x0 - x2) * (f1 - f2))
+            if not bounds[0] <= x_new <= bounds[1]:
+                print('Searching finished. Out of bounds. code 0')
+                return {'point': x2, 'f_value': function(x2, **kwargs)}, history
 
             x2, x1, x0 = sorted([x1, x2, x_new], key=lambda x: type_opt_const * function(x, **kwargs))
 
