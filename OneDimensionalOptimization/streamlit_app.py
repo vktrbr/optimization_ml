@@ -4,7 +4,7 @@ For local running streamlit app : streamlit run scripts/streamlit_app.py
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('..'))
 
 import timeit
 from tokenize import TokenError
@@ -13,7 +13,8 @@ import streamlit as st
 
 from sympy import SympifyError
 from OneDimensionalOptimization.algorithms.combine_function import solve_task
-from OneDimensionalOptimization.drawing.gss_visualizer import gen_animation
+from OneDimensionalOptimization.drawing.gss_visualizer import gen_animation_gss
+from OneDimensionalOptimization.drawing.spi_visualizer import gen_animation_spi
 from OneDimensionalOptimization.parser.sympy_parser import parse_func, sympy_to_callable
 import re
 
@@ -110,12 +111,13 @@ else:
                                      [[point['point']], [point['f_value']]])
 
     elif type_plot == 'step-by-step' and type_alg == 'Golden-section search':
-        plotly_figure = gen_animation(function_callable, bounds, history)
+        plotly_figure = gen_animation_gss(function_callable, bounds, history)
+
+    elif type_plot == 'step-by-step' and type_alg == 'Successive parabolic interpolation':
+        plotly_figure = gen_animation_spi(function_callable, bounds, history)
 
     else:
         plotly_figure = gen_lineplot(function_callable,
                                      [bounds_a, bounds_b],
                                      [[point['point']], [point['f_value']]])
     figure = st.write(plotly_figure)
-
-
