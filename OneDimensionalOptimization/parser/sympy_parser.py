@@ -5,33 +5,41 @@ from typing import AnyStr, Callable
 from numbers import Integral
 
 
-class Text2Sympy:
+def parse_func(function_string: AnyStr) -> sympy.core.expr.Expr:
+    """
+    Convert the string to sympy.core.expr.Expr::
 
-    @staticmethod
-    def parse_func(function_string: AnyStr) -> sympy.core.expr.Expr:
-        """
-        Convert the string to sympy.core.expr.Expr
-        :param function_string: a string with function that is written by python rules
-        :return: function as sympy Expression
-        """
-        function_string = logarithm_replace(function_string)
-        function_string = ru_names_to_sympy(function_string)
-        function_sympy = parse_expr(function_string)
-        function_sympy = function_sympy.subs({sympy.symbols('e'): sympy.exp(1)})
-        return function_sympy
+        >>> parse_func('log2(x) + e ** x')
+        exp(x) + log(x)/log(2)
+
+        >>> parse_func('tg(sqrt(x)) + log2(loge(x))')
+        log(log(x))/log(2) + tan(sqrt(x))
+
+    :param function_string: a string with function that is written by python rules
+    :return: function as sympy Expression
+
+    """
+    function_string = logarithm_replace(function_string)
+    function_string = ru_names_to_sympy(function_string)
+    function_sympy = parse_expr(function_string)
+    function_sympy = function_sympy.subs({sympy.symbols('e'): sympy.exp(1)})
+    return function_sympy
 
 
 def logarithm_replace(string: AnyStr) -> AnyStr:
     """
-    Replace logN(A) on log(A, N), where N is the sequence of symbols before '('.
-    A - is the symbols between '(' and ')', including other '(', ')' symbols at lower levels.
+    Replace logN(A) by log(A, N), where N is the sequence of symbols before '('.
+    A is the symbols between '(' and ')', including other '(', ')' symbols at lower levels, example::
 
-    examples::
-        In [0]:  logarithm_replace('log3(x) + 2 * log5(4)')
-        Out [0]: 'log(x, 3) + 2 * log(4, 5)'
+        >>> logarithm_replace('log3(x) + 2 * log5(4)')
+        log(x, 3) + 2 * log(4, 5)
 
-        In [1]:  logarithm_replace('logA(log5(4 * x + 1)) + 8')
-        Out [1]: 'log(log(4 * x + 1, 5), A) + 8'
+        >>> logarithm_replace('logA(log5(4 * x + 1)) + 8')
+        'log(log(4 * x + 1, 5), A) + 8'
+
+    :parameter string: A sequence of symbols. For exmaple some function
+    :return: A string of symbols with correnct logarithms.
+
     """
     dict_replaces = {}
     i = 0
@@ -39,7 +47,6 @@ def logarithm_replace(string: AnyStr) -> AnyStr:
 
         if string[i:i + 3] == 'log' and string[i + 3] != '(':
             open_bracket_i: Integral = i + string[i:].find('(')
-            print(open_bracket_i)
             n: AnyStr = string[i+3:open_bracket_i]
             j = open_bracket_i
             cnt_open_br = 1
@@ -71,7 +78,17 @@ def logarithm_replace(string: AnyStr) -> AnyStr:
 
 def ru_names_to_sympy(string: AnyStr) -> AnyStr:
     """
-    Replace russian names of function like tg to tan
+    Replace russian names of function like tg to tan, example::
+
+        >>> ru_names_to_sympy("tg(x**2)")
+        'tan(x**2)'
+
+    .. note::
+        This bag of translation words will be updated.
+
+    :param string: A string with some mathematical expression
+    :return: A string with correct names to sympy
+
     """
     dictionary_ru_func = {'tg': 'tan', 'ctg': 'cot', 'arcsin': 'asin',
                           'arccos': 'acos', 'arctg': 'atan', 'arcctg': 'acot'}
@@ -83,9 +100,18 @@ def ru_names_to_sympy(string: AnyStr) -> AnyStr:
 
 def sympy_to_callable(function_sympy: sympy.core.expr.Expr) -> Callable:
     """
-    Convert sympy expression to callable function
+    Convert sympy expression to callable function, for example::
+
+        >>> f = parse_func('x**2')
+        >>> f = sympy_to_callable(f)
+        >>> f
+        <function_lambdifygenerated(x)>
+        >>> f(2)
+        4
     :param function_sympy: sympy expression
+    :except: AssertionError. If function depends on more one variable
     :return: callable function from one argument
+
     """
     assert len(function_sympy.free_symbols) <= 1, 'Too many arguments in function'
     var = list(function_sympy.free_symbols)
