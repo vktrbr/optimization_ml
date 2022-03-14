@@ -5,12 +5,12 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
-from OneDimensionalOptimization.algorithms.support import History
+from OneDimensionalOptimization.algorithms.support import HistoryGSS
 from typing import Callable, Tuple, Any
 from numbers import Real
 
 
-def transfer_history_gss(history: History,
+def transfer_history_gss(history: HistoryGSS,
                          func: Callable[[Real, Any], Real]) -> pd.DataFrame:
     """
     Generate data for plotly express with using animation_frame for animate
@@ -54,7 +54,7 @@ def transfer_history_gss(history: History,
 
 def gen_animation(func: Callable,
                   bounds: Tuple[Real, Real],
-                  history: History) -> go.Figure:
+                  history: HistoryGSS) -> go.Figure:
     """
     Generates an animation of the golden-section search on `func` between the `bounds`
 

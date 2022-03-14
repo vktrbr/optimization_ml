@@ -14,10 +14,10 @@ golden\_section\_search
    :members:
    :undoc-members:
    :show-inheritance:
-parabolic
+successive\_parabolic\_interpolation.py
 ------------------------------------------------------
 
-.. automodule:: OneDimensionalOptimization.algorithms.parabolic
+.. automodule:: OneDimensionalOptimization.algorithms.successive_parabolic_interpolation
    :members:
    :undoc-members:
    :show-inheritance:
