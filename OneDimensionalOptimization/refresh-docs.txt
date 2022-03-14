@@ -1,0 +1,7 @@
+cd ..
+.\make clean html
+.\make clean latex
+.\make html
+.\make latex
+cd _build\latex
+pdflatex one-dimensional-optimization.tex
