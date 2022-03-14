@@ -5,7 +5,8 @@
 <a name="one-dimensional-optimization"/>
 
 ## One-dimensional optimization.
-> https://share.streamlit.io/vktrbr/optimization_ml/main/opml/streamlit_app.py
+> App with visualization:
+> https://share.streamlit.io/vktrbr/optimization_ml/main/OneDimensionalOptimization/streamlit_app.py
 #### Algorithms:
 1. Golden-section search 
 2. Successive parabolic interpolation
