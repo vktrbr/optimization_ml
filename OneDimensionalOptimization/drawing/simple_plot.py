@@ -1,25 +1,31 @@
 from numbers import Real
-from typing import Callable, Tuple
+from typing import Callable, Tuple, Sequence
 
 import numpy as np
 import plotly.graph_objects as go
 import plotly.express as px
 
 
-def gen_lineplot(func: Callable,
+def gen_lineplot(function: Callable,
                  bounds: Tuple[Real, Real],
-                 found_point: Tuple[Real, Real]) -> go.Figure:
+                 found_point: Tuple[Sequence[Real], Sequence[Real]]) -> go.Figure:
     """
-    Generates a graph of the `func` between the `bounds`
-    :param func: callable that depends on the first positional argument
+    Generates a graph of the function between the bounds
+
+        >>> def f(x): return x ** 2
+        >>> gen_lineplot(f, (-1, 2), ([0], [0]))
+
+
+    :param function: callable that depends on the first positional argument
     :param bounds: tuple with left and right points on the x-axis
-    :param found_point: point that was found by the method. A tulpe with two numbers
+    :param found_point: points that was found by the method. A tulpe with two list / np.ndarray / tuple
+
     :return: go.Figure with graph
     """
     x_axis = np.linspace(bounds[0], bounds[1], 500)
     f_axis = np.zeros_like(x_axis)
-    for i, x in enumerate(x_axis):
-        f_axis[i] = func(x)
+    for i, xi in enumerate(x_axis):
+        f_axis[i] = function(xi)
 
     fig = px.line({'x': x_axis, 'f(x)': f_axis},
                   x='x',
