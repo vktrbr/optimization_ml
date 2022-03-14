@@ -1,19 +1,23 @@
 """
 For local running streamlit app : streamlit run scripts/streamlit_app.py
 """
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath('.'))
+
 import timeit
 from tokenize import TokenError
-
 import sympy
 import streamlit as st
 
 from sympy import SympifyError
-from scripts.com_func import solve_task
-from scripts.plot_funcs.gss_visualizer import gen_animation
-from scripts.function_parser.sympy_parser import Text2Sympy, sympy_to_callable
+from OneDimensionalOptimization.algorithms.combine_function import solve_task
+from OneDimensionalOptimization.drawing.gss_visualizer import gen_animation
+from OneDimensionalOptimization.parser.sympy_parser import parse_func, sympy_to_callable
 import re
 
-from scripts.plot_funcs.simple_plot import gen_lineplot
+from OneDimensionalOptimization.drawing.simple_plot import gen_lineplot
 
 st.set_page_config(
     page_title=r"OneD optimization",
@@ -32,7 +36,6 @@ Available functions: $ \\
 \ \operatorname{acsc}(u), u!, \operatorname{sqrt}(u)$
 '''
 
-
 with st.sidebar.form('input_data'):
     flag_empty_func = True
     st.markdown('# Conditions:')
@@ -45,7 +48,7 @@ with st.sidebar.form('input_data'):
         else:
             try:
                 function_latex = sympy.latex(sympy.sympify(function))
-                function_sympy = Text2Sympy.parse_func(function)
+                function_sympy = parse_func(function)
                 flag_empty_func = False
             except (SyntaxError, TypeError):
                 st.write('Check syntax. Wrong input :(')
