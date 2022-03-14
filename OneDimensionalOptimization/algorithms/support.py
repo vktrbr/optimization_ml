@@ -1,13 +1,6 @@
 from __future__ import annotations
-
-from typing import List
-import sys
+from typing import List, TypedDict
 from numbers import Real
-
-if sys.version_info >= (3, 8):
-    from typing import TypedDict 
-else:
-    from typing_extensions import TypedDict
 
 
 class History(TypedDict):
