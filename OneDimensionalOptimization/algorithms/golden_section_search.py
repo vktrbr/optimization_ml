@@ -17,12 +17,12 @@ def golden_section_search(function: Callable[[Real, Any], Real],
 
     **Algorithm:**
 
-        :math:`\\displaystyle \\phi = \\frac{(1 + \\sqrt{5})}{2}`
+        :math:`\\displaystyle \\varphi = \\frac{(1 + \\sqrt{5})}{2}`
 
         1. :math:`a, b` - left and right bounds
 
-        2. | :math:`\\displaystyle x_1 = \\frac{b - (b - a)}{\\phi}`
-           | :math:`\\displaystyle x_2 = \\frac{a + (b - a)}{\\phi}`
+        2. | :math:`\\displaystyle x_1 = \\frac{b - (b - a)}{\\varphi}`
+           | :math:`\\displaystyle x_2 = \\frac{a + (b - a)}{\\varphi}`
 
         3. | if :math:`\\displaystyle f(x_1) > f(x_2)` (for min)
                 :math:`\\displaystyle [ f(x_1) < f(x_2)` (for max) :math:`]`
