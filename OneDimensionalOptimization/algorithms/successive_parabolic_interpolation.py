@@ -17,9 +17,9 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
 
     **Algorithm:**
         1. Set :math:`x_0, x_2, x_1` and calculate :math:`f_0 = f(x_0), f_1 = f(x_1), f_2 = f(x_2)`
-        2. Arrange :math:`x_0, x_1, x_2` so that :math:`f_2 <= f_1 <= f_0`
+        2. Arrange :math:`x_0, x_1, x_2` so that :math:`f_2 \\leq f_1 \\leq f_0`
         3. Calculate :math:`x_{i + 1}` with the formula below
-        4. Repeat step 2-3 until then :math:`|x_{i+1}-x_{i}| > e` or :math:`|f(x_{i+1})-f(x_{i})| > e`
+        4. Repeat step 2-3 until then :math:`|x_{i+1}-x_{i}| \\geq e` or :math:`|f(x_{i+1})-f(x_{i})| \\geq e`
 
     .. math::
 
