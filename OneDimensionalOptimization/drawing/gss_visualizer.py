@@ -52,9 +52,10 @@ def transfer_history_gss(history: HistoryGSS,
     return df
 
 
-def gen_animation(func: Callable,
-                  bounds: Tuple[Real, Real],
-                  history: HistoryGSS) -> go.Figure:
+def gen_animation_gss(func: Callable,
+                      bounds: Tuple[Real, Real],
+                      history: HistoryGSS,
+                      **kwargs) -> go.Figure:
     """
     Generates an animation of the golden-section search on `func` between the `bounds`
 
@@ -69,7 +70,7 @@ def gen_animation(func: Callable,
     diff_x = max(x_axis) - min(x_axis)
 
     for i, x in enumerate(x_axis):
-        f_axis[i] = func(x)
+        f_axis[i] = func(x, **kwargs)
     diff_f = max(f_axis) - min(f_axis)
 
     df = transfer_history_gss(history, func)
