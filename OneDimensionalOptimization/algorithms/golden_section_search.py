@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import Tuple, Callable, Any, Literal
-from .support import *
+from OneDimensionalOptimization.algorithms.support import *
 
 
 def golden_section_search(function: Callable[[Real, Any], Real],
