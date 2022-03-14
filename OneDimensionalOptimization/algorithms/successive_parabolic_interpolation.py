@@ -95,7 +95,7 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
                       f'\t|\t f(x2) = {function(x_new, **kwargs): 0.3f}')
 
             if keep_history:
-                history['iteration'].append(0)
+                history['iteration'].append(i)
                 history['f_value'].append(function(x2, **kwargs))
                 history['x_left'].append(x0)
                 history['x_middle'].append(x2)
