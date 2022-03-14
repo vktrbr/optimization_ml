@@ -11,7 +11,7 @@ def golden_section_search(function: Callable[[Real, Any], Real],
                           max_iter: int = 500,
                           verbose: bool = False,
                           keep_history: bool = False,
-                          **kwargs) -> Tuple[Point, History]:
+                          **kwargs) -> Tuple[Point, HistoryGSS]:
     """
     Golden-section search
 
@@ -25,7 +25,7 @@ def golden_section_search(function: Callable[[Real, Any], Real],
            | :math:`\\displaystyle x_2 = \\frac{a + (b - a)}{\\phi}`
 
         3. | if :math:`\\displaystyle f(x_1) > f(x_2)` (for min)
-            :math:`\\displaystyle [ f(x_1) < f(x_2)` (for max) :math:`]`
+                :math:`\\displaystyle [ f(x_1) < f(x_2)` (for max) :math:`]`
            | then :math:`a = x_1` else  :math:`b = x_2`
 
         4. Repeat  :math:`2, 3` steps while :math:`|a - b| > e`
@@ -56,13 +56,18 @@ def golden_section_search(function: Callable[[Real, Any], Real],
     a: Real = bounds[0]
     b: Real = bounds[1]
     if keep_history:
-        history: History = {'iteration': [0],
-                            'middle_point': [(a + b) / 2],
-                            'f_value': [function((a + b) / 2, **kwargs)],
-                            'left_point': [a],
-                            'right_point': [b]}
+        history: HistoryGSS = {'iteration': [0],
+                               'middle_point': [(a + b) / 2],
+                               'f_value': [function((a + b) / 2, **kwargs)],
+                               'left_point': [a],
+                               'right_point': [b]}
+
     else:
-        history: History = {'iteration': [], 'middle_point': [], 'f_value': [], 'left_point': [], 'right_point': []}
+        history: HistoryGSS = {'iteration': [], 'middle_point': [], 'f_value': [], 'left_point': [], 'right_point': []}
+
+    if verbose:
+        print(f'Iteration: {0} \t|\t point = {(a + b) / 2 :0.3f} '
+              f'\t|\t f(point) = {function((a + b) / 2, **kwargs): 0.3f}')
 
     try:
         for i in range(1, max_iter):

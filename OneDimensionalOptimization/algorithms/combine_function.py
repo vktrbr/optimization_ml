@@ -1,13 +1,14 @@
 from OneDimensionalOptimization.algorithms.golden_section_search import golden_section_search
+from OneDimensionalOptimization.algorithms.successive_parabolic_interpolation import successive_parabolic_interpolation
 from typing import Literal, Tuple
-from OneDimensionalOptimization.algorithms.support import Point, History
+from OneDimensionalOptimization.algorithms.support import Point, HistoryGSS
 
 
 def solve_task(algorithm: Literal["Golden-section search",
                                   "Successive parabolic interpolation",
                                   "Brent's method",
                                   "BFGS algorithm"] = "Golden-section search",
-               **kwargs) -> Tuple[Point, History]:
+               **kwargs) -> Tuple[Point, HistoryGSS]:
     """
     A function that calls one of 4 one-dimensional optimization algorithms from the current directory, example with
     Golden-section search algorithm::
@@ -23,6 +24,9 @@ def solve_task(algorithm: Literal["Golden-section search",
     """
     if algorithm == 'Golden-section search':
         return golden_section_search(**kwargs)
+
+    if algorithm == 'Successive parabolic interpolation':
+        return successive_parabolic_interpolation(**kwargs)
 
 
 if __name__ == '__main__':

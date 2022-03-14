@@ -3,15 +3,26 @@ from typing import List, TypedDict
 from numbers import Real
 
 
-class History(TypedDict):
+class HistoryGSS(TypedDict):
     """
-    Class with an optimization history
+    Class with an optimization history of GSS
     """
     iteration: List[int]
     middle_point: List[Real]
     f_value: List[Real]
     left_point: List[Real]
     right_point: List[Real]
+
+
+class HistorySPI(TypedDict):
+    """
+    Class with an optimization history of SPI
+    """
+    iteration: List[int]
+    f_value: List[Real]
+    x_left: List[Real]
+    x_right: List[Real]
+    x_middle: List[Real]
 
 
 class Point(TypedDict):
