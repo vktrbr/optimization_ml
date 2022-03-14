@@ -4,7 +4,7 @@ For local running streamlit app : streamlit run scripts/streamlit_app.py
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('..'))
 
 import timeit
 from tokenize import TokenError
