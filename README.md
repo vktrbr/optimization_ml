@@ -4,7 +4,7 @@
 - [One-dimensional optimization](#one-dimensional-optimization)
 <a name="one-dimensional-optimization"/>
 
-## One-dimensional optimization.
+## One-dimensional optimization
 > App with visualization:
 > https://share.streamlit.io/vktrbr/optimization_ml/main/OneDimensionalOptimization/streamlit_app.py
 #### Algorithms:
