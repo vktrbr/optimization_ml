@@ -32,6 +32,11 @@ def golden_section_search(function: Callable[[Real, Any], Real],
 
     **If optimization fails golden_section_search will return the last point**
 
+    Code example::
+
+        >>> def func(x): return 2.71828 ** (3 * x) + 5 * 2.71828 ** (-2 * x)
+        >>> point, data = golden_section_search(func, (-10, 10), type_optimization='min', keep_history=True)
+
     :param function: callable that depends on the first positional argument. Other arguments are passed through kwargs
     :param bounds: tuple with two numbers. This is left and right bound optimization. [a, b]
     :param epsilon: optimization accuracy
@@ -98,12 +103,3 @@ def golden_section_search(function: Callable[[Real, Any], Real],
     except Exception as e:
         print('Error with optimization. code 2')
         raise e
-
-
-if __name__ == '__main__':
-
-    def func(x): return 2.71828 ** (3 * x) + 5 * 2.71828 ** (-2 * x)
-    point, data = golden_section_search(func, (-10, 10), type_optimization='min', verbose=True, keep_history=True)
-
-    print(data['f_value'][:3])
-    print(point)
