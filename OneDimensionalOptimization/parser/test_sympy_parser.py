@@ -1,7 +1,7 @@
 import unittest
 
 
-class MyTestCase(unittest.TestCase):
+class TestParser(unittest.TestCase):
     def test_logarithm_replace_1(self):
         from sympy_parser import logarithm_replace
         test_input = 'log2(x + 1) + 2 * x'
