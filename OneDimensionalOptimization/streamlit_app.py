@@ -60,8 +60,8 @@ with st.sidebar.form('input_data'):
 
         type_opt = st.radio('Optimization aim', ['min', 'max'])
 
-        bounds_a = st.number_input('Left bound', value=0, format='%.3f')
-        bounds_b = st.number_input('Right bound', value=2, format='%.3f')
+        bounds_a = st.number_input('Left bound', value=0., format='%.3f')
+        bounds_b = st.number_input('Right bound', value=2., format='%.3f')
         bounds = sorted([bounds_a, bounds_b])
         type_alg = st.selectbox('Algorithm of optimization', algorithms_list)
         cnt_iterations = int(st.number_input('Maximum number of iterations', value=500, min_value=0), )
