@@ -109,7 +109,7 @@ def gen_animation_spi(func: Callable[[Real, Any], Real],
                         })
 
     frames = []
-    for i in range(1, history.shape[0]):
+    for i in range(0, history.shape[0]):
 
         x0, x1, x2 = history.loc[i, ['x0', 'x1', 'x2']].values
         a, b, c = make_parabolic_function(x0, x1, x2, func, **kwargs)
