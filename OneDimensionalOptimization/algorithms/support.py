@@ -20,9 +20,9 @@ class HistorySPI(TypedDict):
     """
     iteration: List[int]
     f_value: List[Real]
-    x_left: List[Real]
-    x_right: List[Real]
-    x_middle: List[Real]
+    x0: List[Real]
+    x1: List[Real]
+    x2: List[Real]
 
 
 class Point(TypedDict):
