@@ -51,7 +51,7 @@ with st.sidebar.form('input_data'):
                 function_latex = sympy.latex(sympy.sympify(function))
                 function_sympy = parse_func(function)
                 flag_empty_func = False
-            except (SyntaxError, TypeError):
+            except (SyntaxError, TypeError, NameError):
                 st.write('Check syntax. Wrong input :(')
             except (TokenError, SympifyError):
                 st.write('**Error**')
@@ -106,6 +106,11 @@ else:
     iteration_screen.write(f'**Iterations**: {len(history["iteration"])}')
 
     if type_plot == 'static':
+        plotly_figure = gen_lineplot(function_callable,
+                                     [bounds_a, bounds_b],
+                                     [[point['point']], [point['f_value']]])
+    if len(history['iteration']) == 1:
+        st.write('**The solution found in 1 step!**')
         plotly_figure = gen_lineplot(function_callable,
                                      [bounds_a, bounds_b],
                                      [[point['point']], [point['f_value']]])
