@@ -62,16 +62,16 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
     else:
         type_opt_const = 1
 
-    history: HistorySPI = {'iteration': [], 'f_value': [], 'x_middle': [], 'x_left': [], 'x_right': []}
+    history: HistorySPI = {'iteration': [], 'f_value': [], 'x0': [], 'x1': [], 'x2': []}
     x0, x1, x2 = bounds[0], bounds[1], (bounds[0] + bounds[1]) / 2
     x2, x1, x0 = sorted([x0, x1, x2], key=lambda x: type_opt_const * function(x, **kwargs))
 
     if keep_history:
         history['iteration'].append(0)
         history['f_value'].append(function(x2, **kwargs))
-        history['x_left'].append(x0)
-        history['x_middle'].append(x2)
-        history['x_right'].append(x1)
+        history['x0'].append(x0)
+        history['x1'].append(x1)
+        history['x2'].append(x2)
 
     if verbose:
         print(f'Iteration: {0} \t|\t x0 = {x0:0.3f} '
@@ -84,10 +84,15 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
             f0, f1, f2 = list(map(lambda x: type_opt_const * function(x, **kwargs), [x0, x1, x2]))
             x_new = x2 + 0.5 * ((x1 - x2) ** 2 * (f2 - f0) + (x0 - x2) ** 2 * (f1 - f2)) / ((x1 - x2) * (f2 - f0) +
                                                                                             (x0 - x2) * (f1 - f2))
-            if not bounds[0] <= x_new <= bounds[1]:
-                print('Searching finished. Out of bounds. code 0')
+            if x_new == x2:
+                print('Searching finished. Successfully. code 0')
                 return {'point': x2, 'f_value': function(x2, **kwargs)}, history
 
+            if not bounds[0] <= x_new <= bounds[1]:
+                print('Searching finished. Out of bounds. code 3. ')
+                return {'point': x2, 'f_value': function(x2, **kwargs)}, history
+
+            x_list_old = [x2, x1, x0]
             x2, x1, x0 = sorted([x1, x2, x_new], key=lambda x: type_opt_const * function(x, **kwargs))
 
             if verbose:
@@ -97,11 +102,12 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
             if keep_history:
                 history['iteration'].append(i)
                 history['f_value'].append(function(x2, **kwargs))
-                history['x_left'].append(x0)
-                history['x_middle'].append(x2)
-                history['x_right'].append(x1)
+                history['x0'].append(x0)
+                history['x1'].append(x1)
+                history['x2'].append(x2)
 
-            if abs(x1 - x2) < epsilon and abs(function(x1, **kwargs) - function(x2, **kwargs)) < epsilon:
+            if abs(x1 - x2) < epsilon and abs(function(x1, **kwargs) - function(x2, **kwargs)) < epsilon or \
+                    abs(sum(map(lambda x, y: abs(x - y), x_list_old, [x2, x1, x0]))) < epsilon:
                 print('Searching finished. Successfully. code 0')
                 return {'point': x2, 'f_value': function(x2, **kwargs)}, history
         else:
