@@ -95,34 +95,38 @@ else:
     function_callable = sympy_to_callable(function_sympy)
 
     time_start = timeit.timeit()
-    point, history = solve_task(type_alg, function=function_callable, bounds=bounds, keep_history=True,
-                                type_optimization=type_opt, max_iter=cnt_iterations, epsilon=epsilon)
-    total_time = timeit.timeit() - time_start
+    try:
+        point, history = solve_task(type_alg, function=function_callable, bounds=bounds, keep_history=True,
+                                    type_optimization=type_opt, max_iter=cnt_iterations, epsilon=epsilon)
+        total_time = timeit.timeit() - time_start
 
-    point_screen, f_value_screen, time_screen, iteration_screen = st.columns(4)
-    point_screen.write(r'$ x_{\ ' + f'{type_opt}' + '} = ' + f'{point["point"]: 0.4f} $')
-    f_value_screen.write(r'$ f_{\ ' + f'{type_opt}' + '} = ' + f'{function_callable(point["point"]): 0.4f} $')
-    time_screen.write(f'**Time** = {abs(total_time): 0.6f} s.')
-    iteration_screen.write(f'**Iterations**: {len(history["iteration"])}')
+        point_screen, f_value_screen, time_screen, iteration_screen = st.columns(4)
+        point_screen.write(r'$ x_{\ ' + f'{type_opt}' + '} = ' + f'{point["point"]: 0.4f} $')
+        f_value_screen.write(r'$ f_{\ ' + f'{type_opt}' + '} = ' + f'{function_callable(point["point"]): 0.4f} $')
+        time_screen.write(f'**Time** = {abs(total_time): 0.6f} s.')
+        iteration_screen.write(f'**Iterations**: {len(history["iteration"])}')
 
-    if type_plot == 'static':
-        plotly_figure = gen_lineplot(function_callable,
-                                     [bounds_a, bounds_b],
-                                     [[point['point']], [point['f_value']]])
-    if len(history['iteration']) == 1:
-        st.write('**The solution found in 1 step!**')
-        plotly_figure = gen_lineplot(function_callable,
-                                     [bounds_a, bounds_b],
-                                     [[point['point']], [point['f_value']]])
+        if type_plot == 'static':
+            plotly_figure = gen_lineplot(function_callable,
+                                         [bounds_a, bounds_b],
+                                         [[point['point']], [point['f_value']]])
+        if len(history['iteration']) == 1:
+            st.write('**The solution found in 1 step!**')
+            plotly_figure = gen_lineplot(function_callable,
+                                         [bounds_a, bounds_b],
+                                         [[point['point']], [point['f_value']]])
 
-    elif type_plot == 'step-by-step' and type_alg == 'Golden-section search':
-        plotly_figure = gen_animation_gss(function_callable, bounds, history)
+        elif type_plot == 'step-by-step' and type_alg == 'Golden-section search':
+            plotly_figure = gen_animation_gss(function_callable, bounds, history)
 
-    elif type_plot == 'step-by-step' and type_alg == 'Successive parabolic interpolation':
-        plotly_figure = gen_animation_spi(function_callable, bounds, history)
+        elif type_plot == 'step-by-step' and type_alg == 'Successive parabolic interpolation':
+            plotly_figure = gen_animation_spi(function_callable, bounds, history)
 
-    else:
-        plotly_figure = gen_lineplot(function_callable,
-                                     [bounds_a, bounds_b],
-                                     [[point['point']], [point['f_value']]])
-    figure = st.write(plotly_figure)
+        else:
+            plotly_figure = gen_lineplot(function_callable,
+                                         [bounds_a, bounds_b],
+                                         [[point['point']], [point['f_value']]])
+        figure = st.write(plotly_figure)
+    except NameError:
+        st.write('Check syntax. Wrong input :(')
+        st.stop()
