@@ -21,8 +21,8 @@ def golden_section_search(function: Callable[[Real, Any], Real],
 
         1. :math:`a, b` - left and right bounds
 
-        2. | :math:`\\displaystyle x_1 = \\frac{b - (b - a)}{\\varphi}`
-           | :math:`\\displaystyle x_2 = \\frac{a + (b - a)}{\\varphi}`
+        2. | :math:`\\displaystyle x_1 = b - \\frac{b - a}{\\varphi}`
+           | :math:`\\displaystyle x_2 = a + \\frac{b - a}{\\varphi}`
 
         3. | if :math:`\\displaystyle f(x_1) > f(x_2)` (for min)
                 :math:`\\displaystyle [ f(x_1) < f(x_2)` (for max) :math:`]`
