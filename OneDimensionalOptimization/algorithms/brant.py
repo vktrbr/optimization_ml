@@ -2,19 +2,19 @@ from __future__ import annotations
 
 from typing import Tuple, Callable, Any, Literal
 from OneDimensionalOptimization.algorithms.support import *
+import numpy as np
 
 
 def brant(function: Callable[[Real, Any], Real],
           bounds: Tuple[Real, Real],
           epsilon: Real = 1e-5,
-          tolerance: Real = 1.e-4,
           type_optimization: Literal['min', 'max'] = 'min',
           max_iter: int = 500,
           verbose: bool = False,
           keep_history: bool = False,
           **kwargs) -> Tuple[Point, HistoryGSS]:
     """
-    Brant's algorithm. In original work we need to set a constant t - minimum tolerance. Let's set t = 1.e-8
+    Brant's algorithm
 
     :param function: callable that depends on the first positional argument. Other arguments are passed through kwargs
     :param bounds: tuple with two numbers. This is left and right bound optimization. [a, b]
@@ -26,96 +26,105 @@ def brant(function: Callable[[Real, Any], Real],
     :return: tuple with point and history.
 
     """
-    c: Real = (3 - 5 ** 0.5) / 2
-    a, b = bounds
-    t = tolerance
-    v = w = x = a + c * (b - a)
-    e = 0
-    fv = fw = fx = function(x, **kwargs)
+
+    type_optimization = type_optimization.lower().strip()
+    assert type_optimization in ['min', 'max'], 'Invalid type optimization. Enter "min" or "max"'
+    
+    if type_optimization == 'max':
+        type_opt_const = -1
+    else:
+        type_opt_const = 1
+        
+    a, b = sorted(bounds)
+    const_from_golden = 1 - 2 / (1 + 5 ** 0.5)
+    x = w = v = (a + b) / 2
+    fw = fv = fx = type_opt_const * function(x, **kwargs)
+
+    deltax = 0.0
+    rat = b - a
 
     for i in range(max_iter):
-        m = 0.5 * (a + b)
-        tol = epsilon * abs(x) + t
-        t2 = 2 * tol
-        # check stopping criterion
-        if abs(x - m) > t2 - 0.5 * (b - a):
-            p = q = r = 0
-            if abs(e) > tol:
-                print('fit parabola')
-                # fit parabola
-                r = (x - w) * (fx - fv)
-                q = (x - v) * (fx - fw)
-                p = (x - v) * q - (x - w) * r
-                q = 2 * (q - r)
-                if q > 0:
-                    p = -p
-                else:
-                    q = -q
-                r = e
-                e = d
+        tol1 = epsilon * np.abs(x) + 1.e-10
+        tol2 = 2.0 * tol1
+        x_middle = (a + b) / 2
+        # check for convergence
 
-            if (abs(p) < abs(0.5 * q * r)) and (p < q * (a - x)) and (p < q * (b - x)):
-                print('parabolic step')
-                # A parabolic interpolation step
-                d = p / q
-                u = x + d
-                # f ust not be evaluated too close to a or b
-                if u - a < t2 and b - u < t2:
-                    if x < m:
-                        d = tol
-                        d = -tol
+        if np.abs(x - x_middle) < (tol2 - 0.5 * (b - a)):
+            return x, type_opt_const * fx, i
+
+        if np.abs(deltax) <= tol1:
+            if x >= x_middle:
+                deltax = a - x  # do a golden section step
             else:
-                print('golden')
-                # golden section step
-                if x < m:
-                    e = b - x
-                else:
-                    e = a - x
-                d = c * e
+                deltax = b - x
 
-            # f must not be evaluated too close to x
-            if abs(d) >= tol:
-                u = x + d
-            elif d > 0:
-                u = x + tol
+            rat = const_from_golden * deltax
+        else:  # do a parabolic step
+            tmp1 = (x - w) * (fx - fv)
+            tmp2 = (x - v) * (fx - fw)
+            p = (x - v) * tmp2 - (x - w) * tmp1
+            tmp2 = 2.0 * (tmp2 - tmp1)
+            if tmp2 > 0.0:
+                p = -p
+            tmp2 = np.abs(tmp2)
+            dx_temp = deltax
+            deltax = rat
+            # check parabolic fit
+            if ((p > tmp2 * (a - x)) and (p < tmp2 * (b - x)) and
+                    (np.abs(p) < np.abs(0.5 * tmp2 * dx_temp))):
+                rat = p * 1.0 / tmp2  # if parabolic step is useful.
+                u = x + rat
+                if (u - a) < tol2 or (b - u) < tol2:
+                    if x_middle - x >= 0:
+                        rat = tol1
+                    else:
+                        rat = -tol1
             else:
-                u = x - tol
-
-            fu = function(u, **kwargs)
-            # update a, b, v, w, x
-            if fu <= fx:
-                if u < x:
-                    b = x
+                if x >= x_middle:
+                    deltax = a - x  # if it's not do a golden section step
                 else:
-                    a = x
-                v = w
-                fv = fw
-                w = x
-                fw = fx
-                x = u
-                fx = fu
+                    deltax = b - x
+                rat = const_from_golden * deltax
 
+        if np.abs(rat) < tol1:  # update by at least tol1
+            if rat >= 0:
+                u = x + tol1
             else:
-                if u < x:
-                    a = u
-                else:
-                    b = u
-                if fu <= fw or w == x:
-                    v = w
-                    fv = fw
-                    w = u
-                    fw = fu
-                elif fu <= fv or v == x or v == w:
-                    v = u
-                    fv = fu
-
+                u = x - tol1
         else:
-            return fx
+            u = x + rat
+        fu = type_opt_const * function(u, **kwargs)  # calculate new output value
+
+        if fu > fx:  # if it's bigger than current
+            if u < x:
+                a = u
+            else:
+                b = u
+            if (fu <= fw) or (w == x):
+                v = w
+                w = u
+                fv = fw
+                fw = fu
+            elif (fu <= fv) or (v == x) or (v == w):
+                v = u
+                fv = fu
+        else:
+            if u >= x:
+                a = x
+            else:
+                b = x
+            v = w
+            w = x
+            x = u
+            fv = fw
+            fw = fx
+            fx = fu
     else:
-        print('max')
+        print('Searching finished. Max iterations have been reached. code 1')
+        return x, fx, i
 
 
 if __name__ == '__main__':
     def func(x): return x ** 3 - x ** 2 - x
-    bounds = [0, 1.5]
-    print(brant(func, bounds=bounds))
+    bs = [0, 1.5]
+    print(brant(func, bounds=bs, type_optimization='min'))
