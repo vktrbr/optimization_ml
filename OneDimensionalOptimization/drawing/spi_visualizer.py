@@ -43,6 +43,7 @@ def gen_animation_spi(func: Callable[[Real, Any], Real],
 
     data = [go.Scatter(x=x_axis, y=float(a) * x_axis ** 2 + float(b) * x_axis + float(c),
                        name='parabola 1', marker={'color': 'rgba(55, 101, 164, 1)'}),
+            go.Scatter(x=x_axis, y=f_axis, name='function', marker={'color': 'rgba(0, 0, 0, 0.8)'}),
             go.Scatter(x=[float(x0)], y=[func(float(x0), **kwargs)],
                        name='x0', mode='markers', marker={'size': 10, 'color': 'rgba(66, 122, 161, 1)'}),
             go.Scatter(x=[float(x1)], y=[func(float(x1), **kwargs)],
@@ -109,23 +110,32 @@ def gen_animation_spi(func: Callable[[Real, Any], Real],
                         })
 
     frames = []
+
+    x0, x1, x2 = history.loc[0, ['x0', 'x1', 'x2']].values
+    a, b, c = make_parabolic_function(x0, x1, x2, func, **kwargs)
+    parabola_pre = float(a) * x_axis ** 2 + float(b) * x_axis + float(c)
     for i in range(0, history.shape[0]):
 
         x0, x1, x2 = history.loc[i, ['x0', 'x1', 'x2']].values
         a, b, c = make_parabolic_function(x0, x1, x2, func, **kwargs)
 
-        parabola = float(a) * x_axis ** 2 + float(b) * x_axis + float(c)
+        parabola_new = float(a) * x_axis ** 2 + float(b) * x_axis + float(c)
         frames.append(go.Frame({
-               'data': [go.Scatter(x=x_axis, y=parabola, name=f'parabola {i + 1}',
+               'data': [go.Scatter(x=x_axis, y=parabola_new, name=f'parabola {i + 1}',
                                    marker={'color': 'rgba(55, 101, 164, 1)'}),
                         go.Scatter(x=[float(x0)], y=[func(float(x0), **kwargs)],
                                    name='x0', mode='markers', marker={'size': 10, 'color': 'rgba(66, 122, 161, 1)'}),
                         go.Scatter(x=[float(x1)], y=[func(float(x1), **kwargs)],
                                    name='x1', mode='markers', marker={'size': 10, 'color': 'rgba(66, 122, 161, 1)'}),
                         go.Scatter(x=[float(x2)], y=[func(float(x2), **kwargs)],
-                                   name='x2', mode='markers', marker={'size': 10, 'color': 'rgba(231, 29, 54, 1)'})],
+                                   name='x2', mode='markers', marker={'size': 10, 'color': 'rgba(231, 29, 54, 1)'}),
+                        go.Scatter(x=x_axis, y=parabola_pre, name=f'parabola {max(i, 1)}',
+                                   marker={'color': 'rgba(55, 101, 164, 0.3)'}, mode='lines')
+                        ],
+
 
                'name': f'{i}'}))
+        parabola_pre = parabola_new
 
     fig = go.Figure(data=data, layout=layout, frames=frames)
     fig.update_xaxes(range=x_range)
