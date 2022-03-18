@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import Tuple, Callable, Any, Literal
-from .support import *
+from OneDimensionalOptimization.algorithms.support import *
 
 
 def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
@@ -64,56 +64,81 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
 
     history: HistorySPI = {'iteration': [], 'f_value': [], 'x0': [], 'x1': [], 'x2': []}
     x0, x1, x2 = bounds[0], bounds[1], (bounds[0] + bounds[1]) / 2
-    x2, x1, x0 = sorted([x0, x1, x2], key=lambda x: type_opt_const * function(x, **kwargs))
+    f0 = type_opt_const * function(x0, **kwargs)
+    f1 = type_opt_const * function(x1, **kwargs)
+    f2 = type_opt_const * function(x2, **kwargs)
+    f_x = {x0: f0, x1: f1, x2: f2}
+    x2, x1, x0 = sorted([x0, x1, x2], key=lambda x: f_x[x])
 
     if keep_history:
         history['iteration'].append(0)
-        history['f_value'].append(function(x2, **kwargs))
+        history['f_value'].append(f2)
         history['x0'].append(x0)
         history['x1'].append(x1)
         history['x2'].append(x2)
 
     if verbose:
-        print(f'Iteration: {0} \t|\t x0 = {x0:0.3f} '
-              f'\t|\t x1 = {x1:0.3f} '
-              f'\t|\t x2 = {x2:0.3f} '
-              f'\t|\t f(x2) = {function(x2, **kwargs): 0.3f}')
+        print(f'Iteration: {0}\t|\tx0 = {x0:0.3f}\t|\tf(x2) = {f2: 0.3f}')
 
     try:
         for i in range(1, max_iter):
-            f0, f1, f2 = list(map(lambda x: type_opt_const * function(x, **kwargs), [x0, x1, x2]))
-            x_new = x2 + 0.5 * ((x1 - x2) ** 2 * (f2 - f0) + (x0 - x2) ** 2 * (f1 - f2)) / ((x1 - x2) * (f2 - f0) +
-                                                                                            (x0 - x2) * (f1 - f2))
+            f0, f1, f2 = f_x[x0], f_x[x1], f_x[x2]
+            p = (x1 - x2) ** 2 * (f2 - f0) + (x0 - x2) ** 2 * (f1 - f2)
+            q = 2 * ((x1 - x2) * (f2 - f0) + (x0 - x2) * (f1 - f2))
+
+            if q == 0:
+                print('Searching finished. Select an another initial state. The denominator is zero. code 1')
+                return {'point': x2, 'f_value': f2}, history
+
+            x_new = x2 + p / q
+
             if x_new == x2:
                 print('Searching finished. Successfully. code 0')
-                return {'point': x2, 'f_value': function(x2, **kwargs)}, history
+                return {'point': x2, 'f_value': f2}, history
 
             if not bounds[0] <= x_new <= bounds[1]:
-                print('Searching finished. Out of bounds. code 3. ')
-                return {'point': x2, 'f_value': function(x2, **kwargs)}, history
+                print('Searching finished. Out of bounds. code 1. ')
+                return {'point': x2, 'f_value': f2}, history
 
-            x_list_old = [x2, x1, x0]
-            x2, x1, x0 = sorted([x1, x2, x_new], key=lambda x: type_opt_const * function(x, **kwargs))
+            f_new = type_opt_const * function(x_new, **kwargs)
+            f_x[x_new] = f_new
+
+            if f_new < f2:
+                x0, f0 = x1, f1
+                x1, f1 = x2, f2
+                x2, f2 = x_new, f_new
+
+            elif f_new < f1:
+                x0, f0 = x1, f1
+                x1, f1 = x_new, f_new
+
+            elif f_new < f0:
+                x0, f0 = x_new, f_new
 
             if verbose:
-                print(f'Iteration: {i} \t|\t new point = x2 = {x_new:0.3f} '
-                      f'\t|\t f(x2) = {function(x_new, **kwargs): 0.3f}')
+                print(f'Iteration: {i}\t|\tx2 = {x2:0.3f}\t|\tf(x2) = {f2: 0.3f}')
 
             if keep_history:
                 history['iteration'].append(i)
-                history['f_value'].append(function(x2, **kwargs))
+                history['f_value'].append(f2)
                 history['x0'].append(x0)
                 history['x1'].append(x1)
                 history['x2'].append(x2)
 
-            if abs(x1 - x2) < epsilon and abs(function(x1, **kwargs) - function(x2, **kwargs)) < epsilon or \
-                    abs(sum(map(lambda x, y: abs(x - y), x_list_old, [x2, x1, x0]))) < epsilon:
+            if abs(x1 - x2) < epsilon and abs(f1 - f2) < epsilon:
                 print('Searching finished. Successfully. code 0')
-                return {'point': x2, 'f_value': function(x2, **kwargs)}, history
+                return {'point': x2, 'f_value': f2}, history
+
         else:
             print('Searching finished. Max iterations have been reached. code 1')
-            return {'point': x2, 'f_value': function(x2, **kwargs)}, history
+            return {'point': x2, 'f_value': f2}, history
 
     except Exception as e:
         print('Error with optimization. code 2')
         raise e
+
+
+if __name__ == '__main__':
+    def func(x): return x ** 3 - x ** 2 - x
+    bs = [0, 1.5]
+    print(successive_parabolic_interpolation(func, bounds=bs, type_optimization='min', keep_history=True, verbose=True))
