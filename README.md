@@ -12,4 +12,6 @@
 2. Successive parabolic interpolation
 3. Brent's method
 4. Broyden–Fletcher–Goldfarb–Shanno algorithm
+
+Visualization example:
 ![IMG_2063](https://user-images.githubusercontent.com/52676181/159060153-3ed6dfae-2a8c-4c78-bc99-05ca9cad8e67.PNG)
