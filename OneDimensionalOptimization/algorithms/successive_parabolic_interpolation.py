@@ -86,24 +86,17 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
             p = (x1 - x2) ** 2 * (f2 - f0) + (x0 - x2) ** 2 * (f1 - f2)
             q = 2 * ((x1 - x2) * (f2 - f0) + (x0 - x2) * (f1 - f2))
 
-            if q == 0:
-                print('Searching finished. Select an another initial state. The denominator is zero. code 1')
-                return {'point': x2, 'f_value': type_opt_const * f2}, history
+            assert p != 0, 'Searching finished. Select an another initial state. Numerator is zero. code 2'
+            assert q != 0, 'Searching finished. Select an another initial state. Denominator is zero. code 2'
 
             x_new = x2 + p / q
 
-            if x_new == x2:
-                print('Searching finished. Successfully. code 0')
-                return {'point': x2, 'f_value': type_opt_const * f2}, history
-
-            if not bounds[0] <= x_new <= bounds[1]:
-                print('Searching finished. Out of bounds. code 1. ')
-                return {'point': x2, 'f_value': type_opt_const * f2}, history
+            assert bounds[0] <= x_new <= bounds[1], 'Searching finished. Out of bounds. code 1'
 
             f_new = type_opt_const * function(x_new, **kwargs)
             f_x[x_new] = f_new
-
             previous_xs = [x0, x1, x2]
+
             if f_new < f2:
                 x0, f0 = x1, f1
                 x1, f1 = x2, f2
@@ -143,5 +136,6 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
 
 if __name__ == '__main__':
     def func(x): return x ** 3 - x ** 2 - x
-    bs = [-1, 2]
+
+    bs = [-1, 1]
     print(successive_parabolic_interpolation(func, bounds=bs, type_optimization='max', verbose=True))
