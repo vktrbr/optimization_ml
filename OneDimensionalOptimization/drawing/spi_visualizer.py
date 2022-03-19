@@ -101,12 +101,12 @@ def gen_animation_spi(func: Callable[[Real, Any], Real],
                                   'domain': [0.0, 1.0],
                                   'range': x_range,
                                   'autorange': False,
-                                  'title': {'text': '<b>x</b>, c.u.'}},
+                                  'title': {'text': '<b>x</b>'}},
                         'yaxis': {'anchor': 'x',
                                   'domain': [0.0, 1.0],
                                   'range': f_range,
                                   'autorange': False,
-                                  'title': {'text': '<b>f(x)</b>, c.u.'}}
+                                  'title': {'text': '<b>f(x)</b>'}}
                         })
 
     frames = []

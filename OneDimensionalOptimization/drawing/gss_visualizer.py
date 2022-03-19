@@ -84,8 +84,8 @@ def gen_animation_gss(func: Callable,
     fig.add_trace(go.Scatter(x=x_axis, y=f_axis, name='function'))
 
     fig.update_layout(
-        xaxis_title=r'<b>x</b>, c.u.',
-        yaxis_title=r'<b>f(x)</b>, c.u.',
+        xaxis_title=r'<b>x</b>',
+        yaxis_title=r'<b>f(x)</b>',
         font=dict(size=14)
     )
 

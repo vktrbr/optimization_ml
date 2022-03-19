@@ -32,8 +32,8 @@ def gen_lineplot(function: Callable,
                   y='f(x)',
                   title='<b>Function plot</b>')
     fig.update_layout(
-        xaxis_title=r'<b>x</b>, c.u.',
-        yaxis_title=r'<b>f(x)</b>, c.u.',
+        xaxis_title=r'<b>x</b>',
+        yaxis_title=r'<b>f(x)</b>',
         font=dict(size=14)
     )
     fig.add_scatter(x=found_point[0], y=found_point[1],
