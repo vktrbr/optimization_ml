@@ -10,7 +10,6 @@ import timeit
 from tokenize import TokenError
 import sympy
 import streamlit as st
-import numpy as np
 
 from sympy import SympifyError
 from OneDimensionalOptimization.algorithms.combine_function import solve_task
@@ -103,9 +102,6 @@ else:
         except AssertionError:
             st.write('The method has diverged. Set new initial state.')
             st.stop()
-            bounds = [bounds_a + np.random.uniform(-0.05, 0.05), bounds_b]
-            point, history = solve_task(type_alg, function=function_callable, bounds=bounds, keep_history=True,
-                                        type_optimization=type_opt, max_iter=cnt_iterations, epsilon=epsilon)
 
         total_time = timeit.timeit() - time_start
 
