@@ -25,7 +25,7 @@ class HistorySPI(TypedDict):
     x2: List[Real]
 
 
-class HistoryBrant(TypedDict):
+class HistoryBrent(TypedDict):
     """
     Class with an optimization history of Brant's algorithm
     """

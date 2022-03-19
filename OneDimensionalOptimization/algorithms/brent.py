@@ -4,7 +4,7 @@ from typing import Tuple, Callable, Any, Literal, Sequence
 from OneDimensionalOptimization.algorithms.support import *
 
 
-def brant(function: Callable[[Real, Any], Real],
+def brent(function: Callable[[Real, Any], Real],
           bounds: Tuple[Real, Real],
           epsilon: Real = 1e-5,
           type_optimization: Literal['min', 'max'] = 'min',
@@ -13,7 +13,7 @@ def brant(function: Callable[[Real, Any], Real],
           keep_history: bool = False,
           **kwargs) -> Tuple[Point, HistoryGSS]:
     """
-    Brant's algorithm.
+    Brent's algorithm.
     Brent, R. P., Algorithms for Minimization Without Derivatives. Englewood Cliffs, NJ: Prentice-Hall, 1973 pp.72-80
 
     :param function: callable that depends on the first positional argument. Other arguments are passed through kwargs
@@ -165,13 +165,13 @@ def brant(function: Callable[[Real, Any], Real],
         return {'point': x_least, 'f_value': f_least}, history
 
 
-def update_history(history: HistoryBrant, values: Sequence[Any]) -> HistoryBrant:
+def update_history(history: HistoryBrent, values: Sequence[Any]) -> HistoryBrent:
     """
-    Updates brant history
-    :param history: HistoryBrant object in which the update is required
+    Updates brent history
+    :param history: HistoryBrent object in which the update is required
     :param values: Sequence with values: 'iteration', 'f_least', 'f_middle', 'f_largest',  'x_least',
                                          'x_middle', 'x_largest', 'left_bound', 'right_bound', 'type_step'
-    :return: updated HistoryBrant
+    :return: updated HistoryBrent
     """
     name: Literal['iteration', 'f_least', 'f_middle', 'f_largest', 'x_least', 'x_middle',
                   'x_largest', 'left_bound', 'right_bound', 'type_step']
@@ -186,4 +186,4 @@ def update_history(history: HistoryBrant, values: Sequence[Any]) -> HistoryBrant
 if __name__ == '__main__':
     def func(x): return x ** 3 - x ** 2 - x
     bs = [0, 1.5]
-    print(brant(func, bounds=bs, type_optimization='min', keep_history=True, verbose=True))
+    print(brent(func, bounds=bs, type_optimization='min', keep_history=True, verbose=True))
