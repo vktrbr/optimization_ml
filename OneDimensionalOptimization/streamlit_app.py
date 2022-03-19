@@ -102,7 +102,7 @@ else:
 
         point_screen, f_value_screen, time_screen, iteration_screen = st.columns(4)
         point_screen.write(r'$ x_{\ ' + f'{type_opt}' + '} = ' + f'{point["point"]: 0.4f} $')
-        f_value_screen.write(r'$ f_{\ ' + f'{type_opt}' + '} = ' + f'{function_callable(point["point"]): 0.4f} $')
+        f_value_screen.write(r'$ f_{\ ' + f'{type_opt}' + '} = ' + f'{point["f_value"]: 0.4f} $')
         time_screen.write(f'**Time** = {abs(total_time): 0.6f} s.')
         iteration_screen.write(f'**Iterations**: {len(history["iteration"])}')
 
