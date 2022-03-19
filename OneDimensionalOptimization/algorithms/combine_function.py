@@ -1,5 +1,6 @@
 from OneDimensionalOptimization.algorithms.golden_section_search import golden_section_search
 from OneDimensionalOptimization.algorithms.successive_parabolic_interpolation import successive_parabolic_interpolation
+from OneDimensionalOptimization.algorithms.brent import brent
 from typing import Literal, Tuple
 from OneDimensionalOptimization.algorithms.support import Point, HistoryGSS
 
@@ -27,6 +28,9 @@ def solve_task(algorithm: Literal["Golden-section search",
 
     if algorithm == 'Successive parabolic interpolation':
         return successive_parabolic_interpolation(**kwargs)
+
+    if algorithm == "Brent's method":
+        return brent(**kwargs)
 
 
 if __name__ == '__main__':
