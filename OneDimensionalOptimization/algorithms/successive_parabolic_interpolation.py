@@ -103,6 +103,7 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
             f_new = type_opt_const * function(x_new, **kwargs)
             f_x[x_new] = f_new
 
+            previous_xs = [x0, x1, x2]
             if f_new < f2:
                 x0, f0 = x1, f1
                 x1, f1 = x2, f2
@@ -125,7 +126,9 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
                 history['x1'].append(x1)
                 history['x2'].append(x2)
 
-            if abs(x1 - x2) < epsilon and abs(f1 - f2) < epsilon or x_new == x2:
+            # In addition, check the criterion when the points don't change
+            change_flag = max(map(lambda x, y: abs(x - y), [x0, x1, x2], previous_xs)) < epsilon
+            if abs(x1 - x2) < epsilon and abs(f1 - f2) < epsilon or change_flag:
                 print('Searching finished. Successfully. code 0')
                 return {'point': x2, 'f_value': type_opt_const * f2}, history
 
@@ -140,5 +143,5 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
 
 if __name__ == '__main__':
     def func(x): return x ** 3 - x ** 2 - x
-    bs = [0, 1.5]
-    print(successive_parabolic_interpolation(func, bounds=bs, type_optimization='min', keep_history=True, verbose=True))
+    bs = [-1, 2]
+    print(successive_parabolic_interpolation(func, bounds=bs, type_optimization='max', verbose=True))
