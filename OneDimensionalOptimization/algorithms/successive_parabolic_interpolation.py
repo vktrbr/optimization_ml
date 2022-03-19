@@ -125,7 +125,7 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
                 history['x1'].append(x1)
                 history['x2'].append(x2)
 
-            if abs(x1 - x2) < epsilon and abs(f1 - f2) < epsilon:
+            if abs(x1 - x2) < epsilon and abs(f1 - f2) < epsilon or x_new == x2:
                 print('Searching finished. Successfully. code 0')
                 return {'point': x2, 'f_value': type_opt_const * f2}, history
 
