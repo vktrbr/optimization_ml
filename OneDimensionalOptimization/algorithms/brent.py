@@ -152,17 +152,18 @@ def brent(function: Callable[[Real, Any], Real],
 
         else:
             print('Searching finished. Successfully. code 0')
-            return {'point': x_least, 'f_value': f_least}, history
+            return {'point': x_least, 'f_value': type_opt_const * f_least}, history
 
         if keep_history:
-            history = update_history(history, [i, f_least, f_middle, f_largest,
-                                               x_least, x_middle, x_largest, a, b, name_step])
+            history = update_history(history, [i, type_opt_const * f_least, type_opt_const * f_middle,
+                                               type_opt_const * f_largest, x_least, x_middle, x_largest,
+                                               a, b, name_step])
         if verbose:
-            print(f'iteration {i}\tx = {x_least:0.6f},\tf(x) = {f_least:0.6f}\ttype : {name_step}')
+            print(f'iteration {i}\tx = {x_least:0.6f},\tf(x) = {type_opt_const * f_least:0.6f}\ttype : {name_step}')
 
     else:
         print('Searching finished. Max iterations have been reached. code 1')
-        return {'point': x_least, 'f_value': f_least}, history
+        return {'point': x_least, 'f_value': type_opt_const * f_least}, history
 
 
 def update_history(history: HistoryBrent, values: Sequence[Any]) -> HistoryBrent:
@@ -184,6 +185,7 @@ def update_history(history: HistoryBrent, values: Sequence[Any]) -> HistoryBrent
 
 
 if __name__ == '__main__':
-    def func(x): return x ** 3 - x ** 2 - x
-    bs = [0, 1.5]
-    print(brent(func, bounds=bs, type_optimization='min', keep_history=True, verbose=True))
+    import numpy as np
+    def func(x): return x ** 3 - x ** 2 - x - np.log2(x + 2)
+    bs = [-1, 2]
+    print(brent(func, bounds=bs, type_optimization='max', keep_history=True, verbose=True))

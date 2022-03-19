@@ -72,7 +72,7 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
 
     if keep_history:
         history['iteration'].append(0)
-        history['f_value'].append(f2)
+        history['f_value'].append(type_opt_const * f2)
         history['x0'].append(x0)
         history['x1'].append(x1)
         history['x2'].append(x2)
@@ -88,17 +88,17 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
 
             if q == 0:
                 print('Searching finished. Select an another initial state. The denominator is zero. code 1')
-                return {'point': x2, 'f_value': f2}, history
+                return {'point': x2, 'f_value': type_opt_const * f2}, history
 
             x_new = x2 + p / q
 
             if x_new == x2:
                 print('Searching finished. Successfully. code 0')
-                return {'point': x2, 'f_value': f2}, history
+                return {'point': x2, 'f_value': type_opt_const * f2}, history
 
             if not bounds[0] <= x_new <= bounds[1]:
                 print('Searching finished. Out of bounds. code 1. ')
-                return {'point': x2, 'f_value': f2}, history
+                return {'point': x2, 'f_value': type_opt_const * f2}, history
 
             f_new = type_opt_const * function(x_new, **kwargs)
             f_x[x_new] = f_new
@@ -116,22 +116,22 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
                 x0, f0 = x_new, f_new
 
             if verbose:
-                print(f'Iteration: {i}\t|\tx2 = {x2:0.3f}\t|\tf(x2) = {f2: 0.3f}')
+                print(f'Iteration: {i}\t|\tx2 = {x2:0.3f}\t|\tf(x2) = {type_opt_const * f2: 0.3f}')
 
             if keep_history:
                 history['iteration'].append(i)
-                history['f_value'].append(f2)
+                history['f_value'].append(type_opt_const * f2)
                 history['x0'].append(x0)
                 history['x1'].append(x1)
                 history['x2'].append(x2)
 
             if abs(x1 - x2) < epsilon and abs(f1 - f2) < epsilon:
                 print('Searching finished. Successfully. code 0')
-                return {'point': x2, 'f_value': f2}, history
+                return {'point': x2, 'f_value': type_opt_const * f2}, history
 
         else:
             print('Searching finished. Max iterations have been reached. code 1')
-            return {'point': x2, 'f_value': f2}, history
+            return {'point': x2, 'f_value': type_opt_const * f2}, history
 
     except Exception as e:
         print('Error with optimization. code 2')
