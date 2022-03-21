@@ -91,7 +91,9 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
 
             x_new = x2 + p / q
 
-            assert bounds[0] <= x_new <= bounds[1], 'Searching finished. Out of bounds. code 1'
+            if not bounds[0] <= x_new <= bounds[1]:
+                print('Searching finished. Out of bounds. code 1')
+                return {'point': x2, 'f_value': type_opt_const * f2}, history
 
             f_new = type_opt_const * function(x_new, **kwargs)
             f_x[x_new] = f_new
