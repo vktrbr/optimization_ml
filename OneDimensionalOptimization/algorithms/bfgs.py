@@ -2,7 +2,7 @@ from typing import Callable, Any, Tuple
 from numbers import Real, Integral
 import numpy as np
 from scipy.optimize import line_search
-from OneDimensionalOptimization.algorithms.support import HistoryBFGS, Point
+from OneDimensionalOptimization.algorithms.support import HistoryBFGS, PointNd
 
 
 def bfgs(function: Callable[[np.ndarray, Any], Real],
@@ -13,7 +13,7 @@ def bfgs(function: Callable[[np.ndarray, Any], Real],
          max_iter: Integral = 500,
          verbose: bool = False,
          keep_history: bool = False,
-         **kwargs) -> Tuple[Point, HistoryBFGS]:
+         **kwargs) -> Tuple[PointNd, HistoryBFGS]:
     """
     BFGS method.
     Wright and Nocedal, 'Numerical Optimization', 1999, pp. 56-60 - alpha search;

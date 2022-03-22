@@ -53,6 +53,14 @@ class Point(TypedDict):
     f_value: Real
 
 
+class PointNd(TypedDict):
+    """
+    Class with an output optimization point
+    """
+    point: Tuple[Real]
+    f_value: Real
+
+
 class HistoryBFGS(TypedDict):
     iteration: List[Real]
     point: List[Tuple]
