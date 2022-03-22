@@ -26,8 +26,9 @@ Mathematical model
            | :math:`\displaystyle x_{i+1}=x_{i} + \frac{1}{2}\left[\frac{ \displaystyle (x_{i-1}-x_{i})^{2}(f_{i}-f_{i-2})+ (x_{i-2}-x_{i})^{2}(f_{i-1}-f_{i})}{ \displaystyle (x_{i-1}-x_{i}) (f_{i}-f_{i-2})+(x_{i-2}-x_{i})(f_{i-1}-f_{i})}\right]`
         4. Repeat step 2-3 until then :math:`|x_{i+1}-x_{i}| \geq e` or :math:`|f(x_{i+1})-f(x_{i})| \geq e`
 
-    3. Brent's algorithm. Minimizer(func, a, b, e, t=10^{-9})
-        0 Set:
+    3. Brent's algorithm. Minimizer(func, :math:`a, b, e, t=10^{-9}`)
+
+        0. Set:
 
             1. "Parabolic step":
             :math:`\displaystyle u = x + \frac{p}{q} = \frac{\displaystyle (x - u)^2 \cdot (f(x) - f(w)) - (x - w)^2 \cdot (f(x) - f(v))}{\displaystyle 2 \cdot ((x - v) \cdot (f(x) - f(w)) - (x - w) \cdot (f(x) - f(v)))}`
@@ -53,6 +54,7 @@ Mathematical model
         7. Rearrange :math:`u, x, w, v` to :math:`x, w, v` by rule in step 2.
         8. Repeat 4-7 until :math:`\displaystyle |x - \frac{a + b}{2}| < 2 \cdot` tolerance :math:`- \displaystyle \frac{b - a}{2}`
 
-    4. BFGS
+    4. BFGS.
+
         Wright and Nocedal, 'Numerical Optimization', 1999, pp. 56-60 - alpha search; pp.136-140 BFGS algorithm.
-        the algorithm will be here later...
+        The algorithm will be here later...
