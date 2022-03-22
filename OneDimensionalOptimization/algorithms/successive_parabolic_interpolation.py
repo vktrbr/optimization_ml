@@ -30,18 +30,19 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
     Example:
         >>> def func1(x): return x ** 3 - x ** 2 - x
         >>> successive_parabolic_interpolation(func1, (0, 1.5), verbose=True)
-        Iteration: 0 	|	 x0 = 0.000 	|	 x1 = 1.500 	|	 x2 = 0.750 	|	 f(x2) = -0.891
-        Iteration: 1 	|	 new point = x2 = 0.850 	|	 f(x2) = -0.958
-        Iteration: 2 	|	 new point = x2 = 0.961 	|	 f(x2) = -0.997
-        Iteration: 3 	|	 new point = x2 = 1.017 	|	 f(x2) = -0.999
+        Iteration: 0	|	x2 = 0.750	|	f(x2) = -0.891
+        Iteration: 1	|	x2 = 0.850	|	f(x2) = -0.958
+        Iteration: 2	|	x2 = 0.961	|	f(x2) = -0.997
+        Iteration: 3	|	x2 = 1.017	|	f(x2) = -0.999
+        Iteration: 4	|	x2 = 1.001	|	f(x2) = -1.000
         ...
 
         >>> def func2(x): return - (x ** 3 - x ** 2 - x)
         >>> successive_parabolic_interpolation(func2, (0, 1.5), type_optimization='max', verbose=True)
-        Iteration: 0 	|	 x0 = 0.000 	|	 x1 = 1.500 	|	 x2 = 0.750 	|	 f(x2) =  0.891
-        Iteration: 1 	|	 new point = x2 = 0.850 	|	 f(x2) =  0.958
-        Iteration: 2 	|	 new point = x2 = 0.961 	|	 f(x2) =  0.997
-        Iteration: 3 	|	 new point = x2 = 1.017 	|	 f(x2) =  0.999
+        Iteration: 0	|	x2 = 0.750	|	f(x2) = -0.891
+        Iteration: 1	|	x2 = 0.850	|	f(x2) =  0.958
+        Iteration: 2	|	x2 = 0.961	|	f(x2) =  0.997
+        Iteration: 3	|	x2 = 1.017	|	f(x2) =  0.999
         ...
 
     :param function: callable that depends on the first positional argument. Other arguments are passed through kwargs
@@ -78,7 +79,7 @@ def successive_parabolic_interpolation(function: Callable[[Real, Any], Real],
         history['x2'].append(x2)
 
     if verbose:
-        print(f'Iteration: {0}\t|\tx0 = {x0:0.3f}\t|\tf(x2) = {f2: 0.3f}')
+        print(f'Iteration: {0}\t|\tx2 = {x2:0.3f}\t|\tf(x2) = {f2: 0.3f}')
 
     try:
         for i in range(1, max_iter):
