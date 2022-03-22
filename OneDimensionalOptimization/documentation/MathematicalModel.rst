@@ -54,3 +54,5 @@ Mathematical model
         8. Repeat 4-7 until :math:`\displaystyle |x - \frac{a + b}{2}| < 2 \cdot` tolerance :math:`- \displaystyle \frac{b - a}{2}`
 
     4. BFGS
+        Wright and Nocedal, 'Numerical Optimization', 1999, pp. 56-60 - alpha search; pp.136-140 BFGS algorithm.
+        the algorithm will be here later...
