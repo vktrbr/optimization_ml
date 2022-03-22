@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List, TypedDict, AnyStr
+from typing import List, TypedDict, AnyStr, Tuple
 from numbers import Real, Integral
 
 
@@ -51,3 +51,9 @@ class Point(TypedDict):
     """
     point: Real
     f_value: Real
+
+
+class HistoryBFGS(TypedDict):
+    iteration: List[Real]
+    point: List[Tuple]
+    function: List[Real]
