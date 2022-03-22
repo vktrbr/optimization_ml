@@ -16,18 +16,14 @@ def golden_section_search(function: Callable[[Real, Any], Real],
     Golden-section search
 
     **Algorithm:**
-
         :math:`\\displaystyle \\varphi = \\frac{(1 + \\sqrt{5})}{2}`
 
         1. :math:`a, b` - left and right bounds
-
         2. | :math:`\\displaystyle x_1 = b - \\frac{b - a}{\\varphi}`
            | :math:`\\displaystyle x_2 = a + \\frac{b - a}{\\varphi}`
-
         3. | if :math:`\\displaystyle f(x_1) > f(x_2)` (for min)
                 :math:`\\displaystyle [ f(x_1) < f(x_2)` (for max) :math:`]`
            | then :math:`a = x_1` else  :math:`b = x_2`
-
         4. Repeat  :math:`2, 3` steps while :math:`|a - b| > e`
 
     **If optimization fails golden_section_search will return the last point**
