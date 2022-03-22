@@ -1,8 +1,10 @@
 from OneDimensionalOptimization.algorithms.golden_section_search import golden_section_search
 from OneDimensionalOptimization.algorithms.successive_parabolic_interpolation import successive_parabolic_interpolation
 from OneDimensionalOptimization.algorithms.brent import brent
+from OneDimensionalOptimization.algorithms.bfgs import bfgs
 from typing import Literal, Tuple
 from OneDimensionalOptimization.algorithms.support import Point, HistoryGSS
+import numpy as np
 
 
 def solve_task(algorithm: Literal["Golden-section search",
@@ -32,7 +34,15 @@ def solve_task(algorithm: Literal["Golden-section search",
     if algorithm == "Brent's method":
         return brent(**kwargs)
 
+    if algorithm == 'BFGS algorithm':
+        point, history = bfgs(**kwargs)
+        x_min = point['point'][0]
+        fx = point['f_value'][0]
+        history['point'] = list(np.array(history['point']).reshape(-1))
+
+        return {'point': x_min, 'f_value': fx}, history
+
 
 if __name__ == '__main__':
-    def func(x): return x ** 2
+    def func(t): return t ** 2
     solve_task('Golden-section search', function=func, bounds=[-1, 1])
