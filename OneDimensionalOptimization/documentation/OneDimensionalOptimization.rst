@@ -1,5 +1,5 @@
-OneDimensionalOptimization
-==================================
+One Dimensional Optimization
+=============================================
 
 .. toctree::
    :maxdepth: 4

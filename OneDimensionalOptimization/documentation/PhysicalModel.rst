@@ -11,6 +11,6 @@ Problem statement
     4. Broyden–Fletcher–Goldfarb–Shanno algorithm
 
 3. Requirements:
-    1. Program needs to return :math:`x_{\min}\,`, :math:`f_{\min}, ` information about algorithm steps.
+    1. Program needs to return :math:`x_{\min}\,`, :math:`f_{\min}\,`, information about algorithm steps.
     2. Application needs to get a function, bounds, etc., to print work success message, to animate every steps of algorithm's work.
 

@@ -1,12 +1,5 @@
 algorithms
 =============================================
-combine\_function
---------------------------------------------------------------
-
-.. automodule:: OneDimensionalOptimization.algorithms.combine_function
-   :members:
-   :undoc-members:
-   :show-inheritance:
 golden\_section\_search
 --------------------------------------------------------------------
 
@@ -21,6 +14,24 @@ successive\_parabolic\_interpolation.py
    :members:
    :undoc-members:
    :show-inheritance:
+
+
+brent.py
+------------------------------------------------------
+
+.. automodule:: OneDimensionalOptimization.algorithms.brent
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+combine\_function
+--------------------------------------------------------------
+
+.. automodule:: OneDimensionalOptimization.algorithms.combine_function
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 support
 ----------------------------------------------------
 
