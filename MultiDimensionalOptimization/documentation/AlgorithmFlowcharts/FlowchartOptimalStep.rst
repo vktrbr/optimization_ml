@@ -17,7 +17,7 @@
             below=of start,
             minimum width=3.5cm,
             minimum height=1cm
-          ] (input) {Given $x_0$, $\varepsilon$, $\gamma$, $\delta$, $\lambda$, $\quad k = 0$};
+          ] (input) {Given $x_0$, $\varepsilon$, $\gamma$, $\delta$, $\lambda$, $k_max$,  $\quad k = 0$};
 
 
           \node[draw,
@@ -30,7 +30,7 @@
             diamond,
             below=1cm of grad,
             minimum width=4.5cm,
-            inner sep=0] (condition) {\shortstack{$ \| \nabla f(\mathbf{x}_{k}) \|_2 < \varepsilon$ \\ $\mathbf{or} \ k \geq k_{\max} \quad$ }};
+            inner sep=0] (condition) {\shortstack{$ \| \nabla f(x_{k}) \|_2 < \varepsilon$ \\ $\mathbf{or} \ k \geq k_{\max} \quad$ }};
 
           \node[draw,
             right=3.5cm of condition,
@@ -48,7 +48,7 @@
             rounded rectangle,
             below=2cm of condition,
             minimum width=2.5cm,
-            minimum height=1cm,] (end) { return $x_{k+1}$};
+            minimum height=1cm,] (end) { return $x_{k}$};
 
           %making edges
           \draw[-latex] (start) edge (input);

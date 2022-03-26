@@ -48,7 +48,7 @@
             diamond,
             below=1cm of yes_condition_1,
             minimum width=3.5cm,
-            inner sep=0] (stop_criteria) { \shortstack{$ \| \nabla f(\mathbf{x}_{k+1}) \|_2 < \varepsilon$ \\ $ \mathbf{or} \ k + 1 \geq k_{\max} \quad $ }};
+            inner sep=0] (stop_criteria) { \shortstack{$ \| \nabla f(x_{k+1}) \|_2 < \varepsilon$ \\ $ \mathbf{or} \ k + 1 \geq k_{\max} \quad $ }};
 
           \node[draw,
             left = 2cm of stop_criteria,

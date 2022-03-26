@@ -38,7 +38,7 @@
             diamond,
             below=1cm of block4,
             minimum width=3.5cm,
-            inner sep=0] (block5) { \shortstack{$ \| \nabla f(\mathbf{x}_{k}) \|_2 < \varepsilon$ \\ $\mathbf{or} \ k \geq k_{\max} \quad$ }};
+            inner sep=0] (block5) { \shortstack{$ \| \nabla f(x_{k}) \|_2 < \varepsilon$ \\ $\mathbf{or} \ k \geq k_{\max} \quad$ }};
 
 
           \node[draw,
