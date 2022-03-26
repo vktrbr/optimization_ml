@@ -23,13 +23,13 @@ Equations
 1. Function argument:
 
 .. math::
-    \displaystyle \mathbf{x} = \left[ \, x_1 \enspace x_2 \enspace \dots \enspace x_n \, \right]^\intercal
+    \displaystyle \mathbf{x} = \left[ \, x_1 \enspace x_2 \enspace \dots \enspace x_n \, \right]^\top
     :label: x-vec
 
 2. Gradient:
 
 .. math::
-    \displaystyle \nabla f = \left[\frac{\partial f}{\partial x_1} \enspace \frac{\partial f}{\partial x_2} \enspace \dots \enspace \frac{\partial f}{\partial x_n}\right]^\intercal
+    \displaystyle \nabla f = \left[\frac{\partial f}{\partial x_1} \enspace \frac{\partial f}{\partial x_2} \enspace \dots \enspace \frac{\partial f}{\partial x_n}\right]^\top
     :label: grad
 
 3. Gradient step:
@@ -72,18 +72,18 @@ We will use Brent's algorithm to search :math:`\displaystyle \gamma_{\min}`.
 
 Strong Wolfe conditions
 ---------------------------------------------
-The conditions necessary to minimize :math:`\displaystyle \phi(\alpha) = f(x_k + \alpha p_k)` and find :math:`\alpha_k = \displaystyle \mathrm{arg}\min_{\alpha}\phi`
+The conditions necessary to minimize :math:`\displaystyle \phi(\gamma) = f(x_k + \gamma p_k)` and find :math:`\gamma_k = \displaystyle \mathrm{arg}\min_{\gamma}\phi`
 
 .. math::
-    f(x_k + \alpha_k p_k) \leq f(x_k) + c_1 \alpha_k \nabla f_k^{\intercal} p_k
+    f(x_k + \gamma_k p_k) \leq f(x_k) + c_1 \gamma_k \nabla f_k^{\top} p_k
     :label: conditionWolfe1
 
 .. math::
-    |\nabla f(x_k + \alpha_k p_k)^{\intercal}p_k| \leq -c_2 \nabla f_k^{\intercal}p_k
+    |\nabla f(x_k + \gamma_k p_k)^{\top}p_k| \leq -c_2 \nabla f_k^{\top}p_k
     :label: conditionWolfe2
 
 
-Nonlinear conjugate gradient method.
+Nonlinear conjugate gradient method
 ---------------------------------------------
 The Fletcher–Reeves method.
 :math:`p_k` is the direction to evaluate :math:`x_{k+1}`.
@@ -91,9 +91,14 @@ The Fletcher–Reeves method.
     1. :math:`p_0 = -\nabla f_0`
     2. :math:`p_{k+1} = \nabla f_{k+1} + \beta^{FR}_{k+1} p_k`
 
+In the RF method, :math:`\gamma` is searched using Line Search (Nocedal, Wright (2006) *Numerical Optimization* pp.60-61)
+
+Our modification is that if Line Search does not converge, use Brent's algorithm to search for :math:`\displaystyle \gamma_{\min} = \mathrm{arg}\min_{\gamma}\phi`
+
 .. math::
-    \beta^{FR}_{k+1} = \frac{\nabla f_{k+1} ^ {\intercal} \nabla f_{k+1}}{\nabla f_{k}^{\intercal} \nabla f_{k}}
+    \beta^{FR}_{k+1} = \frac{\nabla f_{k+1} ^ {\top} \nabla f_{k+1}}{\nabla f_{k}^{\top} \nabla f_{k}}
     :label: beta-fletcher-reeves
 
-
-
+Algorithm Nonlinear conjugate gradient method
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. include:: AlgorithmFlowcharts\FlowchartRFAlg.rst
