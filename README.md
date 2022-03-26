@@ -1,8 +1,8 @@
 # Optimization 
 
 ### Table of Contents  
-- [One-Dimensional optimization](#one-dimensional-optimization)
-- [Multi-Dimensional Optimization](#multi-dimensional-optimization)
+- [One-dimensional optimization](#one-dimensional-optimization)
+- [Multi-dimensional Optimization](#multi-dimensional-optimization)
 
 
 ## One-dimensional optimization
@@ -15,7 +15,7 @@
 > [https://..../OneDimensionalOptimization/streamlit_app.py](https://share.streamlit.io/vktrbr/optimization_ml/main/OneDimensionalOptimization/streamlit_app.py)
 
 
-## Multi-Dimensional Optimization
+## Multi-dimensional Optimization
 #### Algorithms:
 1. Gradient Descent
 2. Nonlinear conjugate gradient method
