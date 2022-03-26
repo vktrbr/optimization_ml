@@ -11,5 +11,4 @@
 3. Brent's method
 4. Broyden–Fletcher–Goldfarb–Shanno algorithm
 > App with visualization:
-> https://share.streamlit.io/vktrbr/optimization_ml/main/OneDimensionalOptimization/streamlit_app.py
-> <img src="https://user-images.githubusercontent.com/52676181/159060153-3ed6dfae-2a8c-4c78-bc99-05ca9cad8e67.PNG" width="500" />
+> [OneDimensionalOptimization/streamlit_app.py](https://share.streamlit.io/vktrbr/optimization_ml/main/OneDimensionalOptimization/streamlit_app.py)
