@@ -2,7 +2,7 @@ Mathematical model
 =============================================
 We have analyzed their problem. The solution is to use the gradient methods.
 
-We choose 2 methods:
+We have chosen 2 methods:
     1. Gradient Descent
     2. Nonlinear conjugate gradient method
 
@@ -15,15 +15,18 @@ Problem statement
 5. Convergence to a local minimum can be guaranteed. When the function :math:`f` is convex, gradient descent can converge to the global minima.
 
 
-Gradient descent equations
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-1. Set:
+Gradient descent
+---------------------------------------------
+
+Equations
+~~~~~~~~~~
+1. Function argument:
 
 .. math::
     \displaystyle \mathbf{x} = \left[ \, x_1 \enspace x_2 \enspace \dots \enspace x_n \, \right]^\intercal
     :label: x-vec
 
-2. Set:
+2. Gradient:
 
 .. math::
     \displaystyle \nabla f = \left[\frac{\partial f}{\partial x_1} \enspace \frac{\partial f}{\partial x_2} \enspace \dots \enspace \frac{\partial f}{\partial x_n}\right]^\intercal
@@ -32,38 +35,65 @@ Gradient descent equations
 3. Gradient step:
 
 .. math::
-    \displaystyle \mathbf{x}^{i + 1} = \mathbf{x}^{i} - \gamma^{i} \cdot \nabla f(\mathbf{x}^{i})
+    \displaystyle \mathbf{x}_{i + 1} = \mathbf{x}_{i} - \gamma_{i} \cdot \nabla f(\mathbf{x}_{i})
     :label: grad-step
 
 4. Terminate condition:
 
 .. math::
-    \displaystyle \lVert \nabla f(\mathbf{x}^{i}) \rVert_{2} < \varepsilon
+    \displaystyle \lVert \nabla f(\mathbf{x}_{i}) \rVert_{2} < \varepsilon
     :label: terminate-cond
 
 
-Nonlinear conjugate gradient method equations
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-1. Hessian:
+Algorithm with constant step
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The gradient of the function shows us the direction of increasing the function. The idea is to move in the opposite
+direction to :math:`x_{k+1}` where :math:`f(x_{k+1}) < f(x_k)`.
+
+But, if we add a gradient to :math:`x_k` without changes, our method will often diverge. So we need to add a gradient
+with some weight :math:`\gamma`.
+
+.. include:: AlgorithmFlowcharts\FlowchartGradConstStep.rst
+
+Algorithm with descent step
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Requirements: :math:`0 < \lambda < 1, 0 < \delta < 1`
+
+.. include:: AlgorithmFlowcharts\FlowchartGradFracStep.rst
+
+Algorithm with optimal step size
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Another good idea is to find a :math:`\gamma`  that minimizes :math:`\phi(\gamma) = f(x_k + \gamma \cdot \nabla f(x_k))`
+
+So we have a task to find the :math:`\displaystyle \gamma_{\min} = \operatorname*{arg\,min}_{\gamma \in (0, 1)}\phi(\gamma)`.
+We will use Brent's algorithm to search :math:`\displaystyle \gamma_{\min}`.
+
+.. include:: AlgorithmFlowcharts\FlowchartOptimalStep.rst
+
+Strong Wolfe conditions
+---------------------------------------------
+The conditions necessary to minimize :math:`\displaystyle \phi(\alpha) = f(x_k + \alpha p_k)` and find :math:`\alpha_k = \displaystyle \mathrm{arg}\min_{\alpha}\phi`
 
 .. math::
-    \operatorname{H} =
-    \begin{bmatrix} \displaystyle  \frac{\partial^2 f}{\partial x_1^2} & \displaystyle \frac{\partial^2 f}{\partial x_1 \partial x_2} &\displaystyle \dots & \displaystyle \frac{\partial^2 f}{\partial x_1 \partial x_n}  \\
-                    \displaystyle  \frac{\partial^2 f}{\partial x_2 \partial x_1} & \displaystyle \frac{\partial^2 f}{\partial x_2^2} &\displaystyle \dots & \displaystyle \frac{\partial^2 f}{\partial x_2 \partial x_n}  \\
-                    \displaystyle \vdots & \displaystyle \vdots & \displaystyle \ddots & \displaystyle \vdots \\
-                    \displaystyle  \frac{\partial^2 f}{\partial x_n \partial x_1} & \displaystyle \frac{\partial^2 f}{\partial x_n \partial x_2} &\displaystyle \dots & \displaystyle \frac{\partial^2 f}{\partial x_n ^ 2}
-    \end{bmatrix}
-
-2. Set:
+    f(x_k + \alpha_k p_k) \leq f(x_k) + c_1 \alpha_k \nabla f_k^{\intercal} p_k
+    :label: conditionWolfe1
 
 .. math::
-    \displaystyle S_0, S_1, \dots, S_n \in X \subseteq \mathbb{R}^{n} \\
+    |\nabla f(x_k + \alpha_k p_k)^{\intercal}p_k| \leq -c_2 \nabla f_k^{\intercal}p_k
+    :label: conditionWolfe2
 
-3. :math:`S_0, S_1, S_n` are conjugate vectors if:
+
+Nonlinear conjugate gradient method.
+---------------------------------------------
+The Fletcher–Reeves method.
+:math:`p_k` is the direction to evaluate :math:`x_{k+1}`.
+
+    1. :math:`p_0 = -\nabla f_0`
+    2. :math:`p_{k+1} = \nabla f_{k+1} + \beta^{FR}_{k+1} p_k`
 
 .. math::
-    \begin{cases}
-    \displaystyle S_i^\intercal \operatorname{H} S_j = 0, \quad i \neq j, \quad i, j = 1, \dots, n \\
-    \displaystyle S_i^\intercal \operatorname{H} S_i \leq 0, \quad i = 1, \dots, n
-    \end{cases}
+    \beta^{FR}_{k+1} = \frac{\nabla f_{k+1} ^ {\intercal} \nabla f_{k+1}}{\nabla f_{k}^{\intercal} \nabla f_{k}}
+    :label: beta-fletcher-reeves
+
+
 

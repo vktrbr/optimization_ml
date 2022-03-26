@@ -1,15 +1,16 @@
 .. raw:: latex
 
     \begin{center}
-    \begin{tikzpicture}[font=\small,thick]
-        % Start block
-        \node[draw,
+        \begin{tikzpicture}[font=\small,thick]
+
+          % Start block
+          \node[draw,
             rounded rectangle,
             minimum width=2.5cm,
             minimum height=1cm] (block1) {start};
 
-        % Voltage and Current Measurement
-        \node[draw,
+          % Voltage and Current Measurement
+          \node[draw,
             trapezium,
             trapezium left angle = 65,
             trapezium right angle = 115,
@@ -17,55 +18,63 @@
             below=of block1,
             minimum width=3.5cm,
             minimum height=1cm
-        ] (block2) { Given $x_0$, $\varepsilon$, $\gamma$ };
+          ] (block2) { Given $x_0$, $\varepsilon$, $\gamma$, $k_{\max}$};
 
-        % Power and voltage variation
-        \node[draw,
+          \node[draw,
             below=of block2,
             minimum width=3.5cm,
             minimum height=1cm
-        ] (block3) {Evaluate $\nabla f(x_k)$};
+          ] (block3) {k = 0};
 
-        % Conditions test
-        \node[draw,
+          % Power and voltage variation
+          \node[draw,
+            below=of block3,
+            minimum width=3.5cm,
+            minimum height=1cm
+          ] (block4) {Evaluate $\nabla f(x_k)$};
+
+          % Conditions test
+          \node[draw,
             diamond,
-            below=1cm of block3,
-            minimum width=2.5cm,
-            inner sep=0] (block4) { $|| \nabla f(\mathbf{x}_{k}) || < \varepsilon$};
+            below=1cm of block4,
+            minimum width=3.5cm,
+            inner sep=0] (block5) { \shortstack{$ \| \nabla f(\mathbf{x}_{k}) \|_2 < \varepsilon$ \\ $\mathbf{or} \ k \geq k_{\max} \quad$ }};
 
 
-        \node[draw,
-            right=3cm of block4,
+          \node[draw,
+            right=3cm of block5,
             minimum width=4cm,
             minimum height=1cm,
-            inner sep=0] (block5) { $x_{k+1} = x_{k} - \gamma \cdot \nabla f(x_k)$};
+            inner sep=0] (block6) { $x_{k+1} = x_{k} - \gamma \cdot \nabla f(x_k)$};
 
 
-        \node[draw,
-            right=2.5cm of block3,
+          \node[draw,
+            right=2.5cm of block4,
             minimum width=2cm,
             minimum height=1cm,
-            inner sep=0] (block6) { $k = k + 1$};
+            inner sep=0] (block7) { $k = k + 1$};
 
-        % Return block
-        \node[draw,
+          % Return block
+          \node[draw,
             rounded rectangle,
-            below=2cm of block4,
+            below=2cm of block5,
             minimum width=2.5cm,
-            minimum height=1cm,] (block7) { return $x_k$};
+            minimum height=1cm,] (block8) { return $x_k$};
 
 
-        % Arrows
-        \draw[-latex] (block1) edge (block2)
-            (block2) edge (block3)
-            (block3) edge (block4)
-            (block5) edge (block6)
-            (block6) edge (block3);
+          % Arrows
+          \draw[-latex] (block1) edge (block2)
+          (block2) edge (block3)
+          (block3) edge (block4)
+          (block4) edge (block5)
+          (block6) |- (block7)
+          (block7) edge (block4);
 
-        \draw[-stealth] (block4) -- (block5)
-            node[pos=0.5,fill=white,inner sep=5]{No};
+          \draw[-stealth] (block5) -- (block6)
+          node[pos=0.5,fill=white,inner sep=5]{No};
 
-        \draw[-stealth] (block4) -- (block7)   node[pos=0.5,fill=white,inner sep=5]{Yes};
+          \draw[-stealth] (block5) -- (block8)   node[pos=0.5,fill=white,inner sep=5]{Yes};
+        \end{tikzpicture}
 
-    \end{tikzpicture}
     \end{center}
+
