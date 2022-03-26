@@ -1,7 +1,7 @@
 # Optimization 
 
 ### Table of Contents  
-- [One-dimensional optimization](#one-dimensional-optimization)
+- [One-Dimensional optimization](#one-dimensional-optimization)
 - [Multi-Dimensional Optimization](#multi-dimensional-optimization)
 
 
