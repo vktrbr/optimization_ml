@@ -2,7 +2,8 @@
 
 ### Table of Contents  
 - [One-dimensional optimization](#one-dimensional-optimization)
-<a name="one-dimensional-optimization"/>
+- [Multi-Dimensional Optimization](#multi-dimensional-optimization)
+
 
 ## One-dimensional optimization
 #### Algorithms:
@@ -12,3 +13,9 @@
 4. Broyden–Fletcher–Goldfarb–Shanno algorithm
 > App with visualization:
 > [OneDimensionalOptimization/streamlit_app.py](https://share.streamlit.io/vktrbr/optimization_ml/main/OneDimensionalOptimization/streamlit_app.py)
+
+
+## Multi-Dimensional Optimization
+#### Algorithms:
+1. Gradient Descent
+2. Nonlinear conjugate gradient method
