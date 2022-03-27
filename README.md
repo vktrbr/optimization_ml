@@ -19,3 +19,4 @@
 #### Algorithms:
 1. Gradient Descent
 2. Nonlinear conjugate gradient method
+3. Newton-CG 
