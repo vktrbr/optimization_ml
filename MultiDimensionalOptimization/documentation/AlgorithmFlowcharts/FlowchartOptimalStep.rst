@@ -17,20 +17,20 @@
             below=of start,
             minimum width=3.5cm,
             minimum height=1cm
-          ] (input) {Given $x_0$, $\varepsilon$, $\gamma$, $\delta$, $\lambda$, $k_max$,  $\quad k = 0$};
+          ] (input) {Given $\mathrm{x}_0$, $\varepsilon$, $\gamma$, $\delta$, $\lambda$, $k_{\max}$,  $\quad k = 0$};
 
 
           \node[draw,
             below=of input,
             minimum width=3.5cm,
             minimum height=1cm
-          ] (grad) {Evaluate $\nabla f(x_k)$};
+          ] (grad) {Evaluate $\nabla f(\mathrm{x}_k)$};
 
           \node[draw,
             diamond,
             below=1cm of grad,
             minimum width=4.5cm,
-            inner sep=0] (condition) {\shortstack{$ \| \nabla f(x_{k}) \|_2 < \varepsilon$ \\ $\mathbf{or} \ k \geq k_{\max} \quad$ }};
+            inner sep=0] (condition) {\shortstack{$ \| \nabla f(\mathrm{x}_{k}) \|_2 < \varepsilon$ \\ $\mathbf{or} \ k \geq k_{\max} \quad$ }};
 
           \node[draw,
             right=3.5cm of condition,
@@ -42,13 +42,13 @@
             above=of no_condition_1,
             minimum width=4cm,
             minimum height=1cm
-          ] (x_new) {\shortstack{$x_{k+1} = x_k - \gamma \cdot \nabla f(x_k) $ \\ $k = k + 1$}};
+          ] (x_new) {\shortstack{$\mathrm{x}_{k+1} = \mathrm{x}_k - \gamma \cdot \nabla f(\mathrm{x}_k) $ \\ $k = k + 1$}};
 
           \node[draw,
             rounded rectangle,
             below=2cm of condition,
             minimum width=2.5cm,
-            minimum height=1cm,] (end) { return $x_{k}$};
+            minimum height=1cm,] (end) { return $\mathrm{x}_{k}$};
 
           %making edges
           \draw[-latex] (start) edge (input);

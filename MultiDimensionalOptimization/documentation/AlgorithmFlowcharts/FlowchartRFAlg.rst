@@ -17,25 +17,25 @@
         below=of start,
         minimum width=3.5cm,
         minimum height=1cm
-        ] (input) {Given $x_0$, $\varepsilon$, $k_{\max}$ $\quad k = 0$};
+        ] (input) {Given $\mathrm{x}_0$, $\varepsilon$, $k_{\max}$ $\quad k = 0$};
 
         \node[draw,
         below=of input,
         minimum width=3.5cm,
         minimum height=1cm
-        ] (p0) {Set $ \ p_k = - \nabla f(x_k)$};
+        ] (p0) {Set $ \ p_k = - \nabla f(\mathrm{x}_k)$};
 
         \node[draw,
         below=of p0,
         minimum width=3.5cm,
         minimum height=1cm
-        ] (grad) {Evaluate $ \ \nabla f(x_k)$};
+        ] (grad) {Evaluate $ \ \nabla f(\mathrm{x}_k)$};
 
         \node[draw,
         diamond,
         below=1cm of grad,
         minimum width=4.5cm,
-        inner sep=0] (condition) {\shortstack{$ \| \nabla f(x_{k}) \|_2 < \varepsilon$ \\ $\mathbf{or} \ k \geq k_{\max} \quad$ }};
+        inner sep=0] (condition) {\shortstack{$ \| \nabla f(\mathrm{x}_{k}) \|_2 < \varepsilon$ \\ $\mathbf{or} \ k \geq k_{\max} \quad$ }};
 
 
         \node[draw,
@@ -58,7 +58,7 @@
         \node[draw,
         above=3cm of ls_converged,
         minimum width=2.5cm,
-        minimum height=1cm,] (x_new) {$x_{k+1} = x_k + \gamma \cdot p_k$};
+        minimum height=1cm,] (x_new) {$\mathrm{x}_{k+1} = \mathrm{x}_k + \gamma \cdot p_k$};
 
         \node[draw,
         above=of x_new,
@@ -74,7 +74,7 @@
         rounded rectangle,
         below=2cm of condition,
         minimum width=2.5cm,
-        minimum height=1cm,] (end) { return $x_{k}$};
+        minimum height=1cm,] (end) { return $\mathrm{x}_{k}$};
 
      %making edges
       \draw[-latex] (start) edge (input);

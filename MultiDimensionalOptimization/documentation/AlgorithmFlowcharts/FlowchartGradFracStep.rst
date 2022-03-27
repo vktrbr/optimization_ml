@@ -17,20 +17,20 @@
             below=of start,
             minimum width=3.5cm,
             minimum height=1cm
-          ] (input) {Given $x_0$, $\varepsilon$, $\gamma$, $\delta$, $\lambda$, $k_{\max}$, $\quad k = 0$};
+          ] (input) {Given $\mathrm{x}_0$, $\varepsilon$, $\gamma$, $\delta$, $\lambda$, $k_{\max}$, $\quad k = 0$};
 
 
           \node[draw,
             below=of input,
             minimum width=3.5cm,
             minimum height=1cm
-          ] (cycle_start) {$t = x_k - \gamma \cdot \nabla f(x_k)$};
+          ] (cycle_start) {$t = \mathrm{x}_k - \gamma \cdot \nabla f(\mathrm{x}_k)$};
 
           \node[draw,
             diamond,
             below=1cm of cycle_start,
             minimum width=4.5cm,
-            inner sep=0] (condition) {\shortstack{$ f(t) - f(x_k) \leq $ \\ $\leq - \gamma \cdot \delta \cdot \|\nabla f(x_k) \|^2_2$ }};
+            inner sep=0] (condition) {\shortstack{$ f(t) - f(\mathrm{x}_k) \leq $ \\ $\leq - \gamma \cdot \delta \cdot \|\nabla f(\mathrm{x}_k) \|^2_2$ }};
 
           \node[draw,
             right=2cm of condition,
@@ -42,13 +42,13 @@
             below = 2cm of condition,
             minimum width=4cm,
             minimum height=1cm
-          ] (yes_condition_1) {$x_{k+1} = x_k - \gamma \cdot \nabla f(x_k) $};
+          ] (yes_condition_1) {$\mathrm{x}_{k+1} = \mathrm{x}_k - \gamma \cdot \nabla f(\mathrm{x}_k) $};
 
           \node[draw,
             diamond,
             below=1cm of yes_condition_1,
             minimum width=3.5cm,
-            inner sep=0] (stop_criteria) { \shortstack{$ \| \nabla f(x_{k+1}) \|_2 < \varepsilon$ \\ $ \mathbf{or} \ k + 1 \geq k_{\max} \quad $ }};
+            inner sep=0] (stop_criteria) { \shortstack{$ \| \nabla f(\mathrm{x}_{k+1}) \|_2 < \varepsilon$ \\ $ \mathbf{or} \ k + 1 \geq k_{\max} \quad $ }};
 
           \node[draw,
             left = 2cm of stop_criteria,
@@ -61,7 +61,7 @@
             rounded rectangle,
             below=2cm of stop_criteria,
             minimum width=2.5cm,
-            minimum height=1cm,] (end) { return $x_{k+1}$};
+            minimum height=1cm,] (end) { return $\mathrm{x}_{k+1}$};
 
           %making edges
           \draw[-latex] (start) edge (input)

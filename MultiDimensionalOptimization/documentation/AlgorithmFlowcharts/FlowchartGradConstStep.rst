@@ -18,7 +18,7 @@
             below=of block1,
             minimum width=3.5cm,
             minimum height=1cm
-          ] (block2) { Given $x_0$, $\varepsilon$, $\gamma$, $k_{\max}$};
+          ] (block2) { Given $\mathrm{x}_0$, $\varepsilon$, $\gamma$, $k_{\max}$};
 
           \node[draw,
             below=of block2,
@@ -31,21 +31,21 @@
             below=of block3,
             minimum width=3.5cm,
             minimum height=1cm
-          ] (block4) {Evaluate $\nabla f(x_k)$};
+          ] (block4) {Evaluate $\nabla f(\mathrm{x}_k)$};
 
           % Conditions test
           \node[draw,
             diamond,
             below=1cm of block4,
             minimum width=3.5cm,
-            inner sep=0] (block5) { \shortstack{$ \| \nabla f(x_{k}) \|_2 < \varepsilon$ \\ $\mathbf{or} \ k \geq k_{\max} \quad$ }};
+            inner sep=0] (block5) { \shortstack{$ \| \nabla f(\mathrm{x}_{k}) \|_2 < \varepsilon$ \\ $\mathbf{or} \ k \geq k_{\max} \quad$ }};
 
 
           \node[draw,
             right=3cm of block5,
             minimum width=4cm,
             minimum height=1cm,
-            inner sep=0] (block6) { $x_{k+1} = x_{k} - \gamma \cdot \nabla f(x_k)$};
+            inner sep=0] (block6) { $\mathrm{x}_{k+1} = \mathrm{x}_{k} - \gamma \cdot \nabla f(\mathrm{x}_k)$};
 
 
           \node[draw,
@@ -59,7 +59,7 @@
             rounded rectangle,
             below=2cm of block5,
             minimum width=2.5cm,
-            minimum height=1cm,] (block8) { return $x_k$};
+            minimum height=1cm,] (block8) { return $\mathrm{x}_k$};
 
 
           % Arrows
