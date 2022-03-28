@@ -55,13 +55,18 @@ def gradient_descent_constant_step(function: Callable[[np.ndarray], Real],
     try:
         for i in range(max_iter):
             grad_k = gradient(function, x_k)
+            func_k = function(x_k)
             if sum(grad_k ** 2) ** 0.5 < epsilon:
                 history['message'] = 'Optimization terminated successfully. code 0'
                 break
             else:
                 x_k = x_k - gamma * grad_k
-        if keep_history:
-            history = update_history_grad_descent(history, values=[i + 1, func_k, grad_k])
+            if keep_history:
+                history = update_history_grad_descent(history, values=[i + 1, func_k, grad_k])
+            if verbose:
+                print(f'Iteration: {i+1} \t|\t point = {x_k} '
+                      f'\t|\t f(point) = {func_k: 0.3f}')
+
         else:
             history['message'] = 'Optimization terminated. Max steps. code 1'
     except Exception as e:
@@ -69,7 +74,6 @@ def gradient_descent_constant_step(function: Callable[[np.ndarray], Real],
 
     return {'point': x_k, 'f_value': function(x_k)}, history
 
-    return
 
 
 def gradient(function: Callable,
@@ -99,5 +103,5 @@ def gradient(function: Callable,
 if __name__ == '__main__':
     def paraboloid(x): return x[0] ** 2 + x[1] ** 2
     start_point = [1, 2]
-    output = gradient_descent_constant_step(paraboloid, start_point)
+    output = gradient_descent_constant_step(paraboloid, start_point, verbose=True)
     print(output[1]['message'], output[0])
