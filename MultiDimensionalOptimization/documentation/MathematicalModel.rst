@@ -23,13 +23,13 @@ Equations
 1. Function argument:
 
 .. math::
-    \displaystyle \mathbf{x} = \left[ \, \mathrm{x}_1 \enspace \mathrm{x}_2 \enspace \dots \enspace \mathrm{x}_n \, \right]^\top
+    \displaystyle x = \left[ \, x_1 \enspace x_2 \enspace \dots \enspace x_n \, \right]^\top
     :label: x-vec
 
 2. Gradient:
 
 .. math::
-    \displaystyle \nabla f = \left[\frac{\partial f}{\partial \mathrm{x}_1} \enspace \frac{\partial f}{\partial \mathrm{x}_2} \enspace \dots \enspace \frac{\partial f}{\partial \mathrm{x}_n}\right]^\top
+    \displaystyle \nabla f = \left[\frac{\partial f}{\partial x_1} \enspace \frac{\partial f}{\partial x_2} \enspace \dots \enspace \frac{\partial f}{\partial x_n}\right]^\top
     :label: grad
 
 3. Gradient step:
