@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Tuple, Callable, Any, Literal, Sequence
+from typing import Callable, Any, Literal, Sequence
 from OneDimensionalOptimization.algorithms.support import *
 
 
