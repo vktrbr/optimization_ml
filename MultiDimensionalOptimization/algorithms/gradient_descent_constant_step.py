@@ -76,7 +76,6 @@ def gradient_descent_constant_step(function: Callable[[np.ndarray], Real],
     return {'point': x_k, 'f_value': function(x_k)}, history
 
 
-
 def gradient(function: Callable,
              x0: np.ndarray,
              delta_x=1e-8) -> np.ndarray:
