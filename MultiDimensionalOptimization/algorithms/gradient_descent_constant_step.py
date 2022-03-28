@@ -64,8 +64,9 @@ def gradient_descent_constant_step(function: Callable[[np.ndarray], Real],
             if keep_history:
                 history = update_history_grad_descent(history, values=[i + 1, func_k, grad_k])
             if verbose:
-                print(f'Iteration: {i+1} \t|\t point = {x_k} '
-                      f'\t|\t f(point) = {func_k: 0.3f}')
+                round_pression = -int(np.log10(epsilon))
+                print(f'Iteration: {i+1} \t|\t point = {np.round(x_k, round_pression)} '
+                      f'\t|\t f(point) = {np.round(func_k, round_pression)}')
 
         else:
             history['message'] = 'Optimization terminated. Max steps. code 1'
