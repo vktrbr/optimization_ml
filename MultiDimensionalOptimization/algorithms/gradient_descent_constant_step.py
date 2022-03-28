@@ -1,15 +1,16 @@
 from __future__ import annotations
 import numpy as np
 
-from typing import Tuple, Callable
-from MultiDimensionalOptimization.algorithms.support import *
+from typing import Tuple, Callable, Sequence
+from numbers import Integral, Real
+from MultiDimensionalOptimization.algorithms.support import Point, HistoryGradDescent, update_history_grad_descent
 
 
 def gradient_descent_constant_step(function: Callable[[np.ndarray], Real],
-                                   x0: np.ndarray,
+                                   x0: Sequence[Real],
                                    epsilon: Real = 1e-5,
-                                   gamma: float = 0.1,
-                                   max_iter: int = 500,
+                                   gamma: Real = 0.1,
+                                   max_iter: Integral = 500,
                                    verbose: bool = False,
                                    keep_history: bool = False) -> Tuple[Point, HistoryGradDescent]:
     """
@@ -36,14 +37,14 @@ def gradient_descent_constant_step(function: Callable[[np.ndarray], Real],
     :return: tuple with point and history.
 
     """
-
+    x0 = np.array(x0)
     func_k = function(x0)
     if keep_history:
         grad_f0 = gradient(function, x0)
         history: HistoryGradDescent = {'iteration': [0],
                                        'f_value': [func_k],
                                        'f_grad_norm': [grad_f0],
-                                       'x': List[Real]}
+                                       'x': [x0]}
     else:
         history: HistoryGradDescent = {'iteration': [], 'f_value': [], 'x': [], 'f_grad_norm': []}
 
@@ -56,17 +57,17 @@ def gradient_descent_constant_step(function: Callable[[np.ndarray], Real],
         for i in range(max_iter):
             grad_k = gradient(function, x_k)
             func_k = function(x_k)
-            if sum(grad_k ** 2) ** 0.5 < epsilon:
+            if np.sum(grad_k ** 2) ** 0.5 < epsilon:
                 history['message'] = 'Optimization terminated successfully. code 0'
                 break
             else:
                 x_k = x_k - gamma * grad_k
             if keep_history:
-                history = update_history_grad_descent(history, values=[i + 1, func_k, grad_k])
+                history = update_history_grad_descent(history, values=[i + 1, func_k, grad_k, x_k])
             if verbose:
-                round_pression = -int(np.log10(epsilon))
-                print(f'Iteration: {i+1} \t|\t point = {np.round(x_k, round_pression)} '
-                      f'\t|\t f(point) = {np.round(func_k, round_pression)}')
+                round_precision = -int(np.log10(epsilon))
+                print(f'Iteration: {i+1} \t|\t point = {np.round(x_k, round_precision)} '
+                      f'\t|\t f(point) = {np.round(func_k, round_precision)}')
 
         else:
             history['message'] = 'Optimization terminated. Max steps. code 1'
@@ -103,5 +104,5 @@ def gradient(function: Callable,
 if __name__ == '__main__':
     def paraboloid(x): return x[0] ** 2 + x[1] ** 2
     start_point = [1, 2]
-    output = gradient_descent_constant_step(paraboloid, start_point, verbose=True)
-    print(output[1]['message'], output[0])
+    output = gradient_descent_constant_step(paraboloid, start_point, keep_history=True)
+    print(output[1], output[0])
