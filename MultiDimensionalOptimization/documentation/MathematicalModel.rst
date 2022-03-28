@@ -23,7 +23,7 @@ Equations
 1. Function argument:
 
 .. math::
-    \displaystyle x = \left[ \, x_1 \enspace x_2 \enspace \dots \enspace x_n \, \right]^\top
+    \displaystyle \mathrm{x} = \left[ \, x_1 \enspace x_2 \enspace \dots \enspace x_n \, \right]^\top
     :label: x-vec
 
 2. Gradient:
