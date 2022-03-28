@@ -15,7 +15,7 @@ def gradient_descent_frac_step(function: Callable[[np.ndarray], Real],
                                verbose: bool = False,
                                keep_history: bool = False) -> Tuple[Point, HistoryGradDescent]:
     """
-    Algorithm with fractional step.
+    Algorithm with fractional step. Documentation: paragraph 2.2.3, page 4
     Requirements: 0 < 𝜆 < 1 is the step multiplier, 0 < 𝛿 < 1.
 
     Code example::
