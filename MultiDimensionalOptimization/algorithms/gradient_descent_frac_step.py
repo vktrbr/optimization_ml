@@ -71,6 +71,10 @@ def gradient_descent_frac_step(function: Callable[[np.ndarray], Real],
             if keep_history:
                 history = update_history_grad_descent(history, values=[i + 1, func_k, grad_k])
             func_k = func_t
+            if verbose:
+                round_pression = -int(np.log10(epsilon))
+                print(f'Iteration: {i+1} \t|\t point = {np.round(x_k, round_pression)} '
+                      f'\t|\t f(point) = {np.round(func_k, round_pression)}')
         else:
             history['message'] = 'Optimization terminated. Max steps. code 1'
 
@@ -107,5 +111,5 @@ def gradient(function: Callable,
 if __name__ == '__main__':
     def paraboloid(x): return x[0] ** 2 + x[1] ** 2
     start_point = [1, 2]
-    output = gradient_descent_frac_step(paraboloid, start_point)
+    output = gradient_descent_frac_step(paraboloid, start_point, verbose=True)
     print(output[1]['message'], output[0])
