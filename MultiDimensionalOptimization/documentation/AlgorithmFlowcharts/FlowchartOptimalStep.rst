@@ -17,7 +17,7 @@
             below=of start,
             minimum width=3.5cm,
             minimum height=1cm
-          ] (input) {Given $\mathrm{x}_0$, $\varepsilon$, $\gamma$, $\delta$, $\lambda$, $k_{\max}$,  $\quad k = 0$};
+          ] (input) {Given $\mathrm{x}_0$, $\varepsilon$, $k_{\max}$, $\quad k = 0$};
 
 
           \node[draw,
