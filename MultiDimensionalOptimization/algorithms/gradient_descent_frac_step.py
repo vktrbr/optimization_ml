@@ -12,7 +12,7 @@ def gradient_descent_frac_step(function: Callable[[np.ndarray], Real],
                                lambda0: Real = 0.1,
                                max_iter: Integral = 500,
                                verbose: bool = False,
-                               keep_history: bool = False) -> Tuple[Point, HistoryGradDescent]:
+                               keep_history: bool = False) -> Tuple[Point, HistoryMDO]:
     """
     Algorithm with fractional step. Documentation: paragraph 2.2.3, page 4
     Requirements: 0 < lambda0 < 1 is the step multiplier, 0 < delta < 1.
@@ -45,12 +45,12 @@ def gradient_descent_frac_step(function: Callable[[np.ndarray], Real],
 
     if keep_history:
         grad_f0 = gradient(function, x_k)
-        history: HistoryGradDescent = {'iteration': [0],
-                                       'f_value': [func_k],
-                                       'f_grad_norm': [sum(grad_f0 ** 2) ** 0.5],
-                                       'x': [x_k]}
+        history: HistoryMDO = {'iteration': [0],
+                               'f_value': [func_k],
+                               'f_grad_norm': [sum(grad_f0 ** 2) ** 0.5],
+                               'x': [x_k]}
     else:
-        history: HistoryGradDescent = {'iteration': [], 'f_value': [], 'x': [], 'f_grad_norm': []}
+        history: HistoryMDO = {'iteration': [], 'f_value': [], 'x': [], 'f_grad_norm': []}
 
     if verbose:
         print(f'Iteration: {0} \t|\t point = {np.round(x_k, round_precision)} '

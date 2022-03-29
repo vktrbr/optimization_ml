@@ -26,6 +26,15 @@ gradient\_descent\_optimal\_step
    :show-inheritance:
 
 
+nonlinear\_cgm
+------------------------------------------------------
+
+.. automodule:: MultiDimensionalOptimization.algorithms.nonlinear_cgm
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
 support
 ----------------------------------------------------
 
