@@ -2,21 +2,22 @@ from __future__ import annotations
 
 from typing import Tuple
 from MultiDimensionalOptimization.algorithms.support import *
+from scipy.optimize import line_search
+from OneDimensionalOptimization.algorithms.brent import brent
+import warnings
 
 
-def gradient_descent_constant_step(function: Callable[[np.ndarray], Real],
-                                   x0: Sequence[Real],
-                                   epsilon: Real = 1e-5,
-                                   gamma: Real = 0.1,
-                                   max_iter: Integral = 500,
-                                   verbose: bool = False,
-                                   keep_history: bool = False) -> Tuple[Point, HistoryMDO]:
+def nonlinear_cgm(function: Callable[[np.ndarray], Real],
+                  x0: Sequence[Real],
+                  epsilon: Real = 1e-5,
+                  max_iter: Integral = 500,
+                  verbose: bool = False,
+                  keep_history: bool = False) -> Tuple[Point, HistoryMDO]:
     """
-    Algorithm with constant step. Documentation: paragraph 2.2.2, page 3.
-    The gradient of the function shows us the direction of increasing the function.
-    The idea is to move in the opposite direction to x_{k + 1} where f(x_{k + 1}) < f(x_{k}).
-    But, if we add a gradient to x_{k} without changes, our method will often diverge.
-    So we need to add a gradient with some weight gamma.
+    Paragraph 2.4.1 page 6
+    Algorithm works when the function is approximately quadratic near the minimum, which is the case when the
+    function is twice differentiable at the minimum and the second derivative is non-singular there.
+
 
     Code example::
         >>> def func(x): return x[0] ** 2 + x[1] ** 2
@@ -28,7 +29,6 @@ def gradient_descent_constant_step(function: Callable[[np.ndarray], Real],
     :param function: callable that depends on the first positional argument
     :param x0: numpy ndarray which is initial approximation
     :param epsilon: optimization accuracy
-    :param gamma: gradient step
     :param max_iter: maximum number of iterations
     :param verbose: flag of printing iteration logs
     :param keep_history: flag of return history
@@ -37,6 +37,7 @@ def gradient_descent_constant_step(function: Callable[[np.ndarray], Real],
     """
     x_k = np.array(x0, dtype=float)
     grad_k = gradient(function, x_k)
+    p_k = grad_k
     func_k = function(x_k)
     if keep_history:
         history: HistoryMDO = {'iteration': [0],
@@ -57,8 +58,20 @@ def gradient_descent_constant_step(function: Callable[[np.ndarray], Real],
                 history['message'] = 'Optimization terminated successfully. code 0'
                 break
             else:
-                x_k = x_k - gamma * grad_k
-                grad_k = gradient(function, x_k)
+                with HiddenPrints():
+                    with warnings.catch_warnings():
+                        warnings.simplefilter("ignore")
+                        gamma = line_search(function,
+                                            lambda x: gradient(function, x),
+                                            x_k,
+                                            p_k)[0]
+                    if gamma is None:
+                        gamma = brent(lambda gam: function(x_k - gam * p_k), (0, 1))[0]['point']
+                x_k = x_k - gamma * p_k
+                grad_k_new = gradient(function, x_k)
+                beta_fr = grad_k_new @ grad_k_new.reshape(-1, 1) / grad_k @ grad_k.reshape(-1, 1)
+                p_k = grad_k_new + beta_fr * p_k
+                grad_k = grad_k_new
                 func_k = function(x_k)
 
             if keep_history:
@@ -79,9 +92,9 @@ def gradient_descent_constant_step(function: Callable[[np.ndarray], Real],
 
 
 if __name__ == '__main__':
-    def paraboloid(x): return x[0] ** 2 + x[1] ** 2
+    def paraboloid(x): return x[0] ** 2 + x[1] ** 2 / 2
 
 
     start_point = [1, 2]
-    output = gradient_descent_constant_step(paraboloid, start_point, keep_history=True, verbose=True)
+    output = nonlinear_cgm(paraboloid, start_point, keep_history=True, verbose=True)
     print(output[1], output[0])

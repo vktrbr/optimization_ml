@@ -14,7 +14,7 @@ class Point(TypedDict):
     f_value: Real
 
 
-class HistoryGradDescent(TypedDict):
+class HistoryMDO(TypedDict):
     """
     Class with an optimization history of gradient descent methods
     """
@@ -32,6 +32,7 @@ class HiddenPrints:
         >>> with HiddenPrints():
         >>>     print("It won't be printed")
     """
+
     def __enter__(self):
         self._original_stdout = sys.stdout
         sys.stdout = open(os.devnull, 'w')
@@ -41,11 +42,11 @@ class HiddenPrints:
         sys.stdout = self._original_stdout
 
 
-def update_history_grad_descent(history: HistoryGradDescent, values: List) -> HistoryGradDescent:
+def update_history_grad_descent(history: HistoryMDO, values: List) -> HistoryMDO:
     """
-    Update HistoryGradDescent with values, which contains iteration, f_value, f_grad_norm, x as a list
+    Update HistoryMDO with values, which contains iteration, f_value, f_grad_norm, x as a list
 
-    :param history: object of HistoryGradDescent
+    :param history: object of HistoryMDO
     :param values: new values that need to append in history in order iteration, f_value, f_grad_norm, x
     :return: updated history
     """
