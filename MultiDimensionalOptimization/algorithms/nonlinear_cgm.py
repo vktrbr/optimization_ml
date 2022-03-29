@@ -39,6 +39,7 @@ def nonlinear_cgm(function: Callable[[np.ndarray], Real],
     grad_k = gradient(function, x_k)
     p_k = grad_k
     func_k = function(x_k)
+    round_precision = -int(np.log10(epsilon))
     if keep_history:
         history: HistoryMDO = {'iteration': [0],
                                'f_value': [func_k],
@@ -48,8 +49,9 @@ def nonlinear_cgm(function: Callable[[np.ndarray], Real],
         history: HistoryMDO = {'iteration': [], 'f_value': [], 'x': [], 'f_grad_norm': []}
 
     if verbose:
-        print(f'Iteration: {0} \t|\t point = {x_k} '
-              f'\t|\t f(point) = {func_k: 0.3f}')
+        print(f'Iteration: {0} '
+              f'\t|\t f(point) = {np.round(func_k, round_precision)}'
+              f'\t|\t point = {np.round(x_k, round_precision)} ')
 
     try:
         for i in range(max_iter - 1):
@@ -67,6 +69,7 @@ def nonlinear_cgm(function: Callable[[np.ndarray], Real],
                                             p_k)[0]
                     if gamma is None:
                         gamma = brent(lambda gam: function(x_k - gam * p_k), (0, 1))[0]['point']
+
                 x_k = x_k - gamma * p_k
                 grad_k_new = gradient(function, x_k)
                 beta_fr = (grad_k_new @ grad_k_new.reshape(-1, 1)) / (grad_k @ grad_k.reshape(-1, 1))
@@ -78,9 +81,9 @@ def nonlinear_cgm(function: Callable[[np.ndarray], Real],
                 history = update_history_grad_descent(history, values=[i + 1, func_k, np.sum(grad_k ** 2) ** 0.5, x_k])
 
             if verbose:
-                round_precision = -int(np.log10(epsilon))
-                print(f'Iteration: {i + 1} \t|\t point = {np.round(x_k, round_precision)} '
-                      f'\t|\t f(point) = {np.round(func_k, round_precision)}')
+                print(f'Iteration: {i + 1} '
+                      f'\t|\t f(point) = {np.round(func_k, round_precision)}'
+                      f'\t|\t point = {np.round(x_k, round_precision)}')
 
         else:
             history['message'] = 'Optimization terminated. Max steps. code 1'

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Tuple, Sequence
+from typing import Tuple
 from MultiDimensionalOptimization.algorithms.support import *
 from OneDimensionalOptimization.algorithms.brent import brent
 
