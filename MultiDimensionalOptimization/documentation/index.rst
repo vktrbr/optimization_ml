@@ -1,6 +1,5 @@
 Multidimensional optimization's documentation
 =========================================================
-
 .. toctree::
     :maxdepth: 3
     :caption: Contents:
@@ -8,3 +7,4 @@ Multidimensional optimization's documentation
     ConceptualModel.rst
     MathematicalModel.rst
     SolutionRequirements.rst
+    MultiDimensionalOptimization.rst
