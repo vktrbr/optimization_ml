@@ -15,7 +15,7 @@ def gradient_descent_frac_step(function: Callable[[np.ndarray], Real],
                                keep_history: bool = False) -> Tuple[Point, HistoryGradDescent]:
     """
     Algorithm with fractional step. Documentation: paragraph 2.2.3, page 4
-    Requirements: 0 < 𝜆 < 1 is the step multiplier, 0 < 𝛿 < 1.
+    Requirements: 0 < lambda0 < 1 is the step multiplier, 0 < delta < 1.
 
     Code example::
 
@@ -92,6 +92,8 @@ def gradient_descent_frac_step(function: Callable[[np.ndarray], Real],
 
 if __name__ == '__main__':
     def paraboloid(x): return x[0] ** 2 + x[1] ** 2
+
+
     start_point = [1, 2]
     output = gradient_descent_frac_step(paraboloid, start_point, keep_history=True, verbose=True)
     print(output[1], output[0])
