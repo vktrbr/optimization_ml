@@ -12,8 +12,8 @@ def gradient_descent_optimal_step(function: Callable[[np.ndarray], Real],
                                   verbose: bool = False,
                                   keep_history: bool = False) -> Tuple[Point, HistoryGradDescent]:
     """
-    Algorithm with fractional step. Documentation: paragraph 2.2.3, page 4
-    Requirements: 0 < 𝜆 < 1 is the step multiplier, 0 < 𝛿 < 1.
+    Algorithm with optimal step. Documentation: paragraph 2.2.4, page 5
+    The idea is to choose a gamma that minimizes the function in the direction f'(x_k)
 
     Code example::
 

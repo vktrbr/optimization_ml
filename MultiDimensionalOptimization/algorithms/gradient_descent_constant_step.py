@@ -14,9 +14,9 @@ def gradient_descent_constant_step(function: Callable[[np.ndarray], Real],
     """
     Algorithm with constant step. Documentation: paragraph 2.2.2, page 3.
     The gradient of the function shows us the direction of increasing the function.
-    The idea is to move in the opposite direction to x𝑘+1 where 𝑓(x𝑘+1) < 𝑓(x𝑘).
-    But, if we add a gradient to x𝑘 without changes, our method will often diverge.
-    So we need to add a gradient with some weight 𝛾.
+    The idea is to move in the opposite direction to x_{k + 1} where f(x_{k + 1}) < f(x_{k}).
+    But, if we add a gradient to x_{k} without changes, our method will often diverge.
+    So we need to add a gradient with some weight gamma.
 
     Code example::
         >>> def func(x): return x[0] ** 2 + x[1] ** 2

@@ -8,9 +8,9 @@ We have chosen 2 methods:
 
 Problem statement
 ---------------------------------------------
-1. :math:`f(\mathbf{x}): \mathbb{R}^{n} \rightarrow \mathbb{R}`
-2. :math:`\mathbf{x} \in X \subseteq \mathbb{R}^{n}`
-3. :math:`\displaystyle f \longrightarrow \min_{\mathbf{x} \in X}`
+1. :math:`f(\mathrm{x}): \mathbb{R}^{n} \rightarrow \mathbb{R}`
+2. :math:`\mathrm{x} \in X \subseteq \mathbb{R}^{n}`
+3. :math:`\displaystyle f \longrightarrow \min_{\mathrm{x} \in X}`
 4. The :math:`f` is defined and differentiable on the :math:`X`
 5. Convergence to a local minimum can be guaranteed. When the function :math:`f` is convex, gradient descent can converge to the global minima.
 
@@ -35,22 +35,22 @@ Equations
 3. Gradient step:
 
 .. math::
-    \displaystyle \mathbf{x}_{i + 1} = \mathbf{x}_{i} - \gamma_{i} \cdot \nabla f(\mathbf{x}_{i})
+    \displaystyle \mathrm{x}_{i + 1} = \mathrm{x}_{i} - \gamma_{i} \cdot \nabla f(\mathrm{x}_{i})
     :label: grad-step
 
 4. Terminate condition:
 
 .. math::
-    \displaystyle \lVert \nabla f(\mathbf{x}_{i}) \rVert_{2} < \varepsilon
+    \displaystyle \lVert \nabla f(\mathrm{x}_{i}) \rVert_{2} < \varepsilon
     :label: terminate-cond
 
 
 Algorithm with constant step
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The gradient of the function shows us the direction of increasing the function. The idea is to move in the opposite
-direction to :math:`\mathbf{x}_{k+1}` where :math:`f(\mathbf{x}_{k+1}) < f(\mathbf{x}_k)`.
+direction to :math:`\mathrm{x}_{k+1}` where :math:`f(\mathrm{x}_{k+1}) < f(\mathrm{x}_k)`.
 
-But, if we add a gradient to :math:`\mathbf{x}_k` without changes, our method will often diverge. So we need to add a gradient
+But, if we add a gradient to :math:`\mathrm{x}_k` without changes, our method will often diverge. So we need to add a gradient
 with some weight :math:`\gamma`.
 
 .. include:: AlgorithmFlowcharts\FlowchartGradConstStep.rst
