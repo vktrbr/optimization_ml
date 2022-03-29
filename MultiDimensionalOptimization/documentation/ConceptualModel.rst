@@ -1,6 +1,6 @@
 Conceptual model
 =============================================
-Imagine situation:
+Imagine situation
 ---------------------------------------------
 Factory's management has a function that describes the income from the sale of products.
 The function depends on many variables, e.g. the salary by each employee, the cost of each product and so on.
