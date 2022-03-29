@@ -44,6 +44,7 @@ class HiddenPrints:
 def update_history_grad_descent(history: HistoryGradDescent, values: List) -> HistoryGradDescent:
     """
     Update HistoryGradDescent with values, which contains iteration, f_value, f_grad_norm, x as a list
+
     :param history: object of HistoryGradDescent
     :param values: new values that need to append in history in order iteration, f_value, f_grad_norm, x
     :return: updated history
@@ -59,9 +60,10 @@ def gradient(function: Callable,
              delta_x=1e-8) -> np.ndarray:
     """
     Calculate and return a gradient using a two-side difference
+
     :param function: callable that depends on the first positional argument
     :param x0: the point at which we calculate the gradient
-    :param delta_x: precision of differentiation
+    :param delta_x: precision of derivation
     :return: vector np.ndarray with the gradient at the point
     """
 
