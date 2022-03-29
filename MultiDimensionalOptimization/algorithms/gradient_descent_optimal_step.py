@@ -10,7 +10,7 @@ def gradient_descent_optimal_step(function: Callable[[np.ndarray], Real],
                                   epsilon: Real = 1e-5,
                                   max_iter: Integral = 500,
                                   verbose: bool = False,
-                                  keep_history: bool = False) -> Tuple[Point, HistoryGradDescent]:
+                                  keep_history: bool = False) -> Tuple[Point, HistoryMDO]:
     """
     Algorithm with optimal step. Documentation: paragraph 2.2.4, page 5
     The idea is to choose a gamma that minimizes the function in the direction f'(x_k)
@@ -40,12 +40,12 @@ def gradient_descent_optimal_step(function: Callable[[np.ndarray], Real],
 
     if keep_history:
         grad_f0 = gradient(function, x_k)
-        history: HistoryGradDescent = {'iteration': [0],
-                                       'f_value': [func_k],
-                                       'f_grad_norm': [sum(grad_f0 ** 2) ** 0.5],
-                                       'x': [x_k]}
+        history: HistoryMDO = {'iteration': [0],
+                               'f_value': [func_k],
+                               'f_grad_norm': [sum(grad_f0 ** 2) ** 0.5],
+                               'x': [x_k]}
     else:
-        history: HistoryGradDescent = {'iteration': [], 'f_value': [], 'x': [], 'f_grad_norm': []}
+        history: HistoryMDO = {'iteration': [], 'f_value': [], 'x': [], 'f_grad_norm': []}
 
     if verbose:
         print(f'Iteration: {0} \t|\t point = {np.round(x_k, round_precision)} '
@@ -83,7 +83,10 @@ def gradient_descent_optimal_step(function: Callable[[np.ndarray], Real],
 if __name__ == '__main__':
     import numpy as np
 
+
     def expon(x): return -np.e ** (- x[0] ** 2 - x[1] ** 2)
+
+
     start_point = [1, 2]
     output = gradient_descent_optimal_step(expon, start_point, keep_history=True, verbose=True)
 
