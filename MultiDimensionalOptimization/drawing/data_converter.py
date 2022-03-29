@@ -1,6 +1,10 @@
+from numbers import Real, Integral
+from typing import Callable, Tuple
+
 from MultiDimensionalOptimization.algorithms.support import HistoryMDO
 import pandas as pd
 import numpy as np
+import plotly.graph_objects as go
 
 
 def make_data_for_contour(history: HistoryMDO) -> pd.DataFrame:
@@ -26,3 +30,31 @@ def make_data_for_contour(history: HistoryMDO) -> pd.DataFrame:
     x, y = np.array(history['x']).T
     output_data = pd.DataFrame({'x': x, 'y': y, 'z': history['f_value'], 'iteration': history['iteration']})
     return output_data
+
+
+def make_contour(function: Callable[[np.ndarray], Real],
+                 bounds: Tuple[Tuple[Real, Real], Tuple[Real, Real]],
+                 cnt_dots: Integral = 100,
+                 colorscale='ice') -> go.Contour:
+    """
+    Return go.Contour for draw by go.Figure. Evaluate function per each point in the 2d grid
+
+    :param function: callable that depends on the first positional argument
+    :param bounds: two tuples with constraints for x- and y-axis
+    :param cnt_dots: number of point per each axis
+    :param colorscale: plotly colorscale for go.Contour
+    :return: go.Contour
+    """
+
+    assert len(bounds) == 2, 'two tuples are required'
+    assert len(bounds[0]) == 2 and len(bounds[1]) == 2, 'both tuples must have 2 numbers'
+    x_axis = []
+    y_axis = []
+    z_axis = []
+    for x in np.linspace(bounds[0][0], bounds[0][1], cnt_dots):
+        for y in np.linspace(bounds[1][0], bounds[1][1], cnt_dots):
+            z_axis.append(function([x, y]))
+            x_axis.append(x)
+            y_axis.append(y)
+
+    return go.Contour(x=z_axis, y=z_axis, z=z_axis, colorscale=colorscale, name='f(x, y)', opacity=0.8)
