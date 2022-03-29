@@ -7,13 +7,13 @@ import numpy as np
 import plotly.graph_objects as go
 
 
-def make_data_for_contour(history: HistoryMDO) -> pd.DataFrame:
+def make_descent_history(history: HistoryMDO) -> pd.DataFrame:
     """
     Return converted HistoryMDO object into pd.DataFrame with columsn ['x', 'y', 'z', 'iteration']::
 
         >>> from MultiDimensionalOptimization.algorithms.gd_optimal_step import gradient_descent_optimal_step
         >>> point, hist = gradient_descent_optimal_step(x[0] ** 2 + x[1] ** 2 * 1.01, [10, 10], keep_history=True)
-        >>> make_data_for_contour(hist).round(4)
+        >>> make_descent_history(hist).round(4)
         +---+----------+----------+----------+-------------+
         |   | x        | y        | z        | iteration   |
         +===+==========+==========+==========+=============+
@@ -48,13 +48,13 @@ def make_contour(function: Callable[[np.ndarray], Real],
 
     assert len(bounds) == 2, 'two tuples are required'
     assert len(bounds[0]) == 2 and len(bounds[1]) == 2, 'both tuples must have 2 numbers'
-    x_axis = []
-    y_axis = []
+    x_axis = np.linspace(bounds[0][0], bounds[0][1], cnt_dots)
+    y_axis = np.linspace(bounds[1][0], bounds[1][1], cnt_dots)
     z_axis = []
-    for x in np.linspace(bounds[0][0], bounds[0][1], cnt_dots):
-        for y in np.linspace(bounds[1][0], bounds[1][1], cnt_dots):
-            z_axis.append(function([x, y]))
-            x_axis.append(x)
-            y_axis.append(y)
+    for x in x_axis:
+        z_axis_i = []
+        for y in y_axis:
+            z_axis_i.append(function([x, y]))
+        z_axis.append(z_axis_i)
 
-    return go.Contour(x=z_axis, y=z_axis, z=z_axis, colorscale=colorscale, name='f(x, y)', opacity=0.8)
+    return go.Contour(x=x_axis, y=y_axis, z=z_axis, colorscale=colorscale, name='f(x, y)', opacity=0.8)
