@@ -35,9 +35,10 @@ def gradient_descent_constant_step(function: Callable[[np.ndarray], Real],
     :return: tuple with point and history.
 
     """
-    x_k = np.array(x0, dtype=float)
+    x_k = np.array(x0, dtype=float)  # change type to numpy ndarray instead of list, for future working
     grad_k = gradient(function, x_k)
     func_k = function(x_k)
+    # if keep_history=True, we will save history. here is initial step
     if keep_history:
         history: HistoryMDO = {'iteration': [0],
                                'f_value': [func_k],
@@ -45,7 +46,8 @@ def gradient_descent_constant_step(function: Callable[[np.ndarray], Real],
                                'x': [x_k]}
     else:
         history: HistoryMDO = {'iteration': [], 'f_value': [], 'x': [], 'f_grad_norm': []}
-
+    
+    # if verbose=True, print the result on each iteration
     if verbose:
         print(f'Iteration: {0} \t|\t point = {x_k} '
               f'\t|\t f(point) = {func_k: 0.3f}')
@@ -53,17 +55,19 @@ def gradient_descent_constant_step(function: Callable[[np.ndarray], Real],
     try:
         for i in range(max_iter - 1):
 
-            if np.sum(grad_k ** 2) ** 0.5 < epsilon:
+            if np.sum(grad_k ** 2) ** 0.5 < epsilon:  # comparing of norm 2 with optimization accuracy
                 history['message'] = 'Optimization terminated successfully. code 0'
                 break
             else:
-                x_k = x_k - gamma * grad_k
+                x_k = x_k - gamma * grad_k  # updating the point for next iter and repeat
                 grad_k = gradient(function, x_k)
                 func_k = function(x_k)
 
+            # again, if keep_history=True add the result of the iter
             if keep_history:
                 history = update_history_grad_descent(history, values=[i + 1, func_k, np.sum(grad_k ** 2) ** 0.5, x_k])
 
+            # again, if verbose=True, print the result of the iter
             if verbose:
                 round_precision = -int(np.log10(epsilon))
                 print(f'Iteration: {i + 1} \t|\t point = {np.round(x_k, round_precision)} '
