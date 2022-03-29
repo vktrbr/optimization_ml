@@ -20,11 +20,11 @@ def nonlinear_cgm(function: Callable[[np.ndarray], Real],
 
 
     Code example::
-        >>> def func(x): return x[0] ** 2 + x[1] ** 2
+        >>> def func(x): return 10 * x[0] ** 2 + x[1] ** 2 / 5
         >>> x_0 = [1, 2]
-        >>> solution = gradient_descent_constant_step(func, x_0)
+        >>> solution = nonlinear_cgm(func, x_0)
         >>> print(solution[0])
-        {'point': array([1.91561942e-06, 3.83123887e-06]), 'f_value': 1.834798903191018e-11}
+        {'point': array([-1.70693616e-07,  2.90227591e-06]), 'f_value': 1.9760041961386155e-12}
 
     :param function: callable that depends on the first positional argument
     :param x0: numpy ndarray which is initial approximation
@@ -69,7 +69,7 @@ def nonlinear_cgm(function: Callable[[np.ndarray], Real],
                         gamma = brent(lambda gam: function(x_k - gam * p_k), (0, 1))[0]['point']
                 x_k = x_k - gamma * p_k
                 grad_k_new = gradient(function, x_k)
-                beta_fr = grad_k_new @ grad_k_new.reshape(-1, 1) / grad_k @ grad_k.reshape(-1, 1)
+                beta_fr = (grad_k_new @ grad_k_new.reshape(-1, 1)) / (grad_k @ grad_k.reshape(-1, 1))
                 p_k = grad_k_new + beta_fr * p_k
                 grad_k = grad_k_new
                 func_k = function(x_k)
@@ -92,9 +92,7 @@ def nonlinear_cgm(function: Callable[[np.ndarray], Real],
 
 
 if __name__ == '__main__':
-    def paraboloid(x): return x[0] ** 2 + x[1] ** 2 / 2
-
-
+    def paraboloid(x): return 10 * x[0] ** 2 + x[1] ** 2 / 5
     start_point = [1, 2]
     output = nonlinear_cgm(paraboloid, start_point, keep_history=True, verbose=True)
-    print(output[1], output[0])
+    print(output[0], output[1])
