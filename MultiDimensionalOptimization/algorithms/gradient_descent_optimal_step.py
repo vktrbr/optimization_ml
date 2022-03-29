@@ -34,10 +34,11 @@ def gradient_descent_optimal_step(function: Callable[[np.ndarray], Real],
     """
 
     x_k = np.array(x0, dtype=float)
-    func_k = function(x0)
+    func_k = function(x0)  # change type to numpy ndarray instead of list, for future working
     grad_k = gradient(function, x_k)
-    round_precision = -int(np.log10(epsilon))
+    round_precision = -int(np.log10(epsilon))  # variable to determine the rounding accuracy
 
+    # if keep_history=True, we will save history. here is initial step
     if keep_history:
         grad_f0 = gradient(function, x_k)
         history: HistoryGradDescent = {'iteration': [0],
@@ -47,13 +48,14 @@ def gradient_descent_optimal_step(function: Callable[[np.ndarray], Real],
     else:
         history: HistoryGradDescent = {'iteration': [], 'f_value': [], 'x': [], 'f_grad_norm': []}
 
+    # if verbose=True, print the result on each iteration
     if verbose:
         print(f'Iteration: {0} \t|\t point = {np.round(x_k, round_precision)} '
               f'\t|\t f(point) = {round(func_k, round_precision)}')
 
     try:
         for i in range(max_iter - 1):
-            with HiddenPrints():
+            with HiddenPrints():  #
                 gamma = brent(lambda gam: function(x_k - gam * grad_k), (0, 1))[0]['point']
             x_k = x_k - gamma * grad_k
             grad_k = gradient(function, x_k)

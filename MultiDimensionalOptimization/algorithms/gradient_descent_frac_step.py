@@ -38,11 +38,12 @@ def gradient_descent_frac_step(function: Callable[[np.ndarray], Real],
     :return: tuple with point and history.
 
     """
-    x_k = np.array(x0, dtype=float)
+    x_k = np.array(x0, dtype=float)   # change type to numpy ndarray instead of list, for future working
     func_k = function(x0)
     grad_k = gradient(function, x_k)
-    round_precision = -int(np.log10(epsilon))
+    round_precision = -int(np.log10(epsilon))  # variable to determine the rounding accuracy
 
+    # if keep_history=True, we will save history. here is initial step
     if keep_history:
         grad_f0 = gradient(function, x_k)
         history: HistoryGradDescent = {'iteration': [0],
@@ -52,6 +53,7 @@ def gradient_descent_frac_step(function: Callable[[np.ndarray], Real],
     else:
         history: HistoryGradDescent = {'iteration': [], 'f_value': [], 'x': [], 'f_grad_norm': []}
 
+    # if verbose=True, print the result on each iteration
     if verbose:
         print(f'Iteration: {0} \t|\t point = {np.round(x_k, round_precision)} '
               f'\t|\t f(point) = {round(func_k, round_precision)}')
@@ -59,9 +61,10 @@ def gradient_descent_frac_step(function: Callable[[np.ndarray], Real],
     try:
         for i in range(max_iter - 1):
 
-            t = x_k - gamma * grad_k
+            t = x_k - gamma * grad_k  # point for first comparison, first gradient step
             func_t = function(t)
 
+            # will divide the gradient step until condition is met
             while not func_t - func_k <= - gamma * delta * sum(grad_k ** 2):
                 gamma = gamma * lambda0
                 t = x_k - gamma * grad_k
@@ -70,14 +73,14 @@ def gradient_descent_frac_step(function: Callable[[np.ndarray], Real],
             x_k = t
             func_k = func_t
             grad_k = gradient(function, x_k)
-
+            # again, if keep_history=True add the result of the iter
             if keep_history:
                 history = update_history_grad_descent(history, values=[i + 1, func_k, sum(grad_k ** 2) ** 0.5, x_k])
-
+            # again, if verbose=True, print the result of the iter
             if verbose:
                 print(f'Iteration: {i + 1} \t|\t point = {np.round(x_k, round_precision)} '
                       f'\t|\t f(point) = {round(func_k, round_precision)}')
-
+            #  comparing of norm 2 with optimization accuracy
             if np.sum(grad_k ** 2) ** 0.5 < epsilon:
                 history['message'] = 'Optimization terminated successfully. code 0'
                 break
