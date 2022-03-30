@@ -55,20 +55,20 @@ def gradient_descent_optimal_step(function: Callable[[np.ndarray], Real],
 
     try:
         for i in range(max_iter - 1):
-            with HiddenPrints():  #
+            with HiddenPrints():  # hiding the prints of the results of the brent algorithm
                 gamma = brent(lambda gam: function(x_k - gam * grad_k), (0, 1))[0]['point']
             x_k = x_k - gamma * grad_k
             grad_k = gradient(function, x_k)
-
+            # again, if keep_history=True add the result of the iter
             if keep_history:
                 func_k = function(x_k)
                 history = update_history_grad_descent(history, values=[i + 1, func_k, sum(grad_k ** 2) ** 0.5, x_k])
-
+            # again, if verbose=True, print the result of the iter
             if verbose:
                 func_k = function(x_k)
                 print(f'Iteration: {i + 1} \t|\t point = {np.round(x_k, round_precision)} '
                       f'\t|\t f(point) = {round(func_k, round_precision)}')
-
+            # comparing of norm 2 with optimization accuracy
             if sum(grad_k ** 2) ** 0.5 < epsilon:
                 history['message'] = 'Optimization terminated successfully. code 0'
                 break
