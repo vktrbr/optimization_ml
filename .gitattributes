@@ -1,2 +1,5 @@
+# dir
+doc/* linguist-vendored
 
+# file
 *.ipynb linguist-language=python
