@@ -1,4 +1,5 @@
 import plotly.express as px
+from plotly.subplots import make_subplots
 
 from MultiDimensionalOptimization.drawing.data_converter import *
 
@@ -117,4 +118,30 @@ def animated_surface(function: Callable[[np.ndarray], Real],
         zaxis_title=r'<b>z</b>'
     )
     fig.update_layout({'title': r'<b>Surface with optimization steps</b>'})
+    return fig
+
+
+def make_grad_norm_f_value_plot(history: HistoryMDO) -> go.Figure:
+    """
+    Return go.Figure with an illustration of the dependence of the function value
+    and the gradient norm on the iteration
+
+    :param history: History after some gradient method
+    :return: go.Figure iteration dependencies
+    """
+    history = pd.DataFrame(history)
+    fig = make_subplots(rows=1, cols=2, subplot_titles=("Function value per iteration",
+                                                        "Gradient norm per iteration"))
+
+    fig.add_trace(go.Scatter(x=history['iteration'], y=history['f_value'], mode='lines+markers', line_shape='spline'),
+                  row=1, col=1)
+    fig.update_xaxes(title_text="Iteration", row=1, col=1)
+    fig.update_yaxes(title_text='Function value', row=1, col=1)
+
+    fig.add_trace(
+        go.Scatter(x=history['iteration'], y=history['f_grad_norm'], mode='lines+markers', line_shape='spline'), row=1,
+        col=2)
+    fig.update_xaxes(title_text="Iteration", row=1, col=2)
+    fig.update_yaxes(title_text='Gradient norm', row=1, col=2)
+
     return fig
