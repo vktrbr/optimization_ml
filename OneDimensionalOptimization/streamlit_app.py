@@ -19,6 +19,7 @@ from OneDimensionalOptimization.parser.sympy_parser import parse_func, sympy_to_
 import re
 
 from OneDimensionalOptimization.drawing.simple_plot import gen_lineplot
+from StreamlitSupport.constants import help_function_string
 
 st.set_page_config(
     page_title=r"OneD optimization",
@@ -27,15 +28,6 @@ st.set_page_config(
 
 algorithms_list = ["Golden-section search", "Successive parabolic interpolation",
                    "Brent's method", "BFGS algorithm"]
-
-help_function_string = r'''
-Available functions: $ \\ 
-\log(u, v) \ (v - \text{base}), \ \exp(u),\ \operatorname{abs}(u), \ \tan(u), \ \cot(u), \\
-\sin(u), \ \cos(u), \ \operatorname{asin}(u), \ \operatorname{sec}(u) \ \operatorname{csc}(u),
-\ \operatorname{sinc}(u), \\ \ \operatorname{asin}(u), \ \operatorname{acos}(u), 
-\ \operatorname{atan}(u), \ \operatorname{acot}(u), \ \operatorname{asec}(u), 
-\ \operatorname{acsc}(u), u!, \operatorname{sqrt}(u)$
-'''
 
 type_alg = st.sidebar.selectbox(r'Algorithm of optimization', algorithms_list)
 
@@ -113,7 +105,7 @@ if not submit_button or flag_empty_func:
     title = st.title(r"1-D optimization")
     st.write('**Hello!** \n\n'
              'This app demonstrates 1d optimization algorithms \n\n '
-             'You can specify **function**, **bounds** and **method**')
+             'You can specify a **function**, a **bounds** and a **method**')
     st.write('### Available methods: ')
     for alg in algorithms_list:
         st.write(f'- **{alg}**')
