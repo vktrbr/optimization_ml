@@ -57,7 +57,7 @@ def make_contour(function: Callable[[np.ndarray], Real],
             z_axis_i.append(function([x, y]))
         z_axis.append(z_axis_i)
 
-    return go.Contour(x=x_axis, y=y_axis, z=z_axis, colorscale=colorscale, name='f(x, y)')
+    return go.Contour(x=x_axis, y=y_axis, z=np.transpose(z_axis), colorscale=colorscale, name='f(x, y)')
 
 
 def make_surface(function: Callable[[np.ndarray], Real],
