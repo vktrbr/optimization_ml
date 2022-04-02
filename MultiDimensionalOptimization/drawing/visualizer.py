@@ -55,8 +55,8 @@ def make_descent_frames_3d(function: Callable[[np.ndarray], Real],
         if i > 0:
             x0, x1 = descent_history.x[i - 1], descent_history.x[i]
             y0, y1 = descent_history.y[i - 1], descent_history.y[i]
-
-            for alpha in np.linspace(0, 1, 10):
+            length = ((x0 - x1) ** 2 + (y0 - y1) ** 2) ** 0.5
+            for alpha in np.linspace(0, 1, min(10, max(3, int(length // 0.5)))):
                 draw_descent[0].append(x0 * alpha + x1 * (1 - alpha))
                 draw_descent[1].append(y0 * alpha + y1 * (1 - alpha))
                 draw_descent[2].append(function([draw_descent[0][-1], draw_descent[1][-1]]))
@@ -72,9 +72,9 @@ def make_descent_frames_3d(function: Callable[[np.ndarray], Real],
                                     mode='lines',
                                     line={'width': 4, 'color': 'rgb(1, 23, 47)'})
 
-        scatter_points = go.Scatter3d(x=descent_history.x[:max(1, i)],
-                                      y=descent_history.y[:max(1, i)],
-                                      z=descent_history.z[:max(1, i)],
+        scatter_points = go.Scatter3d(x=descent_history.x[:i + 1],
+                                      y=descent_history.y[:i + 1],
+                                      z=descent_history.z[:i + 1],
                                       name='descent',
                                       mode='markers',
                                       marker={'size': 5, 'color': 'rgb(1, 23, 47)'},
