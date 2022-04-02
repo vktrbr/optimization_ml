@@ -105,7 +105,7 @@ def make_ranges(history: HistoryMDO) -> Tuple[List, List]:
     min_y = descent_history.y.min()
     max_y = descent_history.y.max()
 
-    x_range = [min_x - (max_x - min_x) * 0.1, max_x + (max_x - min_x) * 0.1]
-    y_range = [min_y - (max_y - min_y) * 0.1, max_y + (max_y - min_y) * 0.1]
+    x_range = [min_x - (max_x - min_x) * 0.7, max_x + (max_x - min_x) * 0.7]
+    y_range = [min_y - (max_y - min_y) * 0.7, max_y + (max_y - min_y) * 0.7]
 
     return x_range, y_range
