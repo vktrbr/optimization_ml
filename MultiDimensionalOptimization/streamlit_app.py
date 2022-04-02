@@ -13,7 +13,8 @@ from MultiDimensionalOptimization.algorithms.combine_function import solve_task_
 from sympy import SympifyError
 from StreamlitSupport.constants import help_function_string
 import re
-from MultiDimensionalOptimization.drawing.visualizer import animated_surface, simple_gradient
+from MultiDimensionalOptimization.drawing.visualizer import animated_surface, simple_gradient, \
+    make_grad_norm_f_value_plot
 
 st.set_page_config(
     page_title=r"MultiD optimization",
@@ -29,7 +30,7 @@ lambda0 = 0.1
 
 type_alg = st.sidebar.selectbox(r'Algorithm of descent', algorithms_list)
 if type_alg == 'Gradient Descent':
-    type_step = st.sidebar.selectbox(r'Type step', ['Fixed', 'Descent', 'Optimal'])
+    type_step = st.sidebar.selectbox(r'Type step', ['Optimal', 'Fixed', 'Descent'])
 else:
     type_step = ''
 
@@ -49,8 +50,10 @@ with st.sidebar.form('input_data'):
                 function_callable_initial, var = sympy_to_callable(function_sympy)
                 n_vars = len(var)
 
+
                 def function_callable(x):
                     return function_callable_initial(*x)
+
 
                 flag_empty_func = False
             except (SyntaxError, TypeError, NameError):
@@ -78,7 +81,7 @@ with st.sidebar.form('input_data'):
         if type_alg == 'Gradient Descent':
 
             if type_step in ['Descent', 'Fixed']:
-                gamma = float(st.number_input("gamma. This gradient multiplier", value=1e-2, min_value=1e-5,
+                gamma = float(st.number_input("gamma. This gradient multiplier", value=1e-1, min_value=1e-5,
                                               max_value=1., step=1e-6, format='%.6f'))
                 optimization_params['gamma'] = gamma
 
@@ -142,6 +145,8 @@ else:
 
                 figure_1 = st.plotly_chart(plotly_figure_contour)
                 figure_2 = st.plotly_chart(plotly_figure_surface)
+
+            figure_3 = st.plotly_chart(make_grad_norm_f_value_plot(history))
 
         except TypeError:
             st.write('**Error**. There may be a problem with the starting point.')
