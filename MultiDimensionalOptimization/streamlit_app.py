@@ -36,7 +36,7 @@ else:
 with st.sidebar.form('input_data'):
     flag_empty_func = True
     st.markdown('# Conditions:')
-    function = st.text_input('Enter the function here', 'x ** 3 - x ** 2 - x + y ** 2',
+    function = st.text_input('Enter the function here', 'x1 ** 3 - x1 ** 2 - x1 + x2 ** 2',
                              help=help_function_string)
 
     if re.sub(r'\s', '', function) != '':
@@ -46,12 +46,11 @@ with st.sidebar.form('input_data'):
             try:
                 function_latex = sympy.latex(sympy.sympify(function))
                 function_sympy = parse_func(function)
-                function_callable_initial, n_vars = sympy_to_callable(function_sympy)
-
+                function_callable_initial, var = sympy_to_callable(function_sympy)
+                n_vars = len(var)
 
                 def function_callable(x):
                     return function_callable_initial(*x)
-
 
                 flag_empty_func = False
             except (SyntaxError, TypeError, NameError):
@@ -61,7 +60,7 @@ with st.sidebar.form('input_data'):
                 st.write('Write logarithms as: `log(x**2, x+1)` '
                          'variables as `pi * x` instead of `pi x`')
 
-        x0 = st.text_input('Start search point', '1, -1')
+        x0 = st.text_input('Start search point. ' + str(tuple(var)), '1.2, -1.2')
         try:
             x0 = x0.replace(' ', '').split(',')
             x0 = tuple(map(float, x0))
