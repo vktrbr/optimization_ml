@@ -5,4 +5,4 @@ Multi Dimensional Optimization
    :maxdepth: 4
 
    MultiDimensionalOptimization.algorithms
-
+   MultiDimensionalOptimization.drawing

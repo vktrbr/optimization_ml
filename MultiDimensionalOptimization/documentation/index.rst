@@ -7,4 +7,5 @@ Multidimensional optimization's documentation
     ConceptualModel.rst
     MathematicalModel.rst
     SolutionRequirements.rst
+    Conclusion.rst
     MultiDimensionalOptimization.rst

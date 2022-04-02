@@ -7,7 +7,7 @@ sys.path.insert(0, str(pathlib.Path(os.path.abspath('.')).parents[1]))
 
 project = 'Multidimensional optimization'
 copyright = '2022, Victor Barbarich'
-author = 'Victor Barbarich'
+author = 'Victor Barbarich, Adelina Tsoi'
 
 # The full version, including alpha/beta/rc tags
 release = '1.0.0'
@@ -18,7 +18,6 @@ extensions = [
 
 templates_path = ['_templates']
 exclude_patterns = ['_build']
-
 
 # -- Options for HTML output -------------------------------------------------
 
