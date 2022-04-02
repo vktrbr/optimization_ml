@@ -21,7 +21,9 @@ def simple_gradient(function: Callable[[np.ndarray], Real],
 
     layout = go.Layout(title='<b>Contour plot with optimization steps</b>',
                        xaxis={'title': r'<b>x</b>'},
-                       yaxis={'title': r'<b>y</b>'})
+                       yaxis={'title': r'<b>y</b>'},
+                       font=dict(size=14)
+                       )
 
     contour = make_contour(function=function, bounds=bounds, cnt_dots=cnt_dots)
     descending_way = go.Scatter(x=descent_history.x,
@@ -115,9 +117,9 @@ def animated_surface(function: Callable[[np.ndarray], Real],
     fig.update_scenes(
         xaxis_title=r'<b>x</b>',
         yaxis_title=r'<b>y</b>',
-        zaxis_title=r'<b>z</b>'
+        zaxis_title=r'<b>z</b>',
     )
-    fig.update_layout({'title': r'<b>Surface with optimization steps</b>'})
+    fig.update_layout({'title': r'<b>Surface with optimization steps</b>'}, font=dict(size=14))
     return fig
 
 
@@ -130,18 +132,22 @@ def make_grad_norm_f_value_plot(history: HistoryMDO) -> go.Figure:
     :return: go.Figure iteration dependencies
     """
     history = pd.DataFrame(history)
-    fig = make_subplots(rows=1, cols=2, subplot_titles=("Function value per iteration",
-                                                        "Gradient norm per iteration"))
+    fig = make_subplots(rows=1, cols=2, subplot_titles=("<b>Function value per iteration</b>",
+                                                        "<b>Gradient norm per iteration</b>"))
 
-    fig.add_trace(go.Scatter(x=history['iteration'], y=history['f_value'], mode='lines+markers', line_shape='spline'),
-                  row=1, col=1)
-    fig.update_xaxes(title_text="Iteration", row=1, col=1)
-    fig.update_yaxes(title_text='Function value', row=1, col=1)
+    fig.add_trace(go.Scatter(x=history['iteration'], y=history['f_value'], mode='lines+markers', line_shape='spline',
+                             showlegend=False), row=1, col=1)
+
+    fig.update_xaxes(title_text="<b>Iteration</b>", row=1, col=1)
+    fig.update_yaxes(title_text='<b>Function value</b>', row=1, col=1)
+    fig.update_layout(font=dict(size=14))
 
     fig.add_trace(
-        go.Scatter(x=history['iteration'], y=history['f_grad_norm'], mode='lines+markers', line_shape='spline'), row=1,
-        col=2)
-    fig.update_xaxes(title_text="Iteration", row=1, col=2)
-    fig.update_yaxes(title_text='Gradient norm', row=1, col=2)
+        go.Scatter(x=history['iteration'], y=history['f_grad_norm'], mode='lines+markers', line_shape='spline',
+                   showlegend=False), row=1, col=2)
+
+    fig.update_xaxes(title_text="<b>Iteration</b>", row=1, col=2)
+    fig.update_yaxes(title_text='<b>Gradient norm</b>', row=1, col=2, side="right")
+    fig.update_layout(font=dict(size=14))
 
     return fig
