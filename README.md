@@ -19,3 +19,5 @@
 #### Algorithms:
 1. Gradient Descent
 2. Nonlinear conjugate gradient method
+> App with visualization:
+> [https://.../MultiDimensionalOptimization/streamlit_app.py](https://share.streamlit.io/vktrbr/optimization_ml/main/MultiDimensionalOptimization/streamlit_app.py)
