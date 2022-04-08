@@ -6,7 +6,7 @@ st.set_page_config(
 column_names = ['x1', 'x2', 'y']  # name of GIVEN columns
 regression_types = ['Linear', 'Polynomial', 'Exponential']
 regulators_types = ['L1', 'Tikhonov (L2)', 'None']
-opt_alg = ['By matrices', 'By gradient methods']
+opt_alg = ['By gradient methods']  # matrix?
 data = st.write('data')  # place for getting excel file
 
 
