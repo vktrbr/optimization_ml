@@ -28,6 +28,12 @@ def linear_regression(x: np.ndarray,
 
         w0 = np.random.random(size=x.shape[1])
         return gradient_descent_optimal_step(loss_function, w0, epsilon=epsilon)[0]['point']
+    if reg_type == 'l1':
+        def loss_function(w):
+            return (1 / x.shape[0]) * ((x @ w - y) ** 2).sum() + const_l1 * abs(w).sum()
+        w0 = np.random.random(size=x.shape[1])
+        return gradient_descent_optimal_step(loss_function, w0, epsilon=epsilon)[0]['point']
+
     if reg_type == 'l2':
         def loss_function(w):
             return ((x @ w - y) ** 2).sum() + const_l2 * (w ** 2).sum()
@@ -38,7 +44,7 @@ def linear_regression(x: np.ndarray,
 
 if __name__ == '__main__':
     from sklearn.datasets import make_regression
-    from sklearn.linear_model import LinearRegression, Ridge
+    from sklearn.linear_model import LinearRegression, Ridge, Lasso
 
     print('Test without regularization')
     print('--------------------------------')
@@ -46,6 +52,16 @@ if __name__ == '__main__':
     print('Our method:\t', np.round(linear_regression(x_data, y_data), 2))
 
     model: LinearRegression = LinearRegression()
+    model.fit(x_data, y_data)
+    print('Sklearn:\t', np.round([model.intercept_] + list(model.coef_), 2))
+    print('--------------------------------')
+
+    print('Test with l1')
+    print('--------------------------------')
+    x_data, y_data = make_regression(30, 5)
+    print('Our method:\t', np.round(linear_regression(x_data, y_data, reg_type='l1', const_l1=.1), 2))
+
+    model: Lasso = Lasso(alpha=.1)
     model.fit(x_data, y_data)
     print('Sklearn:\t', np.round([model.intercept_] + list(model.coef_), 2))
     print('--------------------------------')
