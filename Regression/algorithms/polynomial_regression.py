@@ -1,3 +1,5 @@
+import numpy as np
+
 from Regression.algorithms.linear_model import *
 from numbers import Integral
 from sklearn.preprocessing import PolynomialFeatures
@@ -39,5 +41,8 @@ def polynomial_regression(x: np.ndarray,
 
 
 if __name__ == '__main__':
-    print('how to tests i dnk')
+    print('how to tests idk')
     print('plot looks good')
+    x = np.array([[-1], [0], [1]])
+    y = np.array([1, 0, 1])
+    print('Simple parabola test y = x**2: ', np.round(polynomial_regression(x, y, 2)))
