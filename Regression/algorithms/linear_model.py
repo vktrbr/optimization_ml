@@ -26,6 +26,7 @@ def linear_regression(x: np.ndarray,
     :return:
     """
     assert isinstance(x, np.ndarray), 'x must be numpy ndarray'
+    assert isinstance(y, np.ndarray), 'y must be numpy ndarray'
     assert len(x.shape) == 2, 'x must be 2-d array'
 
     if flag_constant:
