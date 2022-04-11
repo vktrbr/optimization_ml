@@ -1,6 +1,6 @@
 import numpy as np
-from numbers import Real
-from typing import Literal
+from numbers import Real, Integral
+from typing import Literal, List
 from MultiDimensionalOptimization.algorithms.gd_optimal_step import gradient_descent_optimal_step
 
 
@@ -9,7 +9,9 @@ def linear_regression(x: np.ndarray,
                       reg_type: Literal['l1', 'l2', None] = None,
                       epsilon: Real = 1e-4,
                       const_l1: Real = 1e-1,
-                      const_l2: Real = 1e-1):
+                      const_l2: Real = 1e-1,
+                      flag_constant: bool = False,
+                      max_iter: Integral = 1000) -> List[Real]:
     """
     Make linear regression with tikhonov or lasso regularization or without regularization
 
@@ -19,27 +21,35 @@ def linear_regression(x: np.ndarray,
     :param epsilon:
     :param const_l1:
     :param const_l2:
+    :param flag_constant: flag of the need to add columns with ones to find for a permanent term
+    :param max_iter: maximum of gradient descent steps
     :return:
     """
-    x = np.hstack([np.ones((x.shape[0], 1)), x])
+    assert isinstance(x, np.ndarray), 'x must be numpy ndarray'
+    assert len(x.shape) == 2, 'x must be 2-d array'
+
+    if flag_constant:
+        x = np.hstack([np.ones((x.shape[0], 1)), x])
+
     if reg_type is None:
         def loss_function(w):
             return ((x @ w - y) ** 2).sum()
 
         w0 = np.random.random(size=x.shape[1])
-        return gradient_descent_optimal_step(loss_function, w0, epsilon=epsilon)[0]['point']
+        return gradient_descent_optimal_step(loss_function, w0, epsilon=epsilon, max_iter=max_iter)[0]['point']
     if reg_type == 'l1':
         def loss_function(w):
             return (1 / x.shape[0]) * ((x @ w - y) ** 2).sum() + const_l1 * abs(w).sum()
+
         w0 = np.random.random(size=x.shape[1])
-        return gradient_descent_optimal_step(loss_function, w0, epsilon=epsilon)[0]['point']
+        return gradient_descent_optimal_step(loss_function, w0, epsilon=epsilon, max_iter=max_iter)[0]['point']
 
     if reg_type == 'l2':
         def loss_function(w):
             return ((x @ w - y) ** 2).sum() + const_l2 * (w ** 2).sum()
 
         w0 = np.random.random(size=x.shape[1])
-        return gradient_descent_optimal_step(loss_function, w0, epsilon=epsilon)[0]['point']
+        return gradient_descent_optimal_step(loss_function, w0, epsilon=epsilon, max_iter=max_iter)[0]['point']
 
 
 if __name__ == '__main__':
