@@ -20,37 +20,37 @@ def linear_regression(x: np.ndarray,
         >>> np.round(linear_regression(x_data, y_data), 2)
         [54.95 48.6  92.62 39.   60.43]
 
-    :param x:
-    :param y:
-    :param reg_type:
-    :param epsilon:
-    :param const_l1:
-    :param const_l2:
+    :param x: array of predictors
+    :param y: array of variable to predict
+    :param reg_type: type of regularization
+    :param epsilon: accuracy for optimization methods
+    :param const_l1: constant for L1 regularization
+    :param const_l2: constant for L2 regularization
     :param flag_constant: flag of the need to add columns with ones to find for a permanent term
     :param max_iter: maximum of gradient descent steps
-    :return:
+    :return: array of regression coefficients
     """
-    assert isinstance(x, np.ndarray), 'x must be numpy ndarray'
+    assert isinstance(x, np.ndarray), 'x must be numpy ndarray'  # check format of inputs
     assert isinstance(y, np.ndarray), 'y must be numpy ndarray'
     assert len(x.shape) == 2, 'x must be 2-d array'
 
     if flag_constant:
         x = np.hstack([np.ones((x.shape[0], 1)), x])
 
-    if reg_type is None:
+    if reg_type is None:  # without regularization
         def loss_function(w):
             return ((x @ w - y) ** 2).sum()
 
         w0 = np.random.random(size=x.shape[1])
         return gradient_descent_optimal_step(loss_function, w0, epsilon=epsilon, max_iter=max_iter)[0]['point']
-    if reg_type == 'l1':
+    if reg_type == 'l1':  # with L1
         def loss_function(w):
             return ((x @ w - y) ** 2).sum() + const_l1 * abs(w).sum()
 
         w0 = np.random.random(size=x.shape[1])
         return gradient_descent_optimal_step(loss_function, w0, epsilon=epsilon, max_iter=max_iter)[0]['point']
 
-    if reg_type == 'l2':
+    if reg_type == 'l2':  # with L2
         def loss_function(w):
             return ((x @ w - y) ** 2).sum() + const_l2 * (w ** 2).sum()
 

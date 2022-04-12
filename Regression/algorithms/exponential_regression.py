@@ -21,19 +21,19 @@ def exponential_regression(x: np.ndarray,
         Our method:	 [ 5. -0.  2.]
         3.203750731599574e-07
 
-    :param x:
-    :param y:
-    :param reg_type:
-    :param epsilon:
-    :param const_l1:
-    :param const_l2:
-    :return:
+    :param x: array of predictors
+    :param y: array of variable to predict
+    :param reg_type: type of regularization
+    :param epsilon: accuracy for optimization methods
+    :param const_l1: constant for L1 regularization
+    :param const_l2: constant for L2 regularization
+    :return: array of regression coefficients
     """
-    assert isinstance(x, np.ndarray), 'x must be numpy ndarray'
+    assert isinstance(x, np.ndarray), 'x must be numpy ndarray'  # check format of inputs
     assert isinstance(y, np.ndarray), 'y must be numpy ndarray'
     assert len(x.shape) == 2, 'x must be 2-d array'
     x = x.astype(np.longdouble)  # it's a magic maan
-    y = y.astype(np.longdouble)
+    y = y.astype(np.longdouble)  # ability to use numbers longer than default float64
 
     def loss_function(w):
         reg = 0
