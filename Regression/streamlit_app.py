@@ -1,10 +1,12 @@
 import streamlit as st
 import io
 import pandas as pd
+import yfinance as yf
 
 st.set_page_config(
     page_title=r"Regression",
     page_icon=":four:", )  # make page name
+
 regression_types = ['Linear', 'Polynomial', 'Exponential']
 regulators_types = ['L1', 'Tikhonov (L2)', 'None']
 opt_alg = ['By gradient methods']  # matrix?
@@ -13,23 +15,17 @@ regression_type = st.sidebar.selectbox(r'Regression model', regression_types)
 
 uploaded_file = st.file_uploader("Choose a file")
 if uploaded_file is not None:
-    # To read file as bytes:
-    bytes_data = uploaded_file.getvalue()
-    # st.write(bytes_data)
-
-    # To convert to a string based IO:
-    stringio = io.StringIO(uploaded_file.getvalue().decode("utf-8"))
-    # st.write(stringio)
-
-    # To read file as string:
-    string_data = stringio.read()
-    # st.write(string_data)
-
-    # Can be used wherever a "file-like" object is accepted:
-    dataframe = pd.read_csv(uploaded_file)
+    bytes_data = uploaded_file.getvalue()  # To read file as bytes:
+    stringio = io.StringIO(uploaded_file.getvalue().decode("utf-8"))  # To convert to a string based IO:
+    string_data = stringio.read()  # To read file as string:
+    dataframe = pd.read_csv(uploaded_file)  # Can be used wherever a "file-like" object is accepted:
     st.write(dataframe)
 
     column_names = dataframe.columns.tolist()
+if uploaded_file is None:
+    dataframe = yf.download('TSM')
+    st.write(dataframe)
+
 if uploaded_file is not None:
 
     with st.sidebar.form('input_data'):
