@@ -1,5 +1,3 @@
-import numpy as np
-
 from Regression.algorithms.linear_model import *
 from numbers import Integral
 from sklearn.preprocessing import PolynomialFeatures
@@ -15,7 +13,12 @@ def polynomial_regression(x: np.ndarray,
                           max_iter: Integral = 1000) -> np.ndarray:
     """
     Make polynomial regression with a tikhonov or a lasso regularization or without any regularization.
-    Step: 1. Get x, 2. Make polynomial features, 3. Make linear regression
+    Step: 1. Get x, 2. Make polynomial features, 3. Make linear regression::
+
+        >>> x_ = np.array([[-1], [0], [1]])
+        >>> y_ = np.array([1, 0, 1])
+        >>> np.round(polynomial_regression(x_data, y_data, 2))
+        [ 0. -0.  1.]
 
     :param x:
     :param y:
@@ -30,6 +33,8 @@ def polynomial_regression(x: np.ndarray,
     assert isinstance(x, np.ndarray), 'x must be numpy ndarray'
     assert isinstance(y, np.ndarray), 'y must be numpy ndarray'
     assert len(x.shape) == 2, 'x must be 2-d array'
+    x = x.astype(np.longdouble)
+    y = y.astype(np.longdouble)
 
     x = PolynomialFeatures(degree=degree).fit_transform(x)
     return linear_regression(x, y,
@@ -44,6 +49,6 @@ def polynomial_regression(x: np.ndarray,
 if __name__ == '__main__':
     print('how to tests idk')
     print('plot looks good')
-    x_ = np.array([[-1], [0], [1]])
-    y_ = np.array([1, 0, 1])
-    print('Simple parabola test y = x**2: ', np.round(polynomial_regression(x_, y_, 2)))
+    x_data = np.array([[-1], [0], [1]])
+    y_data = np.array([1, 0, 1])
+    print('Simple parabola test y = x**2: ', np.round(polynomial_regression(x_data, y_data, 2)))
