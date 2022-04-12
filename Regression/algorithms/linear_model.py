@@ -13,7 +13,12 @@ def linear_regression(x: np.ndarray,
                       flag_constant: bool = False,
                       max_iter: Integral = 1000) -> List[Real]:
     """
-    Make linear regression with tikhonov or lasso regularization or without regularization
+    Make linear regression with tikhonov or lasso regularization or without regularization::
+
+        >>> from sklearn.datasets import make_regression
+        >>> x_, y_ = make_regression(30, 5, random_state=1)
+        >>> np.round(linear_regression(x_data, y_data), 2)
+        [54.95 48.6  92.62 39.   60.43]
 
     :param x:
     :param y:
