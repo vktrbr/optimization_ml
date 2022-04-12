@@ -45,7 +45,7 @@ def linear_regression(x: np.ndarray,
         return gradient_descent_optimal_step(loss_function, w0, epsilon=epsilon, max_iter=max_iter)[0]['point']
     if reg_type == 'l1':
         def loss_function(w):
-            return (1 / x.shape[0]) * ((x @ w - y) ** 2).sum() + const_l1 * abs(w).sum()
+            return ((x @ w - y) ** 2).sum() + const_l1 * abs(w).sum()
 
         w0 = np.random.random(size=x.shape[1])
         return gradient_descent_optimal_step(loss_function, w0, epsilon=epsilon, max_iter=max_iter)[0]['point']
