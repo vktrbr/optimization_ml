@@ -28,6 +28,7 @@ def polynomial_regression(x: np.ndarray,
     :return:
     """
     assert isinstance(x, np.ndarray), 'x must be numpy ndarray'
+    assert isinstance(y, np.ndarray), 'y must be numpy ndarray'
     assert len(x.shape) == 2, 'x must be 2-d array'
 
     x = PolynomialFeatures(degree=degree).fit_transform(x)
@@ -43,6 +44,6 @@ def polynomial_regression(x: np.ndarray,
 if __name__ == '__main__':
     print('how to tests idk')
     print('plot looks good')
-    x = np.array([[-1], [0], [1]])
-    y = np.array([1, 0, 1])
-    print('Simple parabola test y = x**2: ', np.round(polynomial_regression(x, y, 2)))
+    x_ = np.array([[-1], [0], [1]])
+    y_ = np.array([1, 0, 1])
+    print('Simple parabola test y = x**2: ', np.round(polynomial_regression(x_, y_, 2)))
