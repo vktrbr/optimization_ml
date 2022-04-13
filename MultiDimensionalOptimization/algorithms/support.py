@@ -10,7 +10,7 @@ class Point(TypedDict):
     """
     Class with an output optimization point
     """
-    point: Real
+    point: Sequence[Real]
     f_value: Real
 
 
