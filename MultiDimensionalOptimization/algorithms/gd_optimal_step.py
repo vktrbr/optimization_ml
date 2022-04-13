@@ -34,7 +34,7 @@ def gradient_descent_optimal_step(function: Callable[[np.ndarray], Real],
     """
 
     x_k = np.array(x0, dtype=float)
-    func_k = function(x0)  # change type to numpy ndarray instead of list, for future working
+    func_k = function(x_k)  # change type to numpy ndarray instead of list, for future working
     grad_k = gradient(function, x_k)
     round_precision = -int(np.log10(epsilon))  # variable to determine the rounding accuracy
 
@@ -69,7 +69,7 @@ def gradient_descent_optimal_step(function: Callable[[np.ndarray], Real],
                 print(f'Iteration: {i + 1} \t|\t point = {np.round(x_k, round_precision)} '
                       f'\t|\t f(point) = {round(func_k, round_precision)}')
             # comparing of norm 2 with optimization accuracy
-            if sum(grad_k ** 2) ** 0.5 < epsilon:
+            if sum(grad_k ** 2) ** 0.5 < float(epsilon):
                 history['message'] = 'Optimization terminated successfully. code 0'
                 break
 
