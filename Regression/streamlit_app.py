@@ -20,7 +20,7 @@ st.set_page_config(
     page_icon=":four:")  # make page name
 
 regression_types = ['Linear', 'Polynomial', 'Exponential']
-regulators_types = ['None', 'Lasso (L1)', 'Tikhonov (L2)']
+regulators_types = ['None', 'Lasso (l1)', 'Tikhonov (l2)']
 
 # ------ Initial variables ------ #
 if 'has_been_uploaded' not in st.session_state:
@@ -198,7 +198,7 @@ def regression(df: pd.DataFrame, column_names: List):
             st.title('Regression settings')
             regression_type = st.sidebar.selectbox(r'Regression model', regression_types)
             regularization_type = st.selectbox(r'Regulators type', regulators_types)
-            regularization_type = {'None': None, 'Lasso (L1)': 'L1', 'Tikhonov (L2)': 'L2'}[regularization_type]
+            regularization_type = {'None': None, 'Lasso (l1)': 'l1', 'Tikhonov (l2)': 'l2'}[regularization_type]
 
             with st.form('solve!'):
                 if regression_type == 'Polynomial':
@@ -206,11 +206,11 @@ def regression(df: pd.DataFrame, column_names: List):
                                                  max_value=10, step=1))
 
                 const_l1, const_l2 = 0, 0
-                if regularization_type == 'L1':
+                if regularization_type == 'l1':
                     const_l1 = float(st.number_input('l1 constant', value=1e-1, min_value=0.,
                                                      step=1e-2, format='%.2f'))
 
-                elif regularization_type == 'L2':
+                elif regularization_type == 'l2':
                     const_l2 = float(st.number_input('l2 constant', value=1e-1, min_value=0.,
                                                      step=1e-2, format='%.2f'))
 
