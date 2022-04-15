@@ -128,7 +128,7 @@ def ticker_way() -> Tuple[st.delta_generator.DeltaGenerator, pd.DataFrame]:
                     raise ValueError('no data in ticker dataset')
                 dataset['Normalized date'] = np.linspace(0, 1, dataset.shape[0])
                 dataset = dataset[['Normalized date', 'Open', 'High', 'Low', 'Adj Close', 'Volume', 'Close']]
-
+                dataset = dataset.dropna(axis=0)
             except ValueError:
                 st.markdown("<h6 style='text-align: center;'>"
                             "Error. Check the settings, e.g. intervals or maybe the ticker is incorrect</h6>",
