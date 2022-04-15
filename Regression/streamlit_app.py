@@ -282,11 +282,11 @@ def regression(df: pd.DataFrame, column_names: List):
             mae = mean_absolute_error(y_true, y_pred)
             rmse = mse ** 0.5
 
-            if r2 < 0:
-                st.markdown("<h6 style='text-align: center;'>"
-                            "Error. Check the settings, e.g. x_names and degree</h6>",
-                            unsafe_allow_html=True)
-                st.stop()
+            # if r2 < 0:
+            #     st.markdown("<h6 style='text-align: center;'>"
+            #                 "Error. Check the settings, e.g. x_names and degree</h6>",
+            #                 unsafe_allow_html=True)
+            #     st.stop()
 
             # ----- metrics output ----- #
             with st.container():
