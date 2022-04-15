@@ -41,15 +41,15 @@ def linear_regression(x: np.ndarray,
         x = np.hstack([np.ones((x.shape[0], 1)), x])
 
     def loss_function(w):
-        return ((x @ w - y) ** 2).sum()
+        return ((x @ w - y) ** 2).mean()
 
     if reg_type == 'l1':  # with L1
         def loss_function(w):
-            return ((x @ w - y) ** 2).sum() + const_l1 * abs(w).mean()
+            return ((x @ w - y) ** 2).mean() + const_l1 * abs(w).sum()
 
     if reg_type == 'l2':  # with L2
         def loss_function(w):
-            return ((x @ w - y) ** 2).sum() + const_l2 * (w ** 2).sum()
+            return ((x @ w - y) ** 2).mean() + const_l2 * (w ** 2).sum()
 
     w0 = (np.random.random(size=x.shape[1]) - 0.5) / 100
     return minimize(loss_function, w0, tol=epsilon)['x']
