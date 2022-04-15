@@ -20,7 +20,7 @@ st.set_page_config(
     page_icon=":four:")  # make page name
 
 regression_types = ['Linear', 'Polynomial', 'Exponential']
-regulators_types = ['None', 'Lasso (l1)', 'Tikhonov (l2)']
+regulators_types = ['None', 'Lasso (L1)', 'Tikhonov (L2)']
 
 # ------ Initial variables ------ #
 if 'has_been_uploaded' not in st.session_state:
@@ -198,7 +198,7 @@ def regression(df: pd.DataFrame, column_names: List):
             st.title('Regression settings')
             regression_type = st.sidebar.selectbox(r'Regression model', regression_types)
             regularization_type = st.selectbox(r'Regulators type', regulators_types)
-            regularization_type = {'None': None, 'Lasso (l1)': 'l1', 'Tikhonov (l2)': 'l2'}[regularization_type]
+            regularization_type = {'None': None, 'Lasso (L1)': 'l1', 'Tikhonov (L2)': 'l2'}[regularization_type]
 
             with st.form('solve!'):
                 if regression_type == 'Polynomial':
@@ -264,6 +264,7 @@ def regression(df: pd.DataFrame, column_names: List):
             poly_transformer = PolynomialFeatures(degree)
             with st.spinner('Wait for the features to be created and the weights to be calculated'):
                 x = poly_transformer.fit_transform(x)
+                print(regularization_type, const_l1, const_l2)
                 weights: np.ndarray = linear_regression(x, y.values, reg_type=regularization_type,
                                                         const_l1=const_l1, const_l2=const_l2, flag_constant=False)
 
