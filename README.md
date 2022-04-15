@@ -21,3 +21,11 @@
 2. Nonlinear conjugate gradient method
 > App with visualization:
 > [https://.../MultiDimensionalOptimization/streamlit_app.py](https://share.streamlit.io/vktrbr/optimization_ml/main/MultiDimensionalOptimization/streamlit_app.py)
+
+## Regression
+#### Algorithms:
+1. Linear
+2. Polynomial
+3. Exponential
+> App with visualization:
+> [https://.../Regression/streamlit_app.py](https://share.streamlit.io/vktrbr/optimization_ml/main/Regression/streamlit_app.py)
