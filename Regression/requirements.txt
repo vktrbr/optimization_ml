@@ -8,3 +8,4 @@ yfinance==0.1.70
 openpyxl==3.0.9
 typing==3.7.4.3
 pip==22.0.4
+click==8.0
