@@ -51,7 +51,7 @@ def linear_regression(x: np.ndarray,
         def loss_function(w):
             return ((x @ w - y) ** 2).sum() + const_l2 * (w ** 2).sum()
 
-    w0 = np.random.random(size=x.shape[1])
+    w0 = (np.random.random(size=x.shape[1]) - 0.5) / 100
     return minimize(loss_function, w0, tol=epsilon)['x']
 
 
