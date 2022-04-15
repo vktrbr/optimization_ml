@@ -294,7 +294,8 @@ def regression(df: pd.DataFrame, column_names: List):
                 if message_degree:
                     st.warning(message_degree)
 
-                r2_place, mse_place, rmse_place, mae_place = st.columns([1, 1, 1, 1])
+                r2_place, mae_place = st.columns([1, 1])
+                mse_place, rmse_place = st.columns([1, 1])
                 r2_place.write(rf'$\operatorname{{R}}^2 = {r2 : 0.3f}$')
                 mse_place.write(rf'$\operatorname{{MSE}} = {mse : 0.3f}$')
                 rmse_place.write(rf'$\sqrt{{\operatorname{{MSE}} }}= {rmse : 0.3f}$')
