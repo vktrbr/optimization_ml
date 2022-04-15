@@ -294,9 +294,9 @@ def regression(df: pd.DataFrame, column_names: List):
                 if regression_type == 'Linear':
                     st.write(r'**Model**: $\quad Y = X \cdot W + \varepsilon$')
                 elif regression_type == 'Polynomial':
-                    st.write(r'**Model**: $\quad Y = X_{poly_transformed} \cdot W + \varepsilon$')
+                    st.write(r'**Model**: $\quad Y = X_{\text{poly transformed}} \cdot W + \varepsilon$')
                 elif regression_type == 'Exponential':
-                    st.write(r'**Model**: \quad Y = e^{X \cdot W} + \varepsilon')
+                    st.write(r'**Model**: $\quad Y = e^{X \cdot W} + \varepsilon$')
 
                 if message_degree:
                     st.warning(message_degree)
