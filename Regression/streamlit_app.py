@@ -291,6 +291,13 @@ def regression(df: pd.DataFrame, column_names: List):
             # ----- metrics output ----- #
             with st.container():
                 st.subheader(regression_type + ' regression done!')
+                if regression_type == 'Linear':
+                    st.write(r'Model: $Y = X @ W + \varepsilon$')
+                elif regularization_type == 'Polynomial':
+                    st.write(r'Model: $Y = X_{poly_transformed} @ W + \varepsilon$')
+                elif regularization_type == 'Exponential':
+                    st.write(r'Model: Y = e^{X @ W} + \varepsilon')
+
                 if message_degree:
                     st.warning(message_degree)
 
