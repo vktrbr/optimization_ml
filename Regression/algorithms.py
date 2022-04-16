@@ -11,7 +11,7 @@ def linear_regression(x: np.ndarray,
                       y: np.ndarray,
                       reg_type: Literal['l1', 'l2', None] = None,
                       epsilon: Real = 1e-4,
-                      const_l1: Real = 1e-2,
+                      const_l1: Real = 1e-1,
                       const_l2: Real = 1e-1,
                       flag_constant: bool = True) -> Sequence[Real]:
     """
