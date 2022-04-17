@@ -174,7 +174,7 @@ def own_data_way():
                                 unsafe_allow_html=True)
                     st.stop()
 
-                flag_uploaded_data = st.form_submit_button('Download data')
+                flag_uploaded_data = st.form_submit_button('Upload data')
             if flag_uploaded_data:
                 return _placeholder, dataset
             else:
