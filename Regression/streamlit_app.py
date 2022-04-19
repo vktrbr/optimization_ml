@@ -13,6 +13,8 @@ from Regression.visualization import *
 from math import comb
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
+st.write(os.path.abspath('.'))
+
 MAX_NUMBER_FEATURES = 500
 
 st.set_page_config(
