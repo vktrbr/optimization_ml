@@ -266,7 +266,6 @@ def regression(df: pd.DataFrame, column_names: List):
             poly_transformer = PolynomialFeatures(degree)
             with st.spinner('Wait for the features to be created and the weights to be calculated'):
                 x = poly_transformer.fit_transform(x)
-                print(regularization_type, const_l1, const_l2)
                 weights: np.ndarray = linear_regression(x, y.values, reg_type=regularization_type,
                                                         const_l1=const_l1, const_l2=const_l2, flag_constant=False)
 
