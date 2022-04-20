@@ -13,6 +13,7 @@ from Regression.visualization import *
 from math import comb
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
+
 MAX_NUMBER_FEATURES = 500
 
 st.set_page_config(
@@ -174,7 +175,7 @@ def own_data_way():
                                 unsafe_allow_html=True)
                     st.stop()
 
-                flag_uploaded_data = st.form_submit_button('Download data')
+                flag_uploaded_data = st.form_submit_button('Upload data')
             if flag_uploaded_data:
                 return _placeholder, dataset
             else:
@@ -264,7 +265,6 @@ def regression(df: pd.DataFrame, column_names: List):
             poly_transformer = PolynomialFeatures(degree)
             with st.spinner('Wait for the features to be created and the weights to be calculated'):
                 x = poly_transformer.fit_transform(x)
-                print(regularization_type, const_l1, const_l2)
                 weights: np.ndarray = linear_regression(x, y.values, reg_type=regularization_type,
                                                         const_l1=const_l1, const_l2=const_l2, flag_constant=False)
 
