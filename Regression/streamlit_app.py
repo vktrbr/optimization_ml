@@ -2,8 +2,8 @@ import io
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('.'))
-
+sys.path.insert(0, os.path.abspath('.') + '/Regression')
+print(sys.path)
 import streamlit as st
 from datetime import date
 import yfinance as yf
