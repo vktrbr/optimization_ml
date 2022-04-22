@@ -8,8 +8,8 @@ import streamlit as st
 from datetime import date
 import yfinance as yf
 from typing import List, Tuple
-from Regression.algorithms import *
-from Regression.visualization import *
+from algorithms import *
+from visualization import *
 from math import comb
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
