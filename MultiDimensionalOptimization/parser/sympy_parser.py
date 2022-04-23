@@ -1,10 +1,9 @@
 from OneDimensionalOptimization.parser.sympy_parser import parse_func
 import sympy
-from typing import Callable, Tuple
-from numbers import Integral
+from typing import Callable, Tuple, List
 
 
-def sympy_to_callable(function_sympy: sympy.core.expr.Expr) -> Tuple[Callable, Integral]:
+def sympy_to_callable(function_sympy: sympy.core.expr.Expr) -> Tuple[Callable, List]:
     """
     Convert sympy expression to callable function, for example::
 
