@@ -4,7 +4,6 @@ from typing import Tuple, Optional, TypedDict, List
 import pandas as pd
 
 from MultiDimensionalOptimization.algorithms.gd_frac_step import gradient_descent_frac_step
-from MultiDimensionalOptimization.algorithms.support import HistoryMDO
 from opml_math.calculations import *
 
 np.seterr(invalid='raise')
@@ -21,7 +20,7 @@ def bound_constrained_lagrangian_method(function: Callable[[np.ndarray], Real],
                                         x_bounds: Optional[Sequence[Tuple[Real, Real]]] = None,
                                         epsilon: Real = 1e-4,
                                         delta_x: Real = 1e-4,
-                                        max_iter: Integral = 2000) -> np.ndarray:
+                                        max_iter: Integral = 2000) -> Tuple[np.ndarray, History]:
     """
     Returns solution of minimization by newton_eq_const. Alias of <<Newton’s method under equality constrains>>
     Nocedal, J., &amp; Wright, S. J. (2006). 17.4 PRACTICAL AUGMENTED LAGRANGIAN METHODS.
@@ -31,6 +30,7 @@ def bound_constrained_lagrangian_method(function: Callable[[np.ndarray], Real],
 
         >>> bound_constrained_lagrangian_method(lambda x: (x[0] + 0.5) ** 2 + (x[1] - 0.5) ** 2, [0.1, 0.1],
         >>>                                     [lambda x: x[0] - 1]))
+        After calculation: x, y = 0.99, 0.49
 
     :param function:
     :param x0:
@@ -131,20 +131,24 @@ def bound_constrained_lagrangian_method(function: Callable[[np.ndarray], Real],
             eta_k = 1 / mu_k ** 0.1
             omega = 1 / mu_k
 
-    return x_k, pd.DataFrame({'log-barrier function': history['f_value'], 'x': history['x']})
+    return x_k, pd.DataFrame({'optimization function': history['f_value'], 'x': history['x']})
 
 
 def log_barrier_solver(function: Callable[[np.ndarray], Real],
                        x0: np.ndarray,
                        inequality_constraints: Sequence[Callable[[np.ndarray], Real]],
-                       epsilon: Real = 1e-5) -> Tuple[np.ndarray, HistoryMDO]:
+                       epsilon: Real = 1e-5,
+                       max_iter: Integral = 2000) -> Tuple[np.ndarray, History]:
     """
     Returns optimal point of optimization with inequality constraints by Log Barrier method.
+    Nocedal, J., &amp; Wright, S. J. (2006). 19.6 THE PRIMAL LOG-BARRIER METHOD.
+    In Numerical optimization (pp. 583–584). essay, Springer.
 
-    Example for :math:`f(x) = x^2 + y^2, \\quad 0 \\le x \\le 1, 0 \\le y \\le 1`
+    Example for :math:`f(x, y) = (x + 0.5)^2 + (y - 0.5)^2, \\quad 0 \\le x \\le 1, 0 \\le y \\le 1`
 
-            >>> log_barrier_solver(lambda x: (x[0] + 0.5) ** 2 + (x[1] - 0.5) ** 2, [0.9, 0.1],
-            >>>                    [lambda x: x[0], lambda x: 1 - x[0], lambda x: x[1], lambda x: 1 - x[1]])
+        >>> log_barrier_solver(lambda x: (x[0] + 0.5) ** 2 + (x[1] - 0.5) ** 2, [0.9, 0.1],
+        >>>                    [lambda x: x[0], lambda x: 1 - x[0], lambda x: x[1], lambda x: 1 - x[1]])
+        After calculation: x, y = 0.0031, 0.5
 
     :param function:
     :param x0:
@@ -179,7 +183,7 @@ def log_barrier_solver(function: Callable[[np.ndarray], Real],
     tau = 1  # The tau sequence will be geometric
     x_k = x0
     history: History = {'x': [], 'f_value': []}
-    while tau > epsilon:
+    for i in range(max_iter):
         mu_k = tau ** 0.5
         point, history_step = gradient_descent_frac_step(lambda x: log_barrier_function(x, mu_k), x_k, gamma=mu_k,
                                                          epsilon=tau, keep_history=True, max_iter=100)
@@ -189,6 +193,8 @@ def log_barrier_solver(function: Callable[[np.ndarray], Real],
 
         x_k = point['point']
         tau *= 0.9
+        if tau <= epsilon:
+            break
 
     return x_k, pd.DataFrame({'log-barrier function': history['f_value'], 'x': history['x']})
 
