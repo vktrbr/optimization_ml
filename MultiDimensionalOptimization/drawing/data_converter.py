@@ -1,5 +1,5 @@
 from numbers import Real, Integral
-from typing import Callable, Tuple, List
+from typing import Callable, Tuple, List, Text
 
 from MultiDimensionalOptimization.algorithms.support import HistoryMDO
 import pandas as pd
@@ -35,7 +35,8 @@ def make_descent_history(history: HistoryMDO) -> pd.DataFrame:
 def make_contour(function: Callable[[np.ndarray], Real],
                  bounds: Tuple[Tuple[Real, Real], Tuple[Real, Real]],
                  cnt_dots: Integral = 100,
-                 colorscale='ice') -> go.Contour:
+                 colorscale='ice',
+                 showlegend: bool = True) -> go.Contour:
     """
     Return go.Contour for draw by go.Figure. Evaluate function per each point in the 2d grid
 
@@ -43,6 +44,7 @@ def make_contour(function: Callable[[np.ndarray], Real],
     :param bounds: two tuples with constraints for x- and y-axis
     :param cnt_dots: number of point per each axis
     :param colorscale: plotly colorscale for go.Contour
+    :param showlegend: showlegend flag
     :return: go.Contour
     """
 
@@ -57,13 +59,15 @@ def make_contour(function: Callable[[np.ndarray], Real],
             z_axis_i.append(function([x, y]))
         z_axis.append(z_axis_i)
 
-    return go.Contour(x=x_axis, y=y_axis, z=np.transpose(z_axis), colorscale=colorscale, name='f(x, y)')
+    return go.Contour(x=x_axis, y=y_axis, z=np.transpose(z_axis), colorscale=colorscale,
+                      name='f(x, y)', showscale=showlegend, showlegend=showlegend)
 
 
 def make_surface(function: Callable[[np.ndarray], Real],
                  bounds: Tuple[Tuple[Real, Real], Tuple[Real, Real]],
                  cnt_dots: Integral = 100,
-                 colorscale='ice') -> go.Contour:
+                 colorscale: Text = 'ice',
+                 showlegend: bool = True) -> go.Contour:
     """
     Return go.Surface for draw by go.Figure. Evaluate function per each point in the 2d grid
 
@@ -71,6 +75,7 @@ def make_surface(function: Callable[[np.ndarray], Real],
     :param bounds: two tuples with constraints for x- and y-axis
     :param cnt_dots: number of point per each axis
     :param colorscale: plotly colorscale for go.Contour
+    :param showlegend: showlegend flag
     :return: go.Surface
     """
 
@@ -85,16 +90,18 @@ def make_surface(function: Callable[[np.ndarray], Real],
             z_axis_i.append(function([x, y]))
         z_axis.append(z_axis_i)
 
-    return go.Surface(x=x_axis, y=y_axis, z=np.transpose(z_axis), colorscale=colorscale, name='f(x, y)', opacity=0.75)
+    return go.Surface(x=x_axis, y=y_axis, z=np.transpose(z_axis), colorscale=colorscale,
+                      name='f(x, y)', opacity=0.75, showlegend=showlegend)
 
 
-def make_ranges(history: HistoryMDO) -> Tuple[List, List]:
+def make_ranges(history: HistoryMDO, k: Real = 0.5) -> Tuple[List, List]:
     """
     Return bounds for the x-axis and the y-axis.
-    1. Find a min_x and max_x and then x_range = [min_x - (max_x - min_x) * 0.1, max_x + (max_x - min_x) * 0.1]
+    1. Find a min_x and max_x and then x_range = [min_x - (max_x - min_x) * k, max_x + (max_x - min_x) * k]
     2. Similarly for y_axis
 
     :param history: History after some gradient method
+    :param k: [min_x - (max_x - min_x) * k, max_x + (max_x - min_x) * k]
     :return: [x_range, y_range]
     """
 
@@ -105,7 +112,7 @@ def make_ranges(history: HistoryMDO) -> Tuple[List, List]:
     min_y = descent_history.y.min() - 0.1
     max_y = descent_history.y.max() + 0.1
 
-    x_range = [min_x - (max_x - min_x) * 0.7, max_x + (max_x - min_x) * 0.7]
-    y_range = [min_y - (max_y - min_y) * 0.7, max_y + (max_y - min_y) * 0.7]
+    x_range = [min_x - (max_x - min_x) * k, max_x + (max_x - min_x) * k]
+    y_range = [min_y - (max_y - min_y) * k, max_y + (max_y - min_y) * k]
 
     return x_range, y_range

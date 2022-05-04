@@ -10,10 +10,11 @@ from StreamlitSupport.functions import parse_function
 
 st.set_page_config(
     page_title=r"Inner point",
-    page_icon="🦖",
+    page_icon=":five:",
 )
 st.sidebar.markdown('# Settings:')
-methods_list = ["Newton’s method under equality constrains", "Log Barrier Method", "Primal-Dual Interior-Point Methods"]
+# , "Primal-Dual Interior-Point Methods"]
+methods_list = ["Newton’s method under equality constrains", "Log Barrier Method"]
 equality_functions = []
 inequality_functions = []
 type_alg = st.sidebar.selectbox(r'Method', methods_list)
@@ -36,14 +37,12 @@ with st.sidebar.form('input_data'):
     if type_alg == "Newton’s method under equality constrains":
         for i in range(equality_number):
             equality_function, _, _ = parse_function(input_text='Enter ' + str(i + 1) + ' equality function here',
-                                                     default_value='x1 ** 3 - x1 ** 2 - x1 + x2 ** 2')
+                                                     default_value='x1 + x2 - 1')
     else:
         for i in range(equality_number):
-
             equality_function, _, _ = parse_function(input_text='Enter ' + str(i + 1) + ' equality function here',
                                                      default_value='x1 ** 3 - x1 ** 2 - x1 + x2 ** 2')
         for i in range(inequality_number):
-
             inequality_function, _, _ = parse_function(
                 input_text='Enter ' + str(i + 1) + ' inequality function . Format example: g(x)>0',
                 default_value='x1 ** 3 - x1 ** 2 - x1 + x2 ** 2')
@@ -61,12 +60,23 @@ with st.sidebar.form('input_data'):
 
     submit_button = st.form_submit_button(label='Solve!')
 
-title = st.title(r"Inner point ")
-st.write('**Hello!** \n\n'
-         'This app demonstrates methods of the inner point \n\n '
-         'You can specify a **function**, a **start point** and a **method**')
 
-st.write('### Available methods: ')
-for alg in methods_list:
-    st.write(f'- **{alg}**')
-st.stop()
+if submit_button is False:
+    title = st.title(r"Inner point ")
+    st.write('**Hello!** \n\n'
+             'This app demonstrates methods of the inner point \n\n '
+             'You can specify a **function**, a **start point** and a **method**')
+
+    st.write('### Available methods: ')
+    for alg in methods_list:
+        st.write(f'- **{alg}**')
+    st.stop()
+else:
+    """
+    Тут нужно написать передачу введенной функции и ограничений в решающую функцию
+    в bound_constrained_lagrangian_method: constraints - список из ограничений типа равенства вида: g(x) = 0
+    в log_barrier_solver: inequality_constraints - список из ограничений типа неравества в виде: g(x) >= 0
+    !! Для log_barrier_ метода убрать запрашивание равенств. 
+    График готов только для log_barrier_ метода.
+    в ноутбуке я показал как это вызывать 
+    """
