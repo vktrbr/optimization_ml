@@ -1,8 +1,6 @@
 from numbers import Integral
 from typing import Tuple, Optional, TypedDict, List
 
-import pandas as pd
-
 from MultiDimensionalOptimization.algorithms.gd_frac_step import gradient_descent_frac_step
 from opml_math.calculations import *
 
@@ -12,6 +10,7 @@ np.seterr(invalid='raise')
 class History(TypedDict):
     x: List[np.ndarray]
     f_value: List[np.ndarray]
+    iteration: List[Integral]
 
 
 def bound_constrained_lagrangian_method(function: Callable[[np.ndarray], Real],
@@ -131,7 +130,29 @@ def bound_constrained_lagrangian_method(function: Callable[[np.ndarray], Real],
             eta_k = 1 / mu_k ** 0.1
             omega = 1 / mu_k
 
-    return x_k, pd.DataFrame({'optimization function': history['f_value'], 'x': history['x']})
+    return x_k, {'f_value': history['f_value'], 'x': history['x'], 'iteration': list(range(0, len(history['x'])))}
+
+
+def log_barrier_function(function: Callable[[np.ndarray], Real],
+                         x: np.ndarray,
+                         mu: Real,
+                         inequality_constraints: Sequence[Callable[[np.ndarray], Real]], ) -> Real:
+    """
+    Support function. Compute log-barrier function .. math::
+
+        P(x, \\mu) = f(x) - \\mu \\sum_{i\\in\\mathcal{I}}\\ln c_i(x)
+
+    :param function:
+    :param x: some specific point x
+    :param mu:
+    :param inequality_constraints:
+    :return:
+    """
+    m = len(inequality_constraints)  # Amount of inequality constraints
+    output_lb = function(x)
+    for j in range(m):
+        output_lb -= mu * np.log(inequality_constraints[j](x))
+    return output_lb
 
 
 def log_barrier_solver(function: Callable[[np.ndarray], Real],
@@ -154,6 +175,7 @@ def log_barrier_solver(function: Callable[[np.ndarray], Real],
     :param x0:
     :param epsilon:
     :param inequality_constraints:
+    :param max_iter:
     :return:
     """
     m = len(inequality_constraints)  # Amount of inequality constraints
@@ -165,27 +187,14 @@ def log_barrier_solver(function: Callable[[np.ndarray], Real],
     except ArithmeticError:
         return 'Point out of domain'
 
-    def log_barrier_function(x: np.ndarray, mu: Real) -> Real:
-        """
-        Support function. Compute log-barrier function .. math::
-
-            P(x, \\mu) = f(x) - \\mu \\sum_{i\\in\\mathcal{I}}\\ln c_i(x)
-
-        :param x: some specific point x
-        :param mu:
-        :return:
-        """
-        output_lb = function(x)
-        for j in range(m):
-            output_lb -= mu * np.log(inequality_constraints[j](x))
-        return output_lb
-
     tau = 1  # The tau sequence will be geometric
     x_k = x0
     history: History = {'x': [], 'f_value': []}
     for i in range(max_iter):
         mu_k = tau ** 0.5
-        point, history_step = gradient_descent_frac_step(lambda x: log_barrier_function(x, mu_k), x_k, gamma=mu_k,
+        point, history_step = gradient_descent_frac_step(lambda x: log_barrier_function(function, x, mu_k,
+                                                                                        inequality_constraints),
+                                                         x_k, gamma=mu_k,
                                                          epsilon=tau, keep_history=True, max_iter=100)
 
         history['f_value'].extend(history_step['f_value'])
@@ -196,7 +205,7 @@ def log_barrier_solver(function: Callable[[np.ndarray], Real],
         if tau <= epsilon:
             break
 
-    return x_k, pd.DataFrame({'log-barrier function': history['f_value'], 'x': history['x']})
+    return x_k, {'f_value': history['f_value'], 'x': history['x'], 'iteration': list(range(0, len(history['x'])))}
 
 
 if __name__ == '__main__':
