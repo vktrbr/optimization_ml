@@ -47,7 +47,6 @@ def bound_constrained_lagrangian_method(function: Callable[[np.ndarray], Real],
         for i in range(len(x0)):
             x_bounds.append((-np.inf, np.inf))
 
-
     def c(x: np.ndarray):
         """Returns vector of constraints at specific x"""
         _c = []
