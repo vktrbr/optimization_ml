@@ -4,52 +4,62 @@ import sys
 sys.path.insert(0, os.path.abspath('..'))
 
 import streamlit as st
-# import numpy as np
-
+from Inner_point.algorithms import log_barrier_solver
+from Inner_point.visualizer import contour_log_barrier
 from StreamlitSupport.functions import parse_function
+import numpy
+
+numpy.seterr('ignore')
 
 st.set_page_config(
     page_title=r"Inner point",
     page_icon=":five:",
 )
+
+# --- Part of main settings at sidebar --- #
 st.sidebar.markdown('# Settings:')
-# , "Primal-Dual Interior-Point Methods"]
+
+# "Primal-Dual Interior-Point Methods"
 methods_list = ["Newton’s method under equality constrains", "Log Barrier Method"]
+
 equality_functions = []
 inequality_functions = []
 type_alg = st.sidebar.selectbox(r'Method', methods_list)
 
 with st.sidebar:
-    function, n_vars, var = parse_function(input_text='Enter the function here',
-                                           default_value='x1 ** 3 - x1 ** 2 - x1 + x2 ** 2')
+    function = parse_function(input_text='Enter the function here',
+                              default_value='x1 ** 3 - x1 ** 2 - x1 + x2 ** 2')
 
     if type_alg == "Newton’s method under equality constrains":
         equality_number = int(
-            st.number_input('Number of equality type constraints ', value=1, min_value=0, max_value=n_vars - 1), )
+            st.number_input('Number of equality type constraints ', value=1,
+                            min_value=0, max_value=function.n_vars - 1))
     else:
-        equality_number = int(
-            st.number_input('Number of equality type constraints ', value=1, min_value=0, max_value=n_vars - 1), )
-        inequality_number = int(st.number_input('Number of inequality type constraints ', value=1, min_value=0), )
+        # equality_number = int(
+        #     st.number_input('Number of equality type constraints ', value=1,
+        #                     min_value=0, max_value=function.n_vars - 1))
+        inequality_number = int(st.number_input('Number of inequality type constraints ', value=1, min_value=0))
 
 with st.sidebar.form('input_data'):
-    flag_empty_func = True
     st.markdown('# Conditions:')
     if type_alg == "Newton’s method under equality constrains":
         for i in range(equality_number):
-            equality_function, _, _ = parse_function(input_text='Enter ' + str(i + 1) + ' equality function here',
-                                                     default_value='x1 + x2 - 1')
+            equality_function = parse_function(input_text='Enter ' + str(i + 1) + ' equality function here',
+                                               default_value='x1 + x2 - 1')
+            equality_functions.append(equality_function)
     else:
-        for i in range(equality_number):
-            equality_function, _, _ = parse_function(input_text='Enter ' + str(i + 1) + ' equality function here',
-                                                     default_value='x1 ** 3 - x1 ** 2 - x1 + x2 ** 2')
+        # for i in range(equality_number):
+        #     equality_function = parse_function(input_text='Enter ' + str(i + 1) + ' equality function here',
+        #                                              default_value='x1 ** 3 - x1 ** 2 - x1 + x2 ** 2')
         for i in range(inequality_number):
-            inequality_function, _, _ = parse_function(
+            inequality_function = parse_function(
                 input_text='Enter ' + str(i + 1) + ' inequality function . Format example: g(x)>0',
-                default_value='x1 ** 3 - x1 ** 2 - x1 + x2 ** 2')
+                default_value='x1 ** 2 + x2 + 1')
+            inequality_functions.append(inequality_function)
 
-    x0 = st.text_input('Start search point. ' + str(tuple(var)), ('1.2, ' * n_vars)[:-2])
-    epsilon = float(st.number_input('epsilon', value=1e-6, min_value=1e-6,
-                                    max_value=1., step=1e-6, format='%.6f'))
+    x0 = st.text_input('Start search point. ' + str(tuple(function.variables)), ('1.2, ' * function.n_vars)[:-2])
+    # epsilon = float(st.number_input('epsilon', value=1e-6, min_value=1e-6,
+    #                                 max_value=1., step=1e-6, format='%.6f'))
     try:
         x0 = x0.replace(' ', '').split(',')
         x0 = tuple(map(float, x0))
@@ -60,8 +70,7 @@ with st.sidebar.form('input_data'):
 
     submit_button = st.form_submit_button(label='Solve!')
 
-
-if submit_button is False:
+if submit_button is False or function.flag_empty_func:
     title = st.title(r"Inner point ")
     st.write('**Hello!** \n\n'
              'This app demonstrates methods of the inner point \n\n '
@@ -72,11 +81,24 @@ if submit_button is False:
         st.write(f'- **{alg}**')
     st.stop()
 else:
-    """
-    Тут нужно написать передачу введенной функции и ограничений в решающую функцию
-    в bound_constrained_lagrangian_method: constraints - список из ограничений типа равенства вида: g(x) = 0
-    в log_barrier_solver: inequality_constraints - список из ограничений типа неравества в виде: g(x) >= 0
-    !! Для log_barrier_ метода убрать запрашивание равенств. 
-    График готов только для log_barrier_ метода.
-    в ноутбуке я показал как это вызывать 
-    """
+    # --- Print initial problem --- #
+    st.write('### Problem:')
+    problem_latex = rf'$ \displaystyle f(x) = {function.latex}, \quad'
+    problem_latex += rf' x_0 = {x0}$'
+    st.write(problem_latex)
+
+    # --- Print constaints and solution --- #
+    if type_alg == "Newton’s method under equality constrains":
+        const_latex = rf'\displaystyle '  # Вот это дописать по примеру выше, чтобы выводилась система
+        for func in equality_functions:
+            st.latex(func.latex)
+    elif type_alg == 'Log Barrier Method':
+        # for func in equality_functions:
+        #     st.write(func.latex)
+        log_barrier_function_latex = r'$ \qquad \displaystyle P(x, \mu) = f(x) - \mu \sum_{i\in\mathcal{I}}\ln g_i(x)$'
+        st.write('**Log barrier function:**' + log_barrier_function_latex)
+
+        constraints = list(map(lambda x: x.call, inequality_functions))
+        solution, history = log_barrier_solver(function.call, x0, constraints)
+        st.write(r'$ x_{\min} = ' + f'{list(numpy.round(solution, 3))}$')
+        st.plotly_chart(contour_log_barrier(function.call, history, constraints))
