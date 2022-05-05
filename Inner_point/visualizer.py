@@ -37,7 +37,7 @@ def contour_log_barrier(function: Callable[[np.ndarray], Real], history: History
     fig.add_trace(descending_way, row=1, col=1)
     fig.update_layout(title='<b>Contour plot for the primal barrier method</b>',
                       xaxis={'title': r'<b>x</b>'}, yaxis={'title': r'<b>y</b>'}, font=dict(size=14),
-                      xaxis2={'title': r'<b>x</b>'}, yaxis2={'title': r'<b>y</b>'})
+                      xaxis2={'title': r'<b>x</b>'}, )
 
     fig.add_trace(descending_way, row=1, col=2)
     fig.add_trace(descending_points, row=1, col=1)
