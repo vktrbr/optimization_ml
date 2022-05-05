@@ -1,7 +1,7 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('.'))
 
 import streamlit as st
 from Inner_point.algorithms import log_barrier_solver, bound_constrained_lagrangian_method
