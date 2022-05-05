@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, os.path.abspath('..'))
 
 import streamlit as st
-from Inner_point.algorithms import log_barrier_solver
+from Inner_point.algorithms import log_barrier_solver, bound_constrained_lagrangian_method
 from Inner_point.visualizer import contour_log_barrier
 from StreamlitSupport.functions import parse_function
 import numpy
@@ -33,12 +33,12 @@ with st.sidebar:
     if type_alg == "Newton’s method under equality constrains":
         equality_number = int(
             st.number_input('Number of equality type constraints ', value=1,
-                            min_value=0, max_value=function.n_vars - 1))
+                            min_value=1, max_value=function.n_vars - 1))
     else:
         # equality_number = int(
         #     st.number_input('Number of equality type constraints ', value=1,
         #                     min_value=0, max_value=function.n_vars - 1))
-        inequality_number = int(st.number_input('Number of inequality type constraints ', value=1, min_value=0))
+        inequality_number = int(st.number_input('Number of inequality type constraints ', value=1, min_value=1))
 
 with st.sidebar.form('input_data'):
     st.markdown('# Conditions:')
@@ -89,16 +89,53 @@ else:
 
     # --- Print constaints and solution --- #
     if type_alg == "Newton’s method under equality constrains":
-        const_latex = rf'\displaystyle '  # Вот это дописать по примеру выше, чтобы выводилась система
+        const_latex = rf'$\displaystyle G(x) = 0, \quad G(x) = '
+        const_latex_matrix = r'\displaystyle \begin{bmatrix}'
         for func in equality_functions:
-            st.latex(func.latex)
+            const_latex_matrix += func.latex + r'\\'
+
+        const_latex_matrix += r'\end{bmatrix} $'
+        st.write(const_latex + const_latex_matrix)
+
+        constraints = list(map(lambda x: x.call, equality_functions))
+        solution, history = bound_constrained_lagrangian_method(function.call, x0, constraints, max_iter=100)
+        g_x_min_latex = rf'$G(x_{{\min}}) = \begin{{bmatrix}}'
+        for func in equality_functions:
+            g_x_min_latex += f'{(func.call(solution)): .3f}' + '&'
+
+        else:
+            g_x_min_latex = g_x_min_latex[:-2]
+            g_x_min_latex += rf'\end{{bmatrix}}$'
+            st.write(g_x_min_latex)
+        st.write(rf'$f(x_{{\min}}) = {function.call(solution): 0.4f}$')
+
     elif type_alg == 'Log Barrier Method':
-        # for func in equality_functions:
-        #     st.write(func.latex)
-        log_barrier_function_latex = r'$ \qquad \displaystyle P(x, \mu) = f(x) - \mu \sum_{i\in\mathcal{I}}\ln g_i(x)$'
+        # --- CONDITION --- #
+        const_latex = rf'$\displaystyle G(x) \succeq 0, \quad G(x) = '
+        ineq_latex_matrix = r'\displaystyle \begin{bmatrix}'
+        for func in inequality_functions:
+            ineq_latex_matrix += func.latex + r'\\'
+
+        ineq_latex_matrix += r'\end{bmatrix} $'
+        st.write(const_latex + ineq_latex_matrix)
+
+        log_barrier_function_latex = rf'$ \qquad \displaystyle P(x, \mu) = ' \
+                                     rf'f(x) - \mu \sum_{{i=1}}^{inequality_number}\ln g_i(x)$'
         st.write('**Log barrier function:**' + log_barrier_function_latex)
 
+        # --- SOLUTION --- #
         constraints = list(map(lambda x: x.call, inequality_functions))
-        solution, history = log_barrier_solver(function.call, x0, constraints)
+        solution, history = log_barrier_solver(function.call, x0, constraints, max_iter=100)
         st.write(r'$ x_{\min} = ' + f'{list(numpy.round(solution, 3))}$')
+
+        g_x_min_latex = rf'$G(x_{{\min}}) = \begin{{bmatrix}}'
+        for func in inequality_functions:
+            g_x_min_latex += f'{(func.call(solution)): .3f}' + '&'
+
+        else:
+            g_x_min_latex = g_x_min_latex[:-2]
+            g_x_min_latex += rf'\end{{bmatrix}}$'
+        st.write(g_x_min_latex)
+        st.write(rf'$f(x_{{\min}}) = {function.call(solution): 0.4f}$')
+        # --- PLOTLY CHART --- #
         st.plotly_chart(contour_log_barrier(function.call, history, constraints))
