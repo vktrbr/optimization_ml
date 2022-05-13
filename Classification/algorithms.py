@@ -1,26 +1,88 @@
-from __future__ import annotations
+import numpy as np
+import torch
+from typing import Literal, Callable
+from sklearn.metrics import classification_report
 
 
-class ModelCl:
-    """
-    Base model for classification
-    """
+class LogisticRegressionRBF(torch.nn.Module):
 
-    def __init__(self):
-        pass
+    def __init__(self, x_basis: torch.Tensor, rbf: Literal['linear', 'gaussian'] = 'gaussian',
+                 print_function: Callable = print):
+        """
+        :param x_basis: centers of basis functions
+        :param rbf: type of rbf function. Available: ['linear', 'gaussian']
+        """
+        super(LogisticRegressionRBF, self).__init__()
 
-    def __call__(self, *args, **kwargs) -> float:
-        """ Method to call model """
-        return self.forward(*args, **kwargs)
+        self.w = torch.nn.Linear(x_basis.shape[0], 1)
+        self.rbf = rbf
+        self.x_basis = x_basis
+        self.print = print_function
+        self.sigmoid = torch.nn.Sigmoid()
 
-    def forward(self, *args, **kwargs) -> float:
-        pass
+    def forward(self, x: torch.Tensor = None, phi_matrix: torch.Tensor = None) -> torch.Tensor:
+        """
+        Returns a "probability" (confidence) of class 1
 
-    def fit(self, *args, **kwargs) -> ModelCl:
-        pass
+        :param x: 2D array
+        :param phi_matrix: 2D array
+        :return: 1D array
+        """
+        if phi_matrix is None:
+            phi_matrix = self.make_phi_matrix(x)
 
+        return self.sigmoid(self.w(phi_matrix))
 
-class LogisticRegressionTorch(ModelCl):
+    def make_phi_matrix(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Returns k x n array with calculated phi(x_i, x_basis_j)
 
-    def __init__(self, w_size: int, l1_reg: bool = True, ):
-        super(LogisticRegressionTorch, self).__init__()
+        :param x: Array k x m dimensional. k different x_i and m features
+        """
+        n = x.shape[0]
+        m = x.shape[1]
+        k = n * m  # Количество всех элементов
+
+        repd_row_matrix = torch.tile(x, (1, n)).reshape(n ** 2, m)
+        repd_whole_matrix = torch.tile(x, (n, 1))
+        phi = (repd_row_matrix - repd_whole_matrix) ** 2
+        phi = phi.sum(axis=1).reshape(n, n)
+
+        if self.rbf == 'linear':
+            phi = phi ** 0.5
+            phi = phi / phi.max()
+        elif self.rbf == 'gaussian':
+            phi = torch.exp(-phi)
+        elif self.rbf == 'multiquadratic':
+            phi = (1 + phi) ** 0.5
+            phi = phi / phi.max()
+
+        return phi
+
+    def fit(self, x, y, epochs):
+
+        print_epochs = np.unique(np.geomspace(1, epochs + 1, 15, dtype=int))
+
+        phi_matrix = self.make_phi_matrix(x)
+        optimizer = torch.optim.Adam(self.parameters())
+        criterion = torch.nn.CrossEntropyLoss()
+        loss = torch.nn.BCELoss()
+
+        for epoch in range(1, epochs + 1):
+            optimizer.zero_grad()
+            output = loss(self.forward(x, phi_matrix).flatten(), y)
+            output.backward()
+            optimizer.step()
+
+            with torch.no_grad():
+                if epoch + 1 in print_epochs:
+                    print(f'Epoch: {epoch: 5d} | CrossEntropyLoss: {output.item(): 0.5f}')
+
+        return self
+
+    def metrics_tab(self, x, y):
+        y_prob = self.forward(x)
+        y_pred = (y_prob > 0.5) * 1
+
+        return self.print(classification_report(y, y_pred))
+
