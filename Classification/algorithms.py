@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 from typing import Literal, Callable
-from sklearn.metrics import classification_report
+from metrics import make_metrics_tab, best_threshold
 
 
 class LogisticRegressionRBF(torch.nn.Module):
@@ -11,6 +11,7 @@ class LogisticRegressionRBF(torch.nn.Module):
         """
         :param x_basis: centers of basis functions
         :param rbf: type of rbf function. Available: ['linear', 'gaussian']
+        :param print_function: e.g. print or streamlit.write
         """
         super(LogisticRegressionRBF, self).__init__()
 
@@ -80,8 +81,60 @@ class LogisticRegressionRBF(torch.nn.Module):
 
         return self
 
-    def metrics_tab(self, x, y):
-        y_prob = self.forward(x)
-        y_pred = (y_prob > 0.5) * 1
-        output = classification_report(y, y_pred, output_dict=True, zero_division=0)
-        return output
+    def metrics_tab(self, x, y, metric: Literal['f1', 'by_roc'] = 'f1'):
+        threshold = best_threshold(x, y, self, metric=metric)
+        return make_metrics_tab(self, x, y, threshold)
+
+
+class LogisticRegression(torch.nn.Module):
+
+    def __init__(self, n_features: int, kernel: Literal['linear', 'perceptron'] = 'linear',
+                 print_function: Callable = print):
+        """
+
+        :param n_features: amount of features (columns)
+        :param kernel: 'linear' or 'perceptron'. linear - basic logistic regression, perceptron - nn with 1
+        hidden layer with dim = 512
+        :param print_function: print or streamlit.write
+        """
+        super(LogisticRegression, self).__init__()
+
+        self.print = print_function
+        self.sigmoid = torch.nn.Sigmoid()
+        if kernel == 'linear':
+            self.weights = torch.nn.Linear(n_features, 1)
+        elif kernel == 'perceptron':
+            self.weights = torch.nn.Sequential(
+                torch.nn.Linear(n_features, 512),
+                torch.nn.ReLU(),
+                torch.nn.Linear(512, 1)
+            )
+        else:
+            raise TypeError('Invalid kernel. Choose "linear" or "perceptron"')
+
+    def forward(self, x):
+        """ Just some function Rn -> R, for example linear. After that, the sigmoid function is applied """
+        return self.sigmoid(self.weights(x))
+
+    def fit(self, x, y, epochs=1):
+
+        print_epochs = np.unique(np.geomspace(1, epochs + 1, 15, dtype=int))
+
+        optimizer = torch.optim.Adam(self.parameters())
+        loss = torch.nn.BCELoss()
+
+        for epoch in range(1, epochs + 1):
+            optimizer.zero_grad()
+            output = loss(self.forward(x).flatten(), y)
+            output.backward()
+            optimizer.step()
+
+            with torch.no_grad():
+                if epoch + 1 in print_epochs:
+                    self.print(f'Epoch: {epoch: 5d} | CrossEntropyLoss: {output.item(): 0.5f}')
+
+        return self
+
+    def metrics_tab(self, x, y, metric: Literal['f1', 'by_roc'] = 'f1'):
+        threshold = best_threshold(x, y, self, metric=metric)
+        return make_metrics_tab(self, x, y, threshold)
