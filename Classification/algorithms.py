@@ -6,7 +6,7 @@ from sklearn.metrics import classification_report
 
 class LogisticRegressionRBF(torch.nn.Module):
 
-    def __init__(self, x_basis: torch.Tensor, rbf: Literal['linear', 'gaussian'] = 'gaussian',
+    def __init__(self, x_basis: torch.Tensor, rbf: Literal['linear', 'gaussian', 'multiquadratic'] = 'gaussian',
                  print_function: Callable = print):
         """
         :param x_basis: centers of basis functions
@@ -39,13 +39,15 @@ class LogisticRegressionRBF(torch.nn.Module):
 
         :param x: Array k x m dimensional. k different x_i and m features
         """
-        n = x.shape[0]
-        m = x.shape[1]
+        n = self.x_basis.shape[0]
+        k = x.shape[0]
 
-        repeated_row_matrix = torch.tile(x, (1, n)).reshape(n ** 2, m)
-        repeated_whole_matrix = torch.tile(x, (n, 1))
-        phi = (repeated_row_matrix - repeated_whole_matrix) ** 2
-        phi = phi.sum(axis=1).reshape(n, n)
+        repeated_input_x = torch.tile(x, (n, 1))
+        repeated_basis_x = torch.tile(self.x_basis, (1, k))
+        repeated_basis_x = torch.reshape(repeated_basis_x, repeated_input_x.shape)
+
+        phi = ((repeated_input_x - repeated_basis_x) ** 2).sum(dim=1)
+        phi = torch.reshape(phi, (n, k)).T
 
         if self.rbf == 'linear':
             phi = phi ** 0.5
@@ -81,5 +83,5 @@ class LogisticRegressionRBF(torch.nn.Module):
     def metrics_tab(self, x, y):
         y_prob = self.forward(x)
         y_pred = (y_prob > 0.5) * 1
-        output = classification_report(y, y_pred, output_dict=True)
+        output = classification_report(y, y_pred, output_dict=True, zero_division=0)
         return output
