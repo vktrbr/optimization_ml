@@ -41,11 +41,10 @@ class LogisticRegressionRBF(torch.nn.Module):
         """
         n = x.shape[0]
         m = x.shape[1]
-        k = n * m  # Количество всех элементов
 
-        repd_row_matrix = torch.tile(x, (1, n)).reshape(n ** 2, m)
-        repd_whole_matrix = torch.tile(x, (n, 1))
-        phi = (repd_row_matrix - repd_whole_matrix) ** 2
+        repeated_row_matrix = torch.tile(x, (1, n)).reshape(n ** 2, m)
+        repeated_whole_matrix = torch.tile(x, (n, 1))
+        phi = (repeated_row_matrix - repeated_whole_matrix) ** 2
         phi = phi.sum(axis=1).reshape(n, n)
 
         if self.rbf == 'linear':
@@ -59,13 +58,12 @@ class LogisticRegressionRBF(torch.nn.Module):
 
         return phi
 
-    def fit(self, x, y, epochs):
+    def fit(self, x, y, epochs=1):
 
         print_epochs = np.unique(np.geomspace(1, epochs + 1, 15, dtype=int))
 
         phi_matrix = self.make_phi_matrix(x)
         optimizer = torch.optim.Adam(self.parameters())
-        criterion = torch.nn.CrossEntropyLoss()
         loss = torch.nn.BCELoss()
 
         for epoch in range(1, epochs + 1):
@@ -76,13 +74,12 @@ class LogisticRegressionRBF(torch.nn.Module):
 
             with torch.no_grad():
                 if epoch + 1 in print_epochs:
-                    print(f'Epoch: {epoch: 5d} | CrossEntropyLoss: {output.item(): 0.5f}')
+                    self.print(f'Epoch: {epoch: 5d} | CrossEntropyLoss: {output.item(): 0.5f}')
 
         return self
 
     def metrics_tab(self, x, y):
         y_prob = self.forward(x)
         y_pred = (y_prob > 0.5) * 1
-
-        return self.print(classification_report(y, y_pred))
-
+        output = classification_report(y, y_pred, output_dict=True)
+        return output
