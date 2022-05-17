@@ -86,8 +86,10 @@ class LogisticRegressionRBF(torch.nn.Module):
         return self
 
     def metrics_tab(self, x, y, metric: Literal['f1', 'by_roc'] = 'f1'):
+        y_prob = self.forward(x)
         threshold = best_threshold(x, y, self, metric=metric)
-        return make_metrics_tab(self, x, y, threshold)
+        y_pred = (y_prob > threshold) * 1
+        return make_metrics_tab(y, y_pred, threshold)
 
 
 class LogisticRegression(torch.nn.Module):
@@ -145,6 +147,54 @@ class LogisticRegression(torch.nn.Module):
 
         return self
 
-    def metrics_tab(self, x, y, metric: Literal['f1', 'by_roc'] = 'f1'):
+    def metrics_tab(self, x: torch.Tensor, y: torch.Tensor, metric: Literal['f1', 'by_roc'] = 'f1'):
+        y_prob = self.forward(x)
         threshold = best_threshold(x, y, self, metric=metric)
-        return make_metrics_tab(self, x, y, threshold)
+        y_pred = (y_prob > threshold) * 1
+        return make_metrics_tab(y, y_pred, threshold)
+
+
+class SVM(torch.nn.Module):
+    """
+
+    .. math::
+        {\\displaystyle \\lambda \\lVert \\mathbf {w} \\rVert ^{2}+\\left[{\\frac {1}{n}}\\sum _{i=1}^{n}\\max
+        \\left(0,1-y_{i}(\\mathbf {w} ^{T}\\mathbf {x} _{i}-b)\\right)\\right],}
+    """
+
+    def __init__(self, n_features: int, print_function: Callable = print):
+        """
+        :param n_features: amount of features (columns)
+        :param print_function: print or streamlit.write
+        """
+        super(SVM, self).__init__()
+        self.weights = torch.nn.Linear(n_features, 1)
+        self.print = print_function
+
+    def forward(self, x):
+        return self.weights(x)
+
+    def fit(self, x, y, epochs=1, l2_lambda: float = 0):
+
+        print_epochs = np.unique(np.geomspace(1, epochs + 1, 15, dtype=int))
+
+        optimizer = torch.optim.Adam(self.parameters(), weight_decay=l2_lambda)
+        loss = torch.nn.MarginRankingLoss(margin=1)  # hinge loss if x2 = 0 and margin = 1
+
+        for epoch in range(1, epochs + 1):
+            optimizer.zero_grad()
+            output = loss(self.forward(x).flatten(), torch.tensor([0]), y)
+            output.backward()
+            optimizer.step()
+
+            with torch.no_grad():
+                if epoch + 1 in print_epochs:
+                    self.print(f'Epoch: {epoch: 5d} | HingeLoss: {output.item(): 0.5f}')
+
+        return self
+
+    def metrics_tab(self, x, y, metric: Literal['f1'] = 'f1'):
+        y_prob = self.forward(x)
+        threshold = best_threshold(x, y, self, metric=metric)
+        y_pred = (y_prob > threshold) * 2 - 1
+        return make_metrics_tab(y, y_pred, threshold)
