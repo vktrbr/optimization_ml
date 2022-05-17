@@ -7,11 +7,12 @@ from metrics import make_metrics_tab, best_threshold
 class LogisticRegressionRBF(torch.nn.Module):
 
     def __init__(self, x_basis: torch.Tensor, rbf: Literal['linear', 'gaussian', 'multiquadratic'] = 'gaussian',
-                 print_function: Callable = print):
+                 print_function: Callable = print, show_epoch: int = 15):
         """
         :param x_basis: centers of basis functions
         :param rbf: type of rbf function. Available: ['linear', 'gaussian']
         :param print_function: e.g. print or streamlit.write
+        :param show_epoch: amount of showing epochs
         """
         super(LogisticRegressionRBF, self).__init__()
 
@@ -20,6 +21,7 @@ class LogisticRegressionRBF(torch.nn.Module):
         self.x_basis = x_basis
         self.print = print_function
         self.sigmoid = torch.nn.Sigmoid()
+        self.show_epoch = show_epoch
 
     def forward(self, x: torch.Tensor = None, phi_matrix: torch.Tensor = None) -> torch.Tensor:
         """
@@ -63,7 +65,7 @@ class LogisticRegressionRBF(torch.nn.Module):
 
     def fit(self, x, y, epochs=1, l1_lambda: float = 0):
 
-        print_epochs = np.unique(np.geomspace(1, epochs + 1, 15, dtype=int))
+        print_epochs = np.unique(np.geomspace(1, epochs + 1, self.show_epoch, dtype=int))
 
         phi_matrix = self.make_phi_matrix(x)
         optimizer = torch.optim.Adam(self.parameters())
@@ -95,18 +97,20 @@ class LogisticRegressionRBF(torch.nn.Module):
 class LogisticRegression(torch.nn.Module):
 
     def __init__(self, n_features: int, kernel: Literal['linear', 'perceptron'] = 'linear',
-                 print_function: Callable = print):
+                 print_function: Callable = print, show_epoch: int = 15):
         """
 
         :param n_features: amount of features (columns)
         :param kernel: 'linear' or 'perceptron'. linear - basic logistic regression, perceptron - nn with 2
         hidden layer with dim1 = 1024, dim2 = 512
         :param print_function: print or streamlit.write
+        :param show_epoch: amount of showing epochs
         """
         super(LogisticRegression, self).__init__()
 
         self.print = print_function
         self.sigmoid = torch.nn.Sigmoid()
+        self.show_epoch = show_epoch
         if kernel == 'linear':
             self.weights = torch.nn.Linear(n_features, 1)
         elif kernel == 'perceptron':
@@ -126,7 +130,7 @@ class LogisticRegression(torch.nn.Module):
 
     def fit(self, x, y, epochs=1, l1_lambda: float = 0):
 
-        print_epochs = np.unique(np.geomspace(1, epochs + 1, 15, dtype=int))
+        print_epochs = np.unique(np.geomspace(1, epochs + 1, self.show_epoch, dtype=int))
 
         optimizer = torch.optim.Adam(self.parameters())
         loss = torch.nn.BCELoss()
@@ -162,21 +166,23 @@ class SVM(torch.nn.Module):
         \\left(0,1-y_{i}(\\mathbf {w} ^{T}\\mathbf {x} _{i}-b)\\right)\\right],}
     """
 
-    def __init__(self, n_features: int, print_function: Callable = print):
+    def __init__(self, n_features: int, print_function: Callable = print, show_epoch: int = 15):
         """
         :param n_features: amount of features (columns)
         :param print_function: print or streamlit.write
+        :param show_epoch: amount of showing epochs
         """
         super(SVM, self).__init__()
         self.weights = torch.nn.Linear(n_features, 1)
         self.print = print_function
+        self.show_epoch = show_epoch
 
     def forward(self, x):
         return self.weights(x)
 
     def fit(self, x, y, epochs=1, l2_lambda: float = 0):
 
-        print_epochs = np.unique(np.geomspace(1, epochs + 1, 15, dtype=int))
+        print_epochs = np.unique(np.geomspace(1, epochs + 1, self.show_epoch, dtype=int))
 
         optimizer = torch.optim.Adam(self.parameters(), weight_decay=l2_lambda)
         loss = torch.nn.MarginRankingLoss(margin=1)  # hinge loss if x2 = 0 and margin = 1
