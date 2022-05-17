@@ -3,45 +3,17 @@ import os
 import sys
 
 sys.path.insert(0, os.path.abspath('.') + '/Regression')
-print(sys.path)
+
 import streamlit as st
 from datetime import date
 import yfinance as yf
 from typing import List, Tuple
 from algorithms import *
-from visualization import *
+from Regression.visualization import *
 from math import comb
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
-
 MAX_NUMBER_FEATURES = 500
-
-st.set_page_config(
-    page_title=r"Regression",
-    page_icon=":four:")  # make page name
-
-regression_types = ['Linear', 'Polynomial', 'Exponential']
-regulators_types = ['None', 'Lasso (L1)', 'Tikhonov (L2)']
-
-# ------ Initial variables ------ #
-if 'has_been_uploaded' not in st.session_state:
-    st.session_state.has_been_uploaded = False
-
-if 'placeholder' not in st.session_state:
-    st.session_state.placeholder = st.empty()
-
-if 'df' not in st.session_state:
-    st.session_state.df = pd.DataFrame([])
-
-if 'data_source' not in st.session_state:
-    st.session_state.data_source = None
-
-# ------ Main header Settings ------ #
-st.title('Regression')
-left, right = st.columns([7, 1])
-left.markdown('<h4>Linear, Polynomial, Exponential</h4>', unsafe_allow_html=True)
-reset_button = right.button('Reset', key=True)
-st.write('Hello! Welcome to regression app. You can upload your **own data** or check some **stock index**.')
 
 
 # ------ Part with source type of data ------ #
@@ -72,6 +44,7 @@ def type_source() -> Literal['ticker', 'own data']:
         st.stop()  # waits for the user
 
 
+# ------ Reset button ------ #
 def reset() -> None:
     """
     Resets the page
@@ -337,20 +310,48 @@ def regression(df: pd.DataFrame, column_names: List):
             st.stop()
 
 
-if st.session_state.data_source is None and not st.session_state.has_been_uploaded or reset_button:
-    reset()
+if __name__ == '__main__':
+    st.set_page_config(
+        page_title=r"Regression",
+        page_icon=":four:")  # make page name
 
-# Branch with ticker. We download data if flag has_been_uploaded is False
-if st.session_state.data_source == 'ticker' and not st.session_state.has_been_uploaded:
-    st.session_state.placeholder, st.session_state.df = ticker_way()
-    st.session_state.has_been_uploaded = True
+    regression_types = ['Linear', 'Polynomial', 'Exponential']
+    regulators_types = ['None', 'Lasso (L1)', 'Tikhonov (L2)']
 
-# Branch with own data. We request data from user if flag has_been_uploaded is False
-if st.session_state.data_source == 'own data' and not st.session_state.has_been_uploaded or reset_button:
-    st.session_state.placeholder, st.session_state.df = own_data_way()
-    st.session_state.has_been_uploaded = True
+    # ------ Initial variables ------ #
+    if 'has_been_uploaded' not in st.session_state:
+        st.session_state.has_been_uploaded = False
 
-# If the data has been uploaded, we will work with it and make a regression
-if st.session_state.has_been_uploaded and st.session_state.df.shape[0] != 0:
-    st.session_state.placeholder.empty()
-    regression(st.session_state.df, st.session_state.df.columns.to_list())
+    if 'placeholder' not in st.session_state:
+        st.session_state.placeholder = st.empty()
+
+    if 'df' not in st.session_state:
+        st.session_state.df = pd.DataFrame([])
+
+    if 'data_source' not in st.session_state:
+        st.session_state.data_source = None
+
+    # ------ Main header Settings ------ #
+    st.title('Regression')
+    left, right = st.columns([7, 1])
+    left.markdown('<h4>Linear, Polynomial, Exponential</h4>', unsafe_allow_html=True)
+    reset_button = right.button('Reset', key=True)
+    st.write('Hello! Welcome to regression app. You can upload your **own data** or check some **stock index**.')
+
+    if st.session_state.data_source is None and not st.session_state.has_been_uploaded or reset_button:
+        reset()
+
+    # Branch with ticker. We download data if flag has_been_uploaded is False
+    if st.session_state.data_source == 'ticker' and not st.session_state.has_been_uploaded:
+        st.session_state.placeholder, st.session_state.df = ticker_way()
+        st.session_state.has_been_uploaded = True
+
+    # Branch with own data. We request data from user if flag has_been_uploaded is False
+    if st.session_state.data_source == 'own data' and not st.session_state.has_been_uploaded or reset_button:
+        st.session_state.placeholder, st.session_state.df = own_data_way()
+        st.session_state.has_been_uploaded = True
+
+    # If the data has been uploaded, we will work with it and make a regression
+    if st.session_state.has_been_uploaded and st.session_state.df.shape[0] != 0:
+        st.session_state.placeholder.empty()
+        regression(st.session_state.df, st.session_state.df.columns.to_list())
