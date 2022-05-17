@@ -29,3 +29,11 @@
 3. Exponential
 > App with visualization:
 > [https://.../Regression/streamlit_app.py](https://share.streamlit.io/vktrbr/optimization_ml/main/Regression/streamlit_app.py)
+
+## Classification
+#### Algorithms:
+1. SVM
+2. Logistic
+3. Logistic with RBG
+> App with visualization:
+> [https://.../Classification/streamlit_app.py](https://share.streamlit.io/vktrbr/optimization_ml/main/Classification/streamlit_app.py)
