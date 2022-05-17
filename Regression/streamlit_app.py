@@ -6,7 +6,6 @@ sys.path.insert(0, os.path.abspath('.') + '/Regression')
 
 import streamlit as st
 from datetime import date
-import yfinance as yf
 from typing import List, Tuple
 from algorithms import *
 from Regression.visualization import *
@@ -311,6 +310,7 @@ def regression(df: pd.DataFrame, column_names: List):
 
 
 if __name__ == '__main__':
+    import yfinance as yf
     st.set_page_config(
         page_title=r"Regression",
         page_icon=":four:")  # make page name
