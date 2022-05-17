@@ -50,7 +50,7 @@ def make_distribution_plot(x: torch.Tensor, y_true: torch.Tensor, model: Optiona
         tsne_x = TSNE().fit_transform(x)
         fig = px.scatter(x=tsne_x[:, 0], y=tsne_x[:, 1], title=title, color=colors)
 
-    fig.update_layout(font={'size': 18}, autosize=False, width=1200, height=800)
+    fig.update_layout(font={'size': 18}, autosize=False, width=800, height=600)
 
     return fig
 
