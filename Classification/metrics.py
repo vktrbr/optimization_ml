@@ -173,17 +173,15 @@ def auc_roc(y_true: np.array, y_prob: np.array) -> Real:
     return auc
 
 
-def make_metrics_tab(model: torch.nn.Module, x: torch.Tensor, y: torch.Tensor, threshold: Real = 0.5):
+def make_metrics_tab(y: torch.Tensor, y_pred: torch.Tensor, threshold: Real = 0.5):
     """
-    Return classification_report from sklearn
-    :param model:
-    :param x:
+    Returns classification_report from sklearn
     :param y:
+    :param y_pred:
     :param threshold:
     :return:
     """
-    y_prob = model.forward(x)
-    y_pred = (y_prob > threshold) * 1
+
     output = classification_report(y, y_pred, output_dict=True, zero_division=0)
     output['threshold'] = threshold
     return output
