@@ -61,7 +61,7 @@ class LogisticRegressionRBF(torch.nn.Module):
 
         return phi
 
-    def fit(self, x, y, epochs=1):
+    def fit(self, x, y, epochs=1, l1_lambda: float = 0):
 
         print_epochs = np.unique(np.geomspace(1, epochs + 1, 15, dtype=int))
 
@@ -72,6 +72,10 @@ class LogisticRegressionRBF(torch.nn.Module):
         for epoch in range(1, epochs + 1):
             optimizer.zero_grad()
             output = loss(self.forward(x, phi_matrix).flatten(), y)
+            if l1_lambda > 0.:
+                for layer in self.parameters():
+                    output += l1_lambda * layer.data.sum()
+
             output.backward()
             optimizer.step()
 
@@ -93,8 +97,8 @@ class LogisticRegression(torch.nn.Module):
         """
 
         :param n_features: amount of features (columns)
-        :param kernel: 'linear' or 'perceptron'. linear - basic logistic regression, perceptron - nn with 1
-        hidden layer with dim = 512
+        :param kernel: 'linear' or 'perceptron'. linear - basic logistic regression, perceptron - nn with 2
+        hidden layer with dim1 = 1024, dim2 = 512
         :param print_function: print or streamlit.write
         """
         super(LogisticRegression, self).__init__()
@@ -105,7 +109,9 @@ class LogisticRegression(torch.nn.Module):
             self.weights = torch.nn.Linear(n_features, 1)
         elif kernel == 'perceptron':
             self.weights = torch.nn.Sequential(
-                torch.nn.Linear(n_features, 512),
+                torch.nn.Linear(n_features, 1024),
+                torch.nn.ReLU(),
+                torch.nn.Linear(1024, 512),
                 torch.nn.ReLU(),
                 torch.nn.Linear(512, 1)
             )
@@ -116,7 +122,7 @@ class LogisticRegression(torch.nn.Module):
         """ Just some function Rn -> R, for example linear. After that, the sigmoid function is applied """
         return self.sigmoid(self.weights(x))
 
-    def fit(self, x, y, epochs=1):
+    def fit(self, x, y, epochs=1, l1_lambda: float = 0):
 
         print_epochs = np.unique(np.geomspace(1, epochs + 1, 15, dtype=int))
 
@@ -126,6 +132,10 @@ class LogisticRegression(torch.nn.Module):
         for epoch in range(1, epochs + 1):
             optimizer.zero_grad()
             output = loss(self.forward(x).flatten(), y)
+            if l1_lambda > 0:
+                for layer in self.parameters():
+                    output += l1_lambda * layer.data.sum()
+
             output.backward()
             optimizer.step()
 
