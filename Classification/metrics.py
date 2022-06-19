@@ -7,7 +7,7 @@ from sklearn.metrics import classification_report
 import torch
 
 
-def tpr(y_true: np.array, y_pred: np.array) -> Real:
+def tpr(y_true: torch.Tensor, y_pred: torch.Tensor) -> Real:
     """
     Return True Positive Rate. TPR = TP / P = TP / (TP + FN). Alias is Recall
 
@@ -17,14 +17,14 @@ def tpr(y_true: np.array, y_pred: np.array) -> Real:
     :param y_pred: array with prediction values of binary classification
     :return:
     """
-    y_true = np.array(y_true, dtype=int)
-    y_pred = np.array(y_pred, dtype=int)
-    tp = sum((y_true == y_pred) & (y_true == 1))
-    p = sum(y_true == 1)
+    assert isinstance(y_true, torch.Tensor), 'y_true must be torch Tensor'
+    assert isinstance(y_pred, torch.Tensor), 'y_pred must be torch Tensor'
+    tp = ((y_true == y_pred) & (y_true == 1)).sum()
+    p = (y_true == 1).sum()
     return tp / max(p, 1)
 
 
-def fpr(y_true: np.array, y_pred: np.array) -> Real:
+def fpr(y_true: torch.Tensor, y_pred: torch.Tensor) -> Real:
     """
     Return False Positive Rate. FPR = FP / N = FP / (FP + TN).
 
@@ -34,14 +34,14 @@ def fpr(y_true: np.array, y_pred: np.array) -> Real:
     :param y_pred: array with prediction values of binary classification
     :return:
     """
-    y_true = np.array(y_true, dtype=int)
-    y_pred = np.array(y_pred, dtype=int)
-    fp = sum((y_true != y_pred) & (y_true == 0))
-    n = sum(y_true == 0)
+    assert isinstance(y_true, torch.Tensor), 'y_true must be torch Tensor'
+    assert isinstance(y_pred, torch.Tensor), 'y_pred must be torch Tensor'
+    fp = ((y_true != y_pred) & (y_true == 0)).sum()
+    n = (y_true == 0).sum()
     return fp / max(n, 1)
 
 
-def precision(y_true: np.array, y_pred: np.array) -> Real:
+def precision(y_true: torch.Tensor, y_pred: torch.Tensor) -> Real:
     """
     Return Positive Predictive Value . PPV = TP / (TP + FN). Alias is precision
 
@@ -51,14 +51,14 @@ def precision(y_true: np.array, y_pred: np.array) -> Real:
     :param y_pred: array with prediction values of binary classification
     :return:
     """
-    y_true = np.array(y_true, dtype=int)
-    y_pred = np.array(y_pred, dtype=int)
-    tp = sum((y_true == y_pred) & (y_true == 1))
-    fp = sum((y_true != y_pred) & (y_true == 0))
+    assert isinstance(y_true, torch.Tensor), 'y_true must be torch Tensor'
+    assert isinstance(y_pred, torch.Tensor), 'y_pred must be torch Tensor'
+    tp = ((y_true == y_pred) & (y_true == 1)).sum()
+    fp = ((y_true != y_pred) & (y_true == 0)).sum()
     return tp / max(tp + fp, 1)
 
 
-def f_score(y_true: np.array, y_pred: np.array, beta: Real = 1) -> Real:
+def f_score(y_true: torch.Tensor, y_pred: torch.Tensor, beta: Real = 1) -> Real:
     """
     Return F_score. https://en.wikipedia.org/wiki/F-score
 
@@ -73,8 +73,8 @@ def f_score(y_true: np.array, y_pred: np.array, beta: Real = 1) -> Real:
     :param beta: is chosen such that recall is considered beta times as important as precision
     :return:
     """
-    y_true = np.array(y_true, dtype=int)
-    y_pred = np.array(y_pred, dtype=int)
+    assert isinstance(y_true, torch.Tensor), 'y_true must be torch Tensor'
+    assert isinstance(y_pred, torch.Tensor), 'y_pred must be torch Tensor'
     _precision = precision(y_true, y_pred)
     _recall = tpr(y_true, y_pred)
 
@@ -112,7 +112,7 @@ def best_threshold(x: torch.Tensor, y_true: torch.Tensor, model: torch.nn.Module
     return best_t
 
 
-def roc_curve(y_true: np.array, y_prob: np.array, n_thresholds: Union[int, None] = None) -> Dict:
+def roc_curve(y_true: torch.Tensor, y_prob: torch.Tensor, n_thresholds: Union[int, None] = None) -> Dict:
     """
     Return dict with points at TPR - FPR coordinates
 
@@ -123,8 +123,8 @@ def roc_curve(y_true: np.array, y_prob: np.array, n_thresholds: Union[int, None]
     """
     tpr_array = []
     fpr_array = []
-    y_true = np.array(y_true, dtype=int)
-    y_prob = np.array(y_prob)
+    assert isinstance(y_true, torch.Tensor), 'y_true must be torch Tensor'
+    assert isinstance(y_prob, torch.Tensor), 'y_pred must be torch Tensor'
 
     thresholds = np.sort(np.unique(y_prob))[::-1]
     if n_thresholds is not None:
@@ -137,7 +137,7 @@ def roc_curve(y_true: np.array, y_prob: np.array, n_thresholds: Union[int, None]
     return {'TPR': tpr_array, 'FPR': fpr_array}
 
 
-def roc_curve_plot(y_true: np.array, y_prob: np.array, fill: bool = False) -> go.Figure:
+def roc_curve_plot(y_true: torch.Tensor, y_prob: torch.Tensor, fill: bool = False) -> go.Figure:
     """
     Return figure with plotly.Figure ROC curve
 
@@ -158,19 +158,23 @@ def roc_curve_plot(y_true: np.array, y_prob: np.array, fill: bool = False) -> go
     return fig
 
 
-def auc_roc(y_true: np.array, y_prob: np.array) -> Real:
+def auc_roc(y_true: torch.Tensor, y_prob: torch.Tensor, n_thresholds: int = 1000) -> Real:
     """
     Return area under curve ROC (AUC-ROC metric)
 
     :param y_true: array with true values of binary classification
     :param y_prob: array of probabilities of confidence of belonging to the 1st class
-    :return: Real value of are
+    :param n_thresholds: if len(y_true) is too large, you can limit the number of threshold values
+    :return: Real value of area under roc-curve
     """
-    tpr_array, fpr_array = roc_curve(y_true, y_prob).values()
+    assert len(y_true.shape) == 1, 'y_true must me 1-d'
+    assert len(y_prob.shape) == 1, 'y_prob must me 1-d'
+
+    tpr_array, fpr_array = roc_curve(y_true, y_prob, min(y_true.shape[0], n_thresholds)).values()
     auc = 0
     for i in range(len(fpr_array) - 1):  # Integrating by Trapezoidal rule
         auc += (tpr_array[i] + tpr_array[i + 1]) * (fpr_array[i + 1] - fpr_array[i]) / 2
-    return auc
+    return float(auc)
 
 
 def make_metrics_tab(y: torch.Tensor, y_pred: torch.Tensor, threshold: Real = 0.5):
@@ -185,3 +189,19 @@ def make_metrics_tab(y: torch.Tensor, y_pred: torch.Tensor, threshold: Real = 0.
     output = classification_report(y, y_pred, output_dict=True, zero_division=0)
     output['threshold'] = threshold
     return output
+
+
+if __name__ == '__main__':
+    import time
+
+    yt = torch.randint(0, 2, (10_000,))
+    yp = torch.rand((10_000,))
+
+    st = time.time()
+    print(auc_roc(yt, yp, 100))
+    print(time.time() - st)
+    from sklearn.metrics import roc_auc_score
+
+    st = time.time()
+    print(roc_auc_score(yt, yp))
+    print(time.time() - st)

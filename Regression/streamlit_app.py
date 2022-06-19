@@ -2,7 +2,7 @@ import io
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('.') + '/Regression')
+sys.path.insert(0, os.path.abspath('.'))
 
 import streamlit as st
 from datetime import date

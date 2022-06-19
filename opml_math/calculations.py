@@ -1,6 +1,5 @@
 from numbers import Real
 from typing import Callable, Sequence
-
 import numpy as np
 
 
